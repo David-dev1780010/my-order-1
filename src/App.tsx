@@ -20,12 +20,12 @@ const App: React.FC = () => {
         right: 0,
         bottom: 0,
         backgroundImage: 'url(/images/fon.png)',
-        backgroundSize: '130% auto',
+        backgroundSize: 'cover',
         backgroundPosition: 'center top',
         backgroundRepeat: 'no-repeat',
         opacity: 0.3,
         zIndex: 1,
-        transform: 'translateY(-15%)',
+        transform: 'translateY(-15%) scale(1.3)',
       }} />
       <div style={{
         position: 'relative',
