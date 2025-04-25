@@ -11,6 +11,7 @@ const App: React.FC = () => {
       justifyContent: 'center',
       alignItems: 'center',
       fontSize: '24px',
+      overflow: 'hidden',
     }}>
       <div style={{
         position: 'absolute',
@@ -23,6 +24,7 @@ const App: React.FC = () => {
         backgroundPosition: 'top',
         opacity: 0.3,
         zIndex: 1,
+        transform: 'translateY(-30%)',
       }} />
       <div style={{
         position: 'relative',
