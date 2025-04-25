@@ -40,6 +40,8 @@ const Home: React.FC = () => {
       justifyContent: 'center',
       height: '100%',
       padding: '20px',
+      overflow: 'hidden',
+      position: 'relative',
     }}>
       <motion.div
         variants={plateVariants}
@@ -47,23 +49,24 @@ const Home: React.FC = () => {
         animate="animate"
         whileHover="hover"
         style={{
-          width: '100%',
-          maxWidth: '800px',
+          position: 'absolute',
+          left: '50%',
+          top: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '200%',
+          maxWidth: 'none',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          marginTop: '-100px',
-          padding: '0 20px',
         }}
       >
         <motion.img
           src="/images/tarelka.png"
           alt="Тарелка"
           style={{
-            width: '140%',
+            width: '100%',
             height: 'auto',
-            filter: 'drop-shadow(0px 15px 30px rgba(0,0,0,0.4))',
-            marginLeft: '-20%',
+            filter: 'drop-shadow(0px 20px 40px rgba(0,0,0,0.5))',
           }}
         />
       </motion.div>
