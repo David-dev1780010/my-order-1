@@ -31,26 +31,27 @@ const App: React.FC = () => {
         position: 'relative',
         zIndex: 2,
         display: 'flex',
-        gap: '40px',
-        transform: 'scale(1.5)',
+        gap: '30px',
+        transform: 'scale(1.2)',
+        padding: '100px',
       }}>
         <div style={{
-          width: '200px',
-          height: '200px',
+          width: '150px',
+          height: '150px',
           borderRadius: '50%',
           backgroundColor: '#09FBD3',
           opacity: 0.6,
-          filter: 'blur(60px)',
-          transform: 'translateY(-20px)',
+          filter: 'blur(50px)',
+          transform: 'translateY(-15px)',
           mixBlendMode: 'lighten',
         }} />
         <div style={{
-          width: '200px',
-          height: '200px',
+          width: '150px',
+          height: '150px',
           borderRadius: '50%',
           backgroundColor: '#FE53BB',
           opacity: 0.6,
-          filter: 'blur(60px)',
+          filter: 'blur(50px)',
           mixBlendMode: 'lighten',
         }} />
       </div>
