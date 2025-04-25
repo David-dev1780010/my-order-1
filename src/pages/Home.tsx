@@ -39,9 +39,8 @@ const Home: React.FC = () => {
       alignItems: 'center',
       justifyContent: 'center',
       height: '100%',
-      padding: '20px',
+      width: '100%',
       overflow: 'hidden',
-      position: 'relative',
     }}>
       <motion.div
         variants={plateVariants}
@@ -49,12 +48,7 @@ const Home: React.FC = () => {
         animate="animate"
         whileHover="hover"
         style={{
-          position: 'absolute',
-          left: '50%',
-          top: '50%',
-          transform: 'translate(-50%, -50%)',
-          width: '200%',
-          maxWidth: 'none',
+          width: '180vw',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
