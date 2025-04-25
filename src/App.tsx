@@ -13,15 +13,37 @@ const App: React.FC = () => {
   const pageVariants = {
     initial: {
       opacity: 0,
-      x: 100,
+      y: 50,
     },
     animate: {
       opacity: 1,
-      x: 0,
+      y: 0,
     },
     exit: {
       opacity: 0,
-      x: -100,
+      y: -50,
+    },
+  };
+
+  const backgroundVariants = {
+    initial: {
+      scale: 1.1,
+      opacity: 0.2,
+    },
+    animate: {
+      scale: 1.3,
+      opacity: 0.3,
+    },
+  };
+
+  const circlesVariants = {
+    initial: {
+      scale: 1.1,
+      opacity: 0.4,
+    },
+    animate: {
+      scale: 1.3,
+      opacity: 0.6,
     },
   };
 
@@ -51,34 +73,44 @@ const App: React.FC = () => {
       overflow: 'hidden',
     }}>
       {/* Background */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundImage: 'url(/images/fon.png)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center top',
-        backgroundRepeat: 'no-repeat',
-        opacity: 0.3,
-        zIndex: 1,
-        transform: 'translateY(-15%) translateX(3%) scale(1.3)',
-      }} />
+      <motion.div
+        variants={backgroundVariants}
+        initial="initial"
+        animate="animate"
+        transition={{ duration: 0.5 }}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          backgroundImage: 'url(/images/fon.png)',
+          backgroundSize: 'cover',
+          backgroundPosition: 'center top',
+          backgroundRepeat: 'no-repeat',
+          zIndex: 1,
+          transform: 'translateY(-15%) translateX(3%)',
+        }}
+      />
       
       {/* Circles */}
-      <div style={{
-        position: 'absolute',
-        top: 0,
-        left: 0,
-        right: 0,
-        display: 'flex',
-        justifyContent: 'center',
-        gap: '30px',
-        transform: 'scale(1.3)',
-        padding: '120px',
-        zIndex: 2,
-      }}>
+      <motion.div
+        variants={circlesVariants}
+        initial="initial"
+        animate="animate"
+        transition={{ duration: 0.5 }}
+        style={{
+          position: 'absolute',
+          top: 0,
+          left: 0,
+          right: 0,
+          display: 'flex',
+          justifyContent: 'center',
+          gap: '30px',
+          padding: '120px',
+          zIndex: 2,
+        }}
+      >
         <div style={{
           width: '180px',
           height: '180px',
@@ -98,7 +130,7 @@ const App: React.FC = () => {
           filter: 'blur(50px)',
           mixBlendMode: 'lighten',
         }} />
-      </div>
+      </motion.div>
 
       {/* Content */}
       <div style={{
@@ -115,7 +147,11 @@ const App: React.FC = () => {
             animate="animate"
             exit="exit"
             variants={pageVariants}
-            transition={{ type: "tween", duration: 0.3 }}
+            transition={{ 
+              type: "spring",
+              stiffness: 200,
+              damping: 20
+            }}
             style={{
               height: '100%',
             }}

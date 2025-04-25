@@ -8,26 +8,30 @@ interface NavigationProps {
 
 const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) => {
   const navItems = [
-    { id: 'home', icon: '/images/main.png', label: 'Главная' },
-    { id: 'profile', icon: '/images/profile.png', label: 'Профиль' },
-    { id: 'order', icon: '/images/order.png', label: 'Заказать' },
-    { id: 'history', icon: '/images/history.png', label: 'История' },
-    { id: 'support', icon: '/images/support.png', label: 'Поддержка' },
+    { id: 'home', icon: 'main.png', label: 'Главная' },
+    { id: 'profile', icon: 'profile.png', label: 'Профиль' },
+    { id: 'order', icon: 'order.png', label: 'Заказать' },
+    { id: 'history', icon: 'history.png', label: 'История' },
+    { id: 'support', icon: 'support.png', label: 'Поддержка' },
   ];
 
   return (
-    <nav style={{
-      position: 'fixed',
-      bottom: 0,
-      left: 0,
-      right: 0,
-      backgroundColor: '#2D1E5A',
-      padding: '20px 15px',
-      borderTopLeftRadius: '25px',
-      borderTopRightRadius: '25px',
-      boxShadow: '0 -4px 20px rgba(0,0,0,0.2)',
-      zIndex: 1000,
-    }}>
+    <motion.nav
+      initial={{ y: 100 }}
+      animate={{ y: 0 }}
+      transition={{ type: "spring", stiffness: 260, damping: 20 }}
+      style={{
+        position: 'fixed',
+        bottom: 0,
+        left: 0,
+        right: 0,
+        backgroundColor: '#2D1E5A',
+        padding: '20px 15px',
+        borderTopLeftRadius: '25px',
+        borderTopRightRadius: '25px',
+        boxShadow: '0 -4px 20px rgba(0,0,0,0.2)',
+        zIndex: 1000,
+      }}>
       <div style={{
         display: 'flex',
         justifyContent: 'space-around',
@@ -39,7 +43,6 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) =>
           <motion.button
             key={item.id}
             onClick={() => onPageChange(item.id)}
-            whileTap={{ scale: 0.9 }}
             whileHover={{ scale: 1.1 }}
             style={{
               background: 'none',
@@ -53,18 +56,24 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) =>
               transition: 'all 0.3s ease',
               padding: '8px 16px',
               width: '72px',
+              WebkitTapHighlightColor: 'transparent',
+              touchAction: 'manipulation',
+              userSelect: 'none',
             }}
           >
-            <div style={{
-              width: '32px',
-              height: '32px',
-              marginBottom: '8px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}>
+            <motion.div
+              style={{
+                width: '32px',
+                height: '32px',
+                marginBottom: '8px',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              whileTap={{ scale: 0.9 }}
+            >
               <img
-                src={item.icon}
+                src={`/images/${item.icon}`}
                 alt={item.label}
                 style={{
                   width: '28px',
@@ -72,7 +81,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) =>
                   filter: currentPage === item.id ? 'brightness(1)' : 'brightness(0.8)',
                 }}
               />
-            </div>
+            </motion.div>
             <span style={{
               fontSize: '12px',
               fontWeight: currentPage === item.id ? '600' : '400',
@@ -84,7 +93,7 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) =>
           </motion.button>
         ))}
       </div>
-    </nav>
+    </motion.nav>
   );
 };
 
