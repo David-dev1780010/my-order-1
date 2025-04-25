@@ -1,5 +1,4 @@
 import React from 'react';
-import fon from './assets/images/fon.png';
 
 const App: React.FC = () => {
   return (
@@ -19,7 +18,7 @@ const App: React.FC = () => {
         left: 0,
         right: 0,
         bottom: 0,
-        backgroundImage: `url(${fon})`,
+        backgroundImage: 'url(/images/fon.png)',
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         opacity: 0.3,
