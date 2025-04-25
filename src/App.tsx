@@ -102,35 +102,34 @@ const App: React.FC = () => {
         animate="animate"
         transition={{ duration: 0.5 }}
         style={{
-          position: 'fixed',
-          top: '50%',
-          left: '50%',
-          transform: 'translate(-50%, -50%)',
+          position: 'absolute',
+          top: '40%',
+          left: 0,
+          right: 0,
           display: 'flex',
           justifyContent: 'center',
-          gap: '30px',
+          alignItems: 'center',
+          gap: '20px',
           zIndex: 2,
-          width: '100%',
-          maxWidth: '600px',
+          padding: '0 20px',
         }}
       >
         <div style={{
-          width: '250px',
-          height: '250px',
+          width: '200px',
+          height: '200px',
           borderRadius: '50%',
           backgroundColor: '#09FBD3',
           opacity: 0.6,
-          filter: 'blur(80px)',
-          transform: 'translateY(-30px)',
+          filter: 'blur(60px)',
           mixBlendMode: 'lighten',
         }} />
         <div style={{
-          width: '250px',
-          height: '250px',
+          width: '200px',
+          height: '200px',
           borderRadius: '50%',
           backgroundColor: '#FE53BB',
           opacity: 0.6,
-          filter: 'blur(80px)',
+          filter: 'blur(60px)',
           mixBlendMode: 'lighten',
         }} />
       </motion.div>
