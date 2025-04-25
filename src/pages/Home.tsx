@@ -52,11 +52,37 @@ const Home: React.FC = () => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       height: '100%',
       width: '100%',
       overflow: 'hidden',
+      paddingTop: '0',
     }}>
+      <motion.div
+        variants={plateVariants}
+        initial="initial"
+        animate="animate"
+        whileHover="hover"
+        style={{
+          width: '220vw',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          transform: 'translateX(-8%) translateY(-15%)',
+          marginBottom: '-10%',
+        }}
+      >
+        <motion.img
+          src="/images/tarelka.png"
+          alt="Тарелка"
+          style={{
+            width: '100%',
+            height: 'auto',
+            filter: 'drop-shadow(0px 20px 40px rgba(0,0,0,0.5))',
+          }}
+        />
+      </motion.div>
+
       <motion.div
         variants={textVariants}
         initial="initial"
@@ -64,10 +90,10 @@ const Home: React.FC = () => {
         style={{
           textAlign: 'center',
           color: 'white',
-          marginBottom: '20px',
           zIndex: 10,
           position: 'relative',
           padding: '0 20px',
+          marginTop: '-5%',
         }}
       >
         <h1 style={{
@@ -85,30 +111,6 @@ const Home: React.FC = () => {
         }}>
           Мы создаём 3D-дизайн, лендинги, UI/UX, брендинг и графику. Быстро, качественно, в срок.
         </p>
-      </motion.div>
-
-      <motion.div
-        variants={plateVariants}
-        initial="initial"
-        animate="animate"
-        whileHover="hover"
-        style={{
-          width: '220vw',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          transform: 'translateX(-8%)',
-        }}
-      >
-        <motion.img
-          src="/images/tarelka.png"
-          alt="Тарелка"
-          style={{
-            width: '100%',
-            height: 'auto',
-            filter: 'drop-shadow(0px 20px 40px rgba(0,0,0,0.5))',
-          }}
-        />
       </motion.div>
     </div>
   );
