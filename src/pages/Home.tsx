@@ -32,6 +32,21 @@ const Home: React.FC = () => {
     }
   };
 
+  const textVariants = {
+    initial: {
+      opacity: 0,
+      y: -20,
+    },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        delay: 0.5,
+        duration: 0.8,
+      }
+    }
+  };
+
   return (
     <div style={{
       display: 'flex',
@@ -42,6 +57,36 @@ const Home: React.FC = () => {
       width: '100%',
       overflow: 'hidden',
     }}>
+      <motion.div
+        variants={textVariants}
+        initial="initial"
+        animate="animate"
+        style={{
+          textAlign: 'center',
+          color: 'white',
+          marginBottom: '20px',
+          zIndex: 10,
+          position: 'relative',
+          padding: '0 20px',
+        }}
+      >
+        <h1 style={{
+          fontSize: '42px',
+          fontWeight: '600',
+          marginBottom: '20px',
+          lineHeight: '1.2',
+        }}>
+          Крутой дизайн без головной боли
+        </h1>
+        <p style={{
+          fontSize: '20px',
+          opacity: 0.9,
+          lineHeight: '1.4',
+        }}>
+          Мы создаём 3D-дизайн, лендинги, UI/UX, брендинг и графику. Быстро, качественно, в срок.
+        </p>
+      </motion.div>
+
       <motion.div
         variants={plateVariants}
         initial="initial"
