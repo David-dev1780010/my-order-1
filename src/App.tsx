@@ -22,6 +22,7 @@ const App: React.FC = () => {
         backgroundImage: 'url(/images/fon.png)',
         backgroundSize: '130% auto',
         backgroundPosition: 'center top',
+        backgroundRepeat: 'no-repeat',
         opacity: 0.3,
         zIndex: 1,
         transform: 'translateY(-15%)',
