@@ -102,15 +102,16 @@ const App: React.FC = () => {
         animate="animate"
         transition={{ duration: 0.5 }}
         style={{
-          position: 'absolute',
+          position: 'fixed',
           top: '50%',
-          left: 0,
-          right: 0,
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
           display: 'flex',
           justifyContent: 'center',
           gap: '30px',
-          transform: 'translateY(-50%)',
           zIndex: 2,
+          width: '100%',
+          maxWidth: '600px',
         }}
       >
         <div style={{
