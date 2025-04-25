@@ -22,10 +22,11 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) =>
       left: 0,
       right: 0,
       backgroundColor: '#2D1E5A',
-      padding: '15px',
-      borderTopLeftRadius: '20px',
-      borderTopRightRadius: '20px',
-      boxShadow: '0 -2px 10px rgba(0,0,0,0.1)',
+      padding: '20px 15px',
+      borderTopLeftRadius: '25px',
+      borderTopRightRadius: '25px',
+      boxShadow: '0 -4px 20px rgba(0,0,0,0.2)',
+      zIndex: 1000,
     }}>
       <div style={{
         display: 'flex',
@@ -38,8 +39,8 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) =>
           <motion.button
             key={item.id}
             onClick={() => onPageChange(item.id)}
-            whileTap={{ scale: 0.95 }}
-            whileHover={{ scale: 1.05 }}
+            whileTap={{ scale: 0.9 }}
+            whileHover={{ scale: 1.1 }}
             style={{
               background: 'none',
               border: 'none',
@@ -50,21 +51,33 @@ const Navigation: React.FC<NavigationProps> = ({ currentPage, onPageChange }) =>
               color: currentPage === item.id ? '#FFF' : '#9B9B9B',
               opacity: currentPage === item.id ? 1 : 0.7,
               transition: 'all 0.3s ease',
-              padding: '10px',
+              padding: '8px 16px',
+              width: '72px',
             }}
           >
-            <img
-              src={item.icon}
-              alt={item.label}
-              style={{
-                width: '24px',
-                height: '24px',
-                marginBottom: '5px',
-              }}
-            />
+            <div style={{
+              width: '32px',
+              height: '32px',
+              marginBottom: '8px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+            }}>
+              <img
+                src={item.icon}
+                alt={item.label}
+                style={{
+                  width: '28px',
+                  height: '28px',
+                  filter: currentPage === item.id ? 'brightness(1)' : 'brightness(0.8)',
+                }}
+              />
+            </div>
             <span style={{
               fontSize: '12px',
-              fontWeight: currentPage === item.id ? 'bold' : 'normal',
+              fontWeight: currentPage === item.id ? '600' : '400',
+              textAlign: 'center',
+              whiteSpace: 'nowrap',
             }}>
               {item.label}
             </span>

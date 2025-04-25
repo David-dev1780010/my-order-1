@@ -45,7 +45,7 @@ const App: React.FC = () => {
   return (
     <div style={{
       width: '100%',
-      height: '100%',
+      height: '100vh',
       backgroundColor: '#150B2C',
       position: 'relative',
       overflow: 'hidden',
@@ -104,8 +104,9 @@ const App: React.FC = () => {
       <div style={{
         position: 'relative',
         zIndex: 3,
-        height: 'calc(100% - 100px)',
+        height: 'calc(100vh - 110px)',
         overflow: 'auto',
+        paddingBottom: '20px',
       }}>
         <AnimatePresence mode="wait">
           <motion.div
@@ -115,6 +116,9 @@ const App: React.FC = () => {
             exit="exit"
             variants={pageVariants}
             transition={{ type: "tween", duration: 0.3 }}
+            style={{
+              height: '100%',
+            }}
           >
             {renderPage()}
           </motion.div>
