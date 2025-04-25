@@ -25,7 +25,7 @@ const App: React.FC = () => {
         backgroundRepeat: 'no-repeat',
         opacity: 0.3,
         zIndex: 1,
-        transform: 'translateY(-15%) scale(1.3)',
+        transform: 'translateY(-15%) translateX(3%) scale(1.3)',
       }} />
       <div style={{
         position: 'relative',
