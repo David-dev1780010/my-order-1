@@ -27,11 +27,11 @@ const App: React.FC = () => {
 
   const backgroundVariants = {
     initial: {
-      scale: 1.1,
+      scale: 1.3,
       opacity: 0.2,
     },
     animate: {
-      scale: 1.3,
+      scale: 1.5,
       opacity: 0.3,
     },
   };
@@ -40,10 +40,12 @@ const App: React.FC = () => {
     initial: {
       scale: 1.1,
       opacity: 0.4,
+      y: 0,
     },
     animate: {
       scale: 1.3,
       opacity: 0.6,
+      y: 0,
     },
   };
 
@@ -101,33 +103,33 @@ const App: React.FC = () => {
         transition={{ duration: 0.5 }}
         style={{
           position: 'absolute',
-          top: 0,
+          top: '50%',
           left: 0,
           right: 0,
           display: 'flex',
           justifyContent: 'center',
           gap: '30px',
-          padding: '120px',
+          transform: 'translateY(-50%)',
           zIndex: 2,
         }}
       >
         <div style={{
-          width: '180px',
-          height: '180px',
+          width: '250px',
+          height: '250px',
           borderRadius: '50%',
           backgroundColor: '#09FBD3',
           opacity: 0.6,
-          filter: 'blur(50px)',
+          filter: 'blur(80px)',
           transform: 'translateY(-30px)',
           mixBlendMode: 'lighten',
         }} />
         <div style={{
-          width: '180px',
-          height: '180px',
+          width: '250px',
+          height: '250px',
           borderRadius: '50%',
           backgroundColor: '#FE53BB',
           opacity: 0.6,
-          filter: 'blur(50px)',
+          filter: 'blur(80px)',
           mixBlendMode: 'lighten',
         }} />
       </motion.div>
