@@ -48,11 +48,11 @@ const Home: React.FC = () => {
         animate="animate"
         whileHover="hover"
         style={{
-          width: '200vw',
+          width: '220vw',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          transform: 'translateX(-5%)',
+          transform: 'translateX(-8%)',
         }}
       >
         <motion.img
