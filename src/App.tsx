@@ -30,8 +30,23 @@ const App: React.FC = () => {
       <div style={{
         position: 'relative',
         zIndex: 2,
+        display: 'flex',
+        gap: '20px',
       }}>
-        mini app
+        <div style={{
+          width: '100px',
+          height: '100px',
+          borderRadius: '50%',
+          backgroundColor: '#09FBD3',
+          filter: 'blur(10px)',
+        }} />
+        <div style={{
+          width: '100px',
+          height: '100px',
+          borderRadius: '50%',
+          backgroundColor: '#FE53BB',
+          filter: 'blur(10px)',
+        }} />
       </div>
     </div>
   );
