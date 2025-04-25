@@ -48,20 +48,22 @@ const Home: React.FC = () => {
         whileHover="hover"
         style={{
           width: '100%',
-          maxWidth: '400px',
+          maxWidth: '800px',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          marginTop: '-50px',
+          marginTop: '-100px',
+          padding: '0 20px',
         }}
       >
         <motion.img
           src="/images/tarelka.png"
           alt="Тарелка"
           style={{
-            width: '100%',
+            width: '140%',
             height: 'auto',
-            filter: 'drop-shadow(0px 10px 20px rgba(0,0,0,0.3))',
+            filter: 'drop-shadow(0px 15px 30px rgba(0,0,0,0.4))',
+            marginLeft: '-20%',
           }}
         />
       </motion.div>
