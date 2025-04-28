@@ -59,31 +59,6 @@ const Home: React.FC = () => {
       paddingTop: '0',
     }}>
       <motion.div
-        variants={textVariants}
-        initial="initial"
-        animate="animate"
-        style={{
-          textAlign: 'center',
-          color: 'white',
-          zIndex: 10,
-          position: 'relative',
-          padding: '0 20px',
-          marginBottom: '20px',
-        }}
-      >
-        <h1 style={{
-          fontSize: '42px',
-          fontWeight: '600',
-          marginBottom: '20px',
-          lineHeight: '1.2',
-          fontFamily: "'Montserrat Alternates', sans-serif",
-          textShadow: '0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3)',
-        }}>
-          Крутой дизайн без головной боли
-        </h1>
-      </motion.div>
-
-      <motion.div
         variants={plateVariants}
         initial="initial"
         animate="animate"
@@ -94,7 +69,7 @@ const Home: React.FC = () => {
           justifyContent: 'center',
           alignItems: 'center',
           transform: 'translateX(-8%)',
-          margin: '20px 0',
+          margin: '0',
         }}
       >
         <motion.img
@@ -118,9 +93,19 @@ const Home: React.FC = () => {
           zIndex: 10,
           position: 'relative',
           padding: '0 20px',
-          marginTop: '20px',
+          marginTop: '40px',
         }}
       >
+        <h1 style={{
+          fontSize: '42px',
+          fontWeight: '600',
+          marginBottom: '20px',
+          lineHeight: '1.2',
+          fontFamily: "'Montserrat Alternates', sans-serif",
+          textShadow: '0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3)',
+        }}>
+          Крутой дизайн без головной боли
+        </h1>
         <p style={{
           fontSize: '20px',
           opacity: 0.9,
