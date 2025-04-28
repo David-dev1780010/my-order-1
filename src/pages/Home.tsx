@@ -32,21 +32,6 @@ const Home: React.FC = () => {
     }
   };
 
-  const textVariants = {
-    initial: {
-      opacity: 0,
-      y: -20,
-    },
-    animate: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        delay: 0.5,
-        duration: 0.8,
-      }
-    }
-  };
-
   return (
     <div style={{
       display: 'flex',
@@ -58,41 +43,6 @@ const Home: React.FC = () => {
       overflow: 'hidden',
       paddingTop: '0',
     }}>
-      <motion.div
-        variants={textVariants}
-        initial="initial"
-        animate="animate"
-        style={{
-          textAlign: 'center',
-          color: 'white',
-          zIndex: 10,
-          position: 'relative',
-          padding: '0 20px',
-          marginBottom: '30px',
-          transform: 'translateY(-50px)',
-        }}
-      >
-        <h1 style={{
-          fontSize: '42px',
-          fontWeight: '600',
-          marginBottom: '20px',
-          lineHeight: '1.2',
-          fontFamily: "'Montserrat Alternates', sans-serif",
-          textShadow: '0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3)',
-        }}>
-          Крутой дизайн без головной боли
-        </h1>
-        <p style={{
-          fontSize: '20px',
-          opacity: 0.9,
-          lineHeight: '1.4',
-          fontFamily: "'Montserrat Alternates', sans-serif",
-          textShadow: '0 0 8px rgba(255,255,255,0.4), 0 0 16px rgba(255,255,255,0.2)',
-        }}>
-          Мы создаём 3D-дизайн, лендинги, UI/UX, брендинг и графику. Быстро, качественно, в срок.
-        </p>
-      </motion.div>
-
       <motion.div
         variants={plateVariants}
         initial="initial"
