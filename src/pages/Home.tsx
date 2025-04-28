@@ -52,8 +52,8 @@ const Home: React.FC = () => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'flex-start',
-      height: '100%',
+      justifyContent: 'center',
+      height: '100vh',
       width: '100%',
       overflow: 'hidden',
       paddingTop: '0',
@@ -76,6 +76,8 @@ const Home: React.FC = () => {
           fontWeight: '600',
           marginBottom: '20px',
           lineHeight: '1.2',
+          fontFamily: "'Montserrat Alternates', sans-serif",
+          textShadow: '0 0 10px rgba(255,255,255,0.5), 0 0 20px rgba(255,255,255,0.3)',
         }}>
           Крутой дизайн без головной боли
         </h1>
@@ -92,6 +94,7 @@ const Home: React.FC = () => {
           justifyContent: 'center',
           alignItems: 'center',
           transform: 'translateX(-8%)',
+          margin: '20px 0',
         }}
       >
         <motion.img
@@ -122,6 +125,8 @@ const Home: React.FC = () => {
           fontSize: '20px',
           opacity: 0.9,
           lineHeight: '1.4',
+          fontFamily: "'Montserrat Alternates', sans-serif",
+          textShadow: '0 0 8px rgba(255,255,255,0.4), 0 0 16px rgba(255,255,255,0.2)',
         }}>
           Мы создаём 3D-дизайн, лендинги, UI/UX, брендинг и графику. Быстро, качественно, в срок.
         </p>
