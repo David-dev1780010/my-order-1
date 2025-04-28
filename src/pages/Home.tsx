@@ -59,6 +59,29 @@ const Home: React.FC = () => {
       paddingTop: '0',
     }}>
       <motion.div
+        variants={textVariants}
+        initial="initial"
+        animate="animate"
+        style={{
+          textAlign: 'center',
+          color: 'white',
+          zIndex: 10,
+          position: 'relative',
+          padding: '0 20px',
+          marginBottom: '20px',
+        }}
+      >
+        <h1 style={{
+          fontSize: '42px',
+          fontWeight: '600',
+          marginBottom: '20px',
+          lineHeight: '1.2',
+        }}>
+          Крутой дизайн без головной боли
+        </h1>
+      </motion.div>
+
+      <motion.div
         variants={plateVariants}
         initial="initial"
         animate="animate"
@@ -68,8 +91,7 @@ const Home: React.FC = () => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          transform: 'translateX(-8%) translateY(-15%)',
-          marginBottom: '-10%',
+          transform: 'translateX(-8%)',
         }}
       >
         <motion.img
@@ -93,17 +115,9 @@ const Home: React.FC = () => {
           zIndex: 10,
           position: 'relative',
           padding: '0 20px',
-          marginTop: '-5%',
+          marginTop: '20px',
         }}
       >
-        <h1 style={{
-          fontSize: '42px',
-          fontWeight: '600',
-          marginBottom: '20px',
-          lineHeight: '1.2',
-        }}>
-          Крутой дизайн без головной боли
-        </h1>
         <p style={{
           fontSize: '20px',
           opacity: 0.9,
