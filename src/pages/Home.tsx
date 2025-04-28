@@ -68,7 +68,8 @@ const Home: React.FC = () => {
           zIndex: 10,
           position: 'relative',
           padding: '0 20px',
-          marginBottom: '20px',
+          marginBottom: '50px',
+          transform: 'translateY(-100px)',
         }}
       >
         <h1 style={{
@@ -102,7 +103,7 @@ const Home: React.FC = () => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          transform: 'translateX(-8%) translateY(-15%)',
+          transform: 'translateX(-8%) translateY(-200px)',
           margin: '0',
         }}
       >
