@@ -50,14 +50,35 @@ const TopUpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
       }}
     >
       <div style={{
-        color: 'white',
-        fontSize: '32px',
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
         marginBottom: '20px',
-        fontWeight: '500',
-        textAlign: 'center',
         marginTop: '40px'
       }}>
-        Пополнение баланса
+        <div style={{
+          color: 'white',
+          fontSize: '32px',
+          fontWeight: '500',
+        }}>
+          Пополнение баланса
+        </div>
+        <motion.button
+          variants={buttonVariants}
+          whileHover="hover"
+          whileTap="tap"
+          onClick={onClose}
+          style={{
+            backgroundColor: 'transparent',
+            border: 'none',
+            color: 'white',
+            fontSize: '24px',
+            cursor: 'pointer',
+            padding: '8px'
+          }}
+        >
+          ✕
+        </motion.button>
       </div>
 
       <div style={{
