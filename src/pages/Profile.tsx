@@ -103,10 +103,10 @@ const Profile: React.FC = () => {
         </h1>
 
         <div style={{
-          width: '100px',
-          height: '100px',
+          width: '90px',
+          height: '90px',
           borderRadius: '50%',
-          border: '2px solid #FF54BD',
+          border: '3px solid #FF54BD',
           backgroundColor: '#2D1E5A',
           marginBottom: '15px',
           display: 'flex',
