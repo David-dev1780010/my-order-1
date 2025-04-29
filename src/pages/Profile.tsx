@@ -45,91 +45,120 @@ const TopUpModal: React.FC = () => {
         backgroundColor: '#1E1231',
         zIndex: 1000,
         display: 'flex',
-        flexDirection: 'column',
-        padding: '20px',
-        alignItems: 'center'
+        flexDirection: 'column'
       }}
     >
+      {/* Header */}
       <div style={{
-        color: 'white',
-        fontSize: '32px',
-        fontWeight: '500',
-        marginTop: '40px',
-        marginBottom: '40px'
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: '8px 16px',
+        color: 'white'
       }}>
-        Пополнение баланса
+        <div style={{ fontSize: '17px', opacity: 0.6 }}>Закрыть</div>
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ fontSize: '17px' }}>Order a</div>
+          <div style={{ fontSize: '13px', opacity: 0.6 }}>мини-приложение</div>
+        </div>
+        <div style={{ width: '50px' }}>⋮</div>
       </div>
 
-      <div style={{
-        backgroundColor: 'rgba(255, 255, 255, 0.1)',
-        borderRadius: '16px',
-        padding: '16px',
-        width: '100%',
-        maxWidth: '340px'
-      }}>
-        <input
-          type="number"
-          placeholder="Введите сумму ($)"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
-          style={{
-            width: '100%',
-            backgroundColor: 'transparent',
-            border: 'none',
-            color: 'white',
-            fontSize: '16px',
-            outline: 'none'
-          }}
-        />
-      </div>
-
+      {/* Content */}
       <div style={{
         flex: 1,
+        margin: '20px',
+        backgroundColor: '#2D1E5A',
+        borderRadius: '20px',
+        padding: '24px',
         display: 'flex',
         flexDirection: 'column',
-        justifyContent: 'center',
-        alignItems: 'center',
-        marginTop: '40px'
+        gap: '40px'
       }}>
-        <img 
-          src="/images/crypto_pay.png" 
-          alt="CryptoBot"
-          style={{
-            width: '180px',
-            height: '100px',
-            objectFit: 'contain',
-            marginBottom: '12px'
-          }}
-        />
         <div style={{
           color: 'white',
-          fontSize: '16px'
-        }}>
-          CryptoBot
-        </div>
-      </div>
-
-      <motion.button
-        variants={buttonVariants}
-        whileHover="hover"
-        whileTap="tap"
-        style={{
-          width: '100%',
-          maxWidth: '340px',
-          padding: '16px',
-          borderRadius: '12px',
-          backgroundColor: '#B6116B',
-          color: 'white',
-          border: 'none',
-          fontSize: '17px',
+          fontSize: '32px',
           fontWeight: '500',
-          marginTop: 'auto',
-          marginBottom: '20px',
-          cursor: 'pointer'
-        }}
-      >
-        Пополнить
-      </motion.button>
+          textAlign: 'center'
+        }}>
+          Пополнение баланса
+        </div>
+
+        <div style={{
+          backgroundColor: 'rgba(255, 255, 255, 0.1)',
+          borderRadius: '16px',
+          padding: '16px'
+        }}>
+          <input
+            type="number"
+            placeholder="Введите сумму ($)"
+            value={amount}
+            onChange={(e) => setAmount(e.target.value)}
+            style={{
+              width: '100%',
+              backgroundColor: 'transparent',
+              border: 'none',
+              color: 'white',
+              fontSize: '17px',
+              outline: 'none'
+            }}
+          />
+        </div>
+
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '12px'
+        }}>
+          <div style={{
+            backgroundColor: '#55ACEE',
+            borderRadius: '12px',
+            width: '180px',
+            height: '100px',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
+          }}>
+            <img 
+              src="/images/crypto_pay.png" 
+              alt="CryptoBot"
+              style={{
+                width: '60px',
+                height: '60px',
+                objectFit: 'contain'
+              }}
+            />
+          </div>
+          <div style={{
+            color: 'white',
+            fontSize: '17px'
+          }}>
+            CryptoBot
+          </div>
+        </div>
+
+        <motion.button
+          variants={buttonVariants}
+          whileHover="hover"
+          whileTap="tap"
+          style={{
+            width: '100%',
+            padding: '16px',
+            borderRadius: '12px',
+            backgroundColor: '#B6116B',
+            color: 'white',
+            border: 'none',
+            fontSize: '17px',
+            fontWeight: '500',
+            cursor: 'pointer'
+          }}
+        >
+          Пополнить
+        </motion.button>
+      </div>
     </motion.div>
   );
 };
