@@ -77,8 +77,8 @@ const Home: React.FC = () => {
           src={textHomeImage}
           alt="Текст"
           style={{
-            width: '90%',
-            maxWidth: '800px',
+            width: '95%',
+            maxWidth: '1000px',
             height: 'auto',
             objectFit: 'contain'
           }}
