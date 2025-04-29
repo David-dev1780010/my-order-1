@@ -35,7 +35,6 @@ const Profile: React.FC = () => {
       alignItems: 'center',
       justifyContent: 'flex-start',
       minHeight: '100vh',
-      backgroundColor: '#1A1A1A',
       padding: '20px',
       paddingTop: '60px'
     }}>
