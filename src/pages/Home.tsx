@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import textHomeImage from '/images/text_home.png';
+import tarelkaImage from '/images/tarelka.png';
 
 const Home: React.FC = () => {
   const plateVariants = {
@@ -69,17 +71,16 @@ const Home: React.FC = () => {
           display: 'flex',
           justifyContent: 'center',
           zIndex: 1,
-          border: '1px solid red'
         }}
       >
         <img
-          src="/images/text_home.png"
+          src={textHomeImage}
           alt="Текст"
           style={{
             width: '80%',
             maxWidth: '600px',
             height: 'auto',
-            border: '1px solid blue'
+            objectFit: 'contain'
           }}
         />
       </motion.div>
@@ -98,7 +99,7 @@ const Home: React.FC = () => {
         }}
       >
         <motion.img
-          src="/images/tarelka.png"
+          src={tarelkaImage}
           alt="Тарелка"
           style={{
             width: '100%',
