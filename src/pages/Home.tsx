@@ -4,6 +4,19 @@ import textHomeImage from '/images/text_home.png';
 import tarelkaImage from '/images/tarelka.png';
 
 const Home: React.FC = () => {
+  // Добавляем эффект для блокировки прокрутки при монтировании компонента
+  React.useEffect(() => {
+    // Сохраняем оригинальные стили
+    const originalStyle = window.getComputedStyle(document.body).overflow;
+    // Блокируем прокрутку
+    document.body.style.overflow = 'hidden';
+    
+    // Возвращаем оригинальные стили при размонтировании
+    return () => {
+      document.body.style.overflow = originalStyle;
+    };
+  }, []);
+
   const plateVariants = {
     initial: {
       scale: 0.8,
@@ -59,6 +72,11 @@ const Home: React.FC = () => {
       width: '100%',
       overflow: 'hidden',
       paddingTop: '0',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
     }}>
       <motion.div
         variants={textVariants}
