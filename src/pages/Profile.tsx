@@ -36,7 +36,13 @@ const Profile: React.FC = () => {
       justifyContent: 'flex-start',
       minHeight: '100vh',
       padding: '20px',
-      paddingTop: '60px'
+      paddingTop: '60px',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      overflow: 'hidden'
     }}>
       <motion.div
         variants={containerVariants}
