@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 declare global {
   interface Window {
@@ -13,14 +13,27 @@ declare global {
             id?: number;
           };
         };
+        close: () => void;
       };
     };
   }
 }
 
+interface ProfileData {
+  nickname: string;
+  email: string;
+  phone: string;
+}
+
 const Profile: React.FC = () => {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('никнейм');
+  const [isEditing, setIsEditing] = useState(false);
+  const [profileData, setProfileData] = useState<ProfileData>({
+    nickname: '',
+    email: '',
+    phone: ''
+  });
 
   useEffect(() => {
     // Получаем данные пользователя из Telegram WebApp
@@ -31,9 +44,24 @@ const Profile: React.FC = () => {
       }
       if (telegramUser.username) {
         setUsername(telegramUser.username);
+        setProfileData(prev => ({ ...prev, nickname: telegramUser.username || '' }));
       }
     }
   }, []);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = e.target;
+    setProfileData(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
+
+  const handleSubmit = () => {
+    // Здесь будет логика сохранения данных на бэкенд
+    setUsername(profileData.nickname);
+    setIsEditing(false);
+  };
 
   const containerVariants = {
     initial: {
@@ -59,6 +87,19 @@ const Profile: React.FC = () => {
     tap: {
       scale: 0.98
     }
+  };
+
+  const inputStyle = {
+    width: '100%',
+    padding: '12px',
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
+    border: '1px solid rgba(255, 255, 255, 0.2)',
+    borderRadius: '8px',
+    color: 'white',
+    fontSize: '16px',
+    marginBottom: '12px',
+    outline: 'none',
+    transition: 'border-color 0.2s',
   };
 
   return (
@@ -99,7 +140,7 @@ const Profile: React.FC = () => {
           fontWeight: '500',
           fontFamily: 'SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif'
         }}>
-          Личный кабинет
+          {isEditing ? 'Редактирование' : 'Личный кабинет'}
         </h1>
 
         <div style={{
@@ -138,65 +179,150 @@ const Profile: React.FC = () => {
           )}
         </div>
 
-        <div style={{
-          color: 'white',
-          marginBottom: '5px',
-          fontSize: '20px',
-          fontWeight: '400',
-          opacity: '0.9'
-        }}>
-          {username}
-        </div>
+        <AnimatePresence mode="wait">
+          {isEditing ? (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{ width: '100%' }}
+            >
+              <input
+                type="text"
+                name="nickname"
+                placeholder="Никнейм"
+                value={profileData.nickname}
+                onChange={handleInputChange}
+                style={inputStyle}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email"
+                value={profileData.email}
+                onChange={handleInputChange}
+                style={inputStyle}
+              />
+              <input
+                type="tel"
+                name="phone"
+                placeholder="Телефон"
+                value={profileData.phone}
+                onChange={handleInputChange}
+                style={inputStyle}
+              />
+              
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                onClick={handleSubmit}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  borderRadius: '12px',
+                  backgroundColor: '#09FBD3',
+                  color: '#2D1E5A',
+                  border: 'none',
+                  fontSize: '17px',
+                  fontWeight: '600',
+                  cursor: 'pointer',
+                  marginBottom: '12px'
+                }}
+              >
+                Сохранить
+              </motion.button>
+              
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                onClick={() => setIsEditing(false)}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  borderRadius: '12px',
+                  backgroundColor: '#B6116B',
+                  color: 'white',
+                  border: 'none',
+                  fontSize: '17px',
+                  fontWeight: '500',
+                  cursor: 'pointer'
+                }}
+              >
+                Отмена
+              </motion.button>
+            </motion.div>
+          ) : (
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              style={{ width: '100%' }}
+            >
+              <div style={{
+                color: 'white',
+                marginBottom: '5px',
+                fontSize: '20px',
+                fontWeight: '400',
+                opacity: '0.9'
+              }}>
+                {username}
+              </div>
 
-        <div style={{
-          color: '#9E9E9E',
-          marginBottom: '25px',
-          fontSize: '16px',
-          display: 'flex',
-          alignItems: 'center',
-          gap: '4px'
-        }}>
-          Баланс: <span style={{ color: 'white' }}>💰 $0</span>
-        </div>
+              <div style={{
+                color: '#9E9E9E',
+                marginBottom: '25px',
+                fontSize: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                Баланс: <span style={{ color: 'white' }}>💰 $0</span>
+              </div>
 
-        <motion.button
-          variants={buttonVariants}
-          whileHover="hover"
-          whileTap="tap"
-          style={{
-            width: '100%',
-            padding: '16px',
-            borderRadius: '12px',
-            backgroundColor: '#B6116B',
-            color: 'white',
-            border: 'none',
-            fontSize: '17px',
-            fontWeight: '500',
-            marginBottom: '12px',
-            cursor: 'pointer'
-          }}
-        >
-          Пополнить баланс
-        </motion.button>
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  borderRadius: '12px',
+                  backgroundColor: '#B6116B',
+                  color: 'white',
+                  border: 'none',
+                  fontSize: '17px',
+                  fontWeight: '500',
+                  marginBottom: '12px',
+                  cursor: 'pointer'
+                }}
+              >
+                Пополнить баланс
+              </motion.button>
 
-        <motion.button
-          variants={buttonVariants}
-          whileHover="hover"
-          whileTap="tap"
-          style={{
-            width: '100%',
-            padding: '16px',
-            borderRadius: '12px',
-            backgroundColor: '#09FBD3',
-            color: '#2D1E5A',
-            border: 'none',
-            fontSize: '17px',
-            fontWeight: '600',
-            cursor: 'pointer'
-          }}
-        >
-          Редактировать профиль
-        </motion.button>
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                onClick={() => setIsEditing(true)}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  borderRadius: '12px',
+                  backgroundColor: '#09FBD3',
+                  color: '#2D1E5A',
+                  border: 'none',
+                  fontSize: '17px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Редактировать профиль
+              </motion.button>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </motion.div>
     </div>
   );
