@@ -1,16 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
-const buttonVariants = {
-  hover: {
-    scale: 1.02,
-    transition: { duration: 0.2 }
-  },
-  tap: {
-    scale: 0.98
-  }
-};
-
 declare global {
   interface Window {
     Telegram: {
@@ -28,141 +18,6 @@ declare global {
   }
 }
 
-const TopUpModal: React.FC = () => {
-  const [amount, setAmount] = useState('');
-
-  return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      style={{
-        position: 'fixed',
-        top: 0,
-        left: 0,
-        right: 0,
-        bottom: 0,
-        backgroundColor: '#1E1231',
-        zIndex: 1000,
-        display: 'flex',
-        flexDirection: 'column'
-      }}
-    >
-      {/* Header */}
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: '8px 16px',
-        color: 'white'
-      }}>
-        <div style={{ fontSize: '17px', opacity: 0.6 }}>Закрыть</div>
-        <div style={{ textAlign: 'center' }}>
-          <div style={{ fontSize: '17px' }}>Order a</div>
-          <div style={{ fontSize: '13px', opacity: 0.6 }}>мини-приложение</div>
-        </div>
-        <div style={{ width: '50px' }}>⋮</div>
-      </div>
-
-      {/* Content */}
-      <div style={{
-        flex: 1,
-        margin: '20px',
-        backgroundColor: '#2D1E5A',
-        borderRadius: '20px',
-        padding: '24px',
-        display: 'flex',
-        flexDirection: 'column',
-        gap: '40px'
-      }}>
-        <div style={{
-          color: 'white',
-          fontSize: '32px',
-          fontWeight: '500',
-          textAlign: 'center'
-        }}>
-          Пополнение баланса
-        </div>
-
-        <div style={{
-          backgroundColor: 'rgba(255, 255, 255, 0.1)',
-          borderRadius: '16px',
-          padding: '16px'
-        }}>
-          <input
-            type="number"
-            placeholder="Введите сумму ($)"
-            value={amount}
-            onChange={(e) => setAmount(e.target.value)}
-            style={{
-              width: '100%',
-              backgroundColor: 'transparent',
-              border: 'none',
-              color: 'white',
-              fontSize: '17px',
-              outline: 'none'
-            }}
-          />
-        </div>
-
-        <div style={{
-          flex: 1,
-          display: 'flex',
-          flexDirection: 'column',
-          justifyContent: 'center',
-          alignItems: 'center',
-          gap: '12px'
-        }}>
-          <div style={{
-            backgroundColor: '#55ACEE',
-            borderRadius: '12px',
-            width: '180px',
-            height: '100px',
-            display: 'flex',
-            justifyContent: 'center',
-            alignItems: 'center'
-          }}>
-            <img 
-              src="/images/crypto_pay.png" 
-              alt="CryptoBot"
-              style={{
-                width: '60px',
-                height: '60px',
-                objectFit: 'contain'
-              }}
-            />
-          </div>
-          <div style={{
-            color: 'white',
-            fontSize: '17px'
-          }}>
-            CryptoBot
-          </div>
-        </div>
-
-        <motion.button
-          variants={buttonVariants}
-          whileHover="hover"
-          whileTap="tap"
-          style={{
-            width: '100%',
-            padding: '16px',
-            borderRadius: '12px',
-            backgroundColor: '#B6116B',
-            color: 'white',
-            border: 'none',
-            fontSize: '17px',
-            fontWeight: '500',
-            cursor: 'pointer'
-          }}
-        >
-          Пополнить
-        </motion.button>
-      </div>
-    </motion.div>
-  );
-};
-
 const Profile: React.FC = () => {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('никнейм');
@@ -171,7 +26,6 @@ const Profile: React.FC = () => {
   const [tempUsername, setTempUsername] = useState('');
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
 
   useEffect(() => {
     // Получаем данные пользователя из Telegram WebApp
@@ -226,6 +80,18 @@ const Profile: React.FC = () => {
       transition: {
         duration: 0.5
       }
+    }
+  };
+
+  const buttonVariants = {
+    hover: {
+      scale: 1.02,
+      transition: {
+        duration: 0.2
+      }
+    },
+    tap: {
+      scale: 0.98
     }
   };
 
@@ -412,7 +278,6 @@ const Profile: React.FC = () => {
             variants={buttonVariants}
             whileHover="hover"
             whileTap="tap"
-            onClick={() => setIsTopUpModalOpen(true)}
             style={{
               width: '100%',
               padding: '16px',
@@ -494,11 +359,6 @@ const Profile: React.FC = () => {
           </motion.button>
         )}
       </motion.div>
-      <AnimatePresence>
-        {isTopUpModalOpen && (
-          <TopUpModal />
-        )}
-      </AnimatePresence>
     </div>
   );
 };
