@@ -1,7 +1,40 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
+declare global {
+  interface Window {
+    Telegram: {
+      WebApp: {
+        initData: string;
+        initDataUnsafe: {
+          user?: {
+            photo_url?: string;
+            username?: string;
+            id?: number;
+          };
+        };
+      };
+    };
+  }
+}
+
 const Profile: React.FC = () => {
+  const [userPhoto, setUserPhoto] = useState<string | null>(null);
+  const [username, setUsername] = useState<string>('никнейм');
+
+  useEffect(() => {
+    // Получаем данные пользователя из Telegram WebApp
+    const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+    if (telegramUser) {
+      if (telegramUser.photo_url) {
+        setUserPhoto(telegramUser.photo_url);
+      }
+      if (telegramUser.username) {
+        setUsername(telegramUser.username);
+      }
+    }
+  }, []);
+
   const containerVariants = {
     initial: {
       opacity: 0,
@@ -78,8 +111,30 @@ const Profile: React.FC = () => {
           marginBottom: '15px',
           display: 'flex',
           justifyContent: 'center',
-          alignItems: 'center'
-        }} />
+          alignItems: 'center',
+          overflow: 'hidden',
+          position: 'relative'
+        }}>
+          {userPhoto ? (
+            <img 
+              src={userPhoto}
+              alt="Аватар пользователя"
+              style={{
+                width: '100%',
+                height: '100%',
+                objectFit: 'cover'
+              }}
+            />
+          ) : (
+            <div style={{
+              width: '60%',
+              height: '60%',
+              borderRadius: '50%',
+              backgroundColor: '#FF54BD',
+              opacity: 0.5
+            }} />
+          )}
+        </div>
 
         <div style={{
           color: 'white',
@@ -88,7 +143,7 @@ const Profile: React.FC = () => {
           fontWeight: '400',
           opacity: '0.9'
         }}>
-          никнейм
+          {username}
         </div>
 
         <div style={{
