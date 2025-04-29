@@ -25,7 +25,6 @@ const Profile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [tempUsername, setTempUsername] = useState('');
   const [tempEmail, setTempEmail] = useState('');
-  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
@@ -45,7 +44,6 @@ const Profile: React.FC = () => {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
-      setSelectedFile(file);
       const url = URL.createObjectURL(file);
       setPreviewUrl(url);
     }
@@ -68,7 +66,6 @@ const Profile: React.FC = () => {
     setTempUsername(username);
     setTempEmail(email);
     setPreviewUrl(null);
-    setSelectedFile(null);
     setIsEditing(false);
   };
 
