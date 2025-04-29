@@ -103,8 +103,8 @@ const Profile: React.FC = () => {
         </h1>
 
         <div style={{
-          width: '70px',
-          height: '70px',
+          width: '100px',
+          height: '100px',
           borderRadius: '50%',
           border: '2px solid #FF54BD',
           backgroundColor: '#2D1E5A',
@@ -113,7 +113,8 @@ const Profile: React.FC = () => {
           justifyContent: 'center',
           alignItems: 'center',
           overflow: 'hidden',
-          position: 'relative'
+          position: 'relative',
+          padding: '8px'
         }}>
           {userPhoto ? (
             <img 
@@ -122,13 +123,14 @@ const Profile: React.FC = () => {
               style={{
                 width: '100%',
                 height: '100%',
-                objectFit: 'cover'
+                objectFit: 'cover',
+                borderRadius: '50%'
               }}
             />
           ) : (
             <div style={{
-              width: '60%',
-              height: '60%',
+              width: '100%',
+              height: '100%',
               borderRadius: '50%',
               backgroundColor: '#FF54BD',
               opacity: 0.5
