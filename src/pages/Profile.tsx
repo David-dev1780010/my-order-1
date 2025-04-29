@@ -28,7 +28,7 @@ declare global {
   }
 }
 
-const TopUpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+const TopUpModal: React.FC = () => {
   const [amount, setAmount] = useState('');
 
   return (
@@ -467,7 +467,7 @@ const Profile: React.FC = () => {
       </motion.div>
       <AnimatePresence>
         {isTopUpModalOpen && (
-          <TopUpModal onClose={() => setIsTopUpModalOpen(false)} />
+          <TopUpModal />
         )}
       </AnimatePresence>
     </div>
