@@ -32,6 +32,21 @@ const Home: React.FC = () => {
     }
   };
 
+  const textVariants = {
+    initial: {
+      opacity: 0,
+      y: -50
+    },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 1,
+        delay: 0.5
+      }
+    }
+  };
+
   return (
     <div style={{
       display: 'flex',
@@ -43,6 +58,29 @@ const Home: React.FC = () => {
       overflow: 'hidden',
       paddingTop: '0',
     }}>
+      <motion.div
+        variants={textVariants}
+        initial="initial"
+        animate="animate"
+        style={{
+          position: 'absolute',
+          top: '20%',
+          width: '100%',
+          display: 'flex',
+          justifyContent: 'center',
+          zIndex: 1
+        }}
+      >
+        <img
+          src="/images/text_home.png"
+          alt="Текст"
+          style={{
+            width: '80%',
+            maxWidth: '600px',
+            height: 'auto'
+          }}
+        />
+      </motion.div>
       <motion.div
         variants={plateVariants}
         initial="initial"
