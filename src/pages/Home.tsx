@@ -68,7 +68,8 @@ const Home: React.FC = () => {
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
-          zIndex: 1
+          zIndex: 1,
+          border: '1px solid red'
         }}
       >
         <img
@@ -77,7 +78,8 @@ const Home: React.FC = () => {
           style={{
             width: '80%',
             maxWidth: '600px',
-            height: 'auto'
+            height: 'auto',
+            border: '1px solid blue'
           }}
         />
       </motion.div>
