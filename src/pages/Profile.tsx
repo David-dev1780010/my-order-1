@@ -1,6 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 
+const buttonVariants = {
+  hover: {
+    scale: 1.02,
+    transition: { duration: 0.2 }
+  },
+  tap: {
+    scale: 0.98
+  }
+};
+
 declare global {
   interface Window {
     Telegram: {
@@ -18,6 +28,109 @@ declare global {
   }
 }
 
+const TopUpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
+  const [amount, setAmount] = useState('');
+
+  return (
+    <motion.div
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      style={{
+        position: 'fixed',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        backgroundColor: '#1E1231',
+        zIndex: 1000,
+        display: 'flex',
+        flexDirection: 'column',
+        padding: '20px'
+      }}
+    >
+      <div style={{
+        color: 'white',
+        fontSize: '32px',
+        marginBottom: '20px',
+        fontWeight: '500',
+        textAlign: 'center',
+        marginTop: '40px'
+      }}>
+        Пополнение баланса
+      </div>
+
+      <div style={{
+        backgroundColor: '#2D1E5A',
+        borderRadius: '16px',
+        padding: '20px',
+        marginBottom: '20px'
+      }}>
+        <input
+          type="number"
+          placeholder="Введите сумму ($)"
+          value={amount}
+          onChange={(e) => setAmount(e.target.value)}
+          style={{
+            width: '100%',
+            backgroundColor: 'transparent',
+            border: 'none',
+            color: 'white',
+            fontSize: '18px',
+            outline: 'none'
+          }}
+        />
+      </div>
+
+      <div style={{
+        flex: 1,
+        display: 'flex',
+        flexDirection: 'column',
+        justifyContent: 'center',
+        alignItems: 'center'
+      }}>
+        <img 
+          src="/images/crypto_pay.png" 
+          alt="CryptoBot"
+          style={{
+            width: '100%',
+            maxWidth: '300px',
+            marginBottom: '20px'
+          }}
+        />
+        <div style={{
+          color: 'white',
+          textAlign: 'center',
+          marginBottom: '20px',
+          fontSize: '18px'
+        }}>
+          CryptoBot
+        </div>
+      </div>
+
+      <motion.button
+        variants={buttonVariants}
+        whileHover="hover"
+        whileTap="tap"
+        style={{
+          width: '100%',
+          padding: '16px',
+          borderRadius: '12px',
+          backgroundColor: '#B6116B',
+          color: 'white',
+          border: 'none',
+          fontSize: '17px',
+          fontWeight: '500',
+          marginBottom: '12px',
+          cursor: 'pointer'
+        }}
+      >
+        Пополнить
+      </motion.button>
+    </motion.div>
+  );
+};
+
 const Profile: React.FC = () => {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('никнейм');
@@ -26,6 +139,7 @@ const Profile: React.FC = () => {
   const [tempUsername, setTempUsername] = useState('');
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false);
 
   useEffect(() => {
     // Получаем данные пользователя из Telegram WebApp
@@ -80,18 +194,6 @@ const Profile: React.FC = () => {
       transition: {
         duration: 0.5
       }
-    }
-  };
-
-  const buttonVariants = {
-    hover: {
-      scale: 1.02,
-      transition: {
-        duration: 0.2
-      }
-    },
-    tap: {
-      scale: 0.98
     }
   };
 
@@ -278,6 +380,7 @@ const Profile: React.FC = () => {
             variants={buttonVariants}
             whileHover="hover"
             whileTap="tap"
+            onClick={() => setIsTopUpModalOpen(true)}
             style={{
               width: '100%',
               padding: '16px',
@@ -359,6 +462,11 @@ const Profile: React.FC = () => {
           </motion.button>
         )}
       </motion.div>
+      <AnimatePresence>
+        {isTopUpModalOpen && (
+          <TopUpModal onClose={() => setIsTopUpModalOpen(false)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 };
