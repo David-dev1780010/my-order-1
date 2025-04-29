@@ -33,10 +33,11 @@ const Profile: React.FC = () => {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      justifyContent: 'center',
+      justifyContent: 'flex-start',
       minHeight: '100vh',
       backgroundColor: '#1A1A1A',
-      padding: '20px'
+      padding: '20px',
+      paddingTop: '60px'
     }}>
       <motion.div
         variants={containerVariants}
@@ -44,32 +45,32 @@ const Profile: React.FC = () => {
         animate="animate"
         style={{
           backgroundColor: '#2D1E5A',
-          borderRadius: '30px',
-          padding: '40px 20px',
+          borderRadius: '25px',
+          padding: '30px 20px',
           width: '100%',
-          maxWidth: '400px',
+          maxWidth: '340px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          boxShadow: '0 10px 30px rgba(0,0,0,0.3)'
         }}
       >
         <h1 style={{
           color: 'white',
-          fontSize: '28px',
-          marginBottom: '30px',
-          fontWeight: '600'
+          fontSize: '32px',
+          marginBottom: '40px',
+          fontWeight: '500',
+          fontFamily: 'SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif'
         }}>
           Личный кабинет
         </h1>
 
         <div style={{
-          width: '120px',
-          height: '120px',
+          width: '100px',
+          height: '100px',
           borderRadius: '50%',
-          border: '3px solid #FF54BD',
-          backgroundColor: '#gray',
-          marginBottom: '20px',
+          border: '2px solid #FF54BD',
+          backgroundColor: '#2D1E5A',
+          marginBottom: '15px',
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center'
@@ -77,21 +78,23 @@ const Profile: React.FC = () => {
 
         <div style={{
           color: 'white',
-          marginBottom: '10px',
-          fontSize: '24px'
+          marginBottom: '5px',
+          fontSize: '20px',
+          fontWeight: '400',
+          opacity: '0.9'
         }}>
           никнейм
         </div>
 
         <div style={{
-          color: '#888',
-          marginBottom: '30px',
-          fontSize: '18px',
+          color: '#9E9E9E',
+          marginBottom: '25px',
+          fontSize: '16px',
           display: 'flex',
           alignItems: 'center',
-          gap: '5px'
+          gap: '4px'
         }}>
-          Баланс: <span style={{ color: 'white' }}>$0</span>
+          Баланс: <span style={{ color: 'white' }}>💰 $0</span>
         </div>
 
         <motion.button
@@ -100,14 +103,14 @@ const Profile: React.FC = () => {
           whileTap="tap"
           style={{
             width: '100%',
-            padding: '15px',
-            borderRadius: '15px',
+            padding: '16px',
+            borderRadius: '12px',
             backgroundColor: '#B6116B',
             color: 'white',
             border: 'none',
-            fontSize: '18px',
+            fontSize: '17px',
             fontWeight: '500',
-            marginBottom: '15px',
+            marginBottom: '12px',
             cursor: 'pointer'
           }}
         >
@@ -120,13 +123,13 @@ const Profile: React.FC = () => {
           whileTap="tap"
           style={{
             width: '100%',
-            padding: '15px',
-            borderRadius: '15px',
+            padding: '16px',
+            borderRadius: '12px',
             backgroundColor: '#09FBD3',
             color: '#2D1E5A',
             border: 'none',
-            fontSize: '18px',
-            fontWeight: '500',
+            fontSize: '17px',
+            fontWeight: '600',
             cursor: 'pointer'
           }}
         >
