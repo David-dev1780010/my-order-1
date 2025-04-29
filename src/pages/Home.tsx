@@ -66,7 +66,7 @@ const Home: React.FC = () => {
         animate="animate"
         style={{
           position: 'absolute',
-          top: '20%',
+          top: '10%',
           width: '100%',
           display: 'flex',
           justifyContent: 'center',
@@ -77,8 +77,8 @@ const Home: React.FC = () => {
           src={textHomeImage}
           alt="Текст"
           style={{
-            width: '80%',
-            maxWidth: '600px',
+            width: '90%',
+            maxWidth: '800px',
             height: 'auto',
             objectFit: 'contain'
           }}
