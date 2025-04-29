@@ -46,46 +46,26 @@ const TopUpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         zIndex: 1000,
         display: 'flex',
         flexDirection: 'column',
-        padding: '20px'
+        padding: '20px',
+        alignItems: 'center'
       }}
     >
       <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        marginBottom: '20px',
-        marginTop: '40px'
+        color: 'white',
+        fontSize: '32px',
+        fontWeight: '500',
+        marginTop: '40px',
+        marginBottom: '40px'
       }}>
-        <div style={{
-          color: 'white',
-          fontSize: '32px',
-          fontWeight: '500',
-        }}>
-          Пополнение баланса
-        </div>
-        <motion.button
-          variants={buttonVariants}
-          whileHover="hover"
-          whileTap="tap"
-          onClick={onClose}
-          style={{
-            backgroundColor: 'transparent',
-            border: 'none',
-            color: 'white',
-            fontSize: '24px',
-            cursor: 'pointer',
-            padding: '8px'
-          }}
-        >
-          ✕
-        </motion.button>
+        Пополнение баланса
       </div>
 
       <div style={{
-        backgroundColor: '#2D1E5A',
+        backgroundColor: 'rgba(255, 255, 255, 0.1)',
         borderRadius: '16px',
-        padding: '20px',
-        marginBottom: '20px'
+        padding: '16px',
+        width: '100%',
+        maxWidth: '340px'
       }}>
         <input
           type="number"
@@ -97,7 +77,7 @@ const TopUpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
             backgroundColor: 'transparent',
             border: 'none',
             color: 'white',
-            fontSize: '18px',
+            fontSize: '16px',
             outline: 'none'
           }}
         />
@@ -108,22 +88,22 @@ const TopUpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         display: 'flex',
         flexDirection: 'column',
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
+        marginTop: '40px'
       }}>
         <img 
           src="/images/crypto_pay.png" 
           alt="CryptoBot"
           style={{
-            width: '100%',
-            maxWidth: '300px',
-            marginBottom: '20px'
+            width: '180px',
+            height: '100px',
+            objectFit: 'contain',
+            marginBottom: '12px'
           }}
         />
         <div style={{
           color: 'white',
-          textAlign: 'center',
-          marginBottom: '20px',
-          fontSize: '18px'
+          fontSize: '16px'
         }}>
           CryptoBot
         </div>
@@ -135,6 +115,7 @@ const TopUpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
         whileTap="tap"
         style={{
           width: '100%',
+          maxWidth: '340px',
           padding: '16px',
           borderRadius: '12px',
           backgroundColor: '#B6116B',
@@ -142,7 +123,8 @@ const TopUpModal: React.FC<{ onClose: () => void }> = ({ onClose }) => {
           border: 'none',
           fontSize: '17px',
           fontWeight: '500',
-          marginBottom: '12px',
+          marginTop: 'auto',
+          marginBottom: '20px',
           cursor: 'pointer'
         }}
       >
@@ -260,8 +242,8 @@ const Profile: React.FC = () => {
         </h1>
 
         <div style={{
-          width: '9px',
-          height: '9px',
+          width: '90px',
+          height: '90px',
           borderRadius: '50%',
           border: '3px solid #FF54BD',
           backgroundColor: '#2D1E5A',
