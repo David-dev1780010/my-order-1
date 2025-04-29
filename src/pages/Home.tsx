@@ -53,7 +53,7 @@ const Home: React.FC = () => {
           display: 'flex',
           justifyContent: 'center',
           alignItems: 'center',
-          transform: 'translateX(-8%)',
+          transform: 'translateX(-8%) translateY(-50px)',
           margin: '0',
         }}
       >
