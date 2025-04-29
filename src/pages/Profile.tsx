@@ -260,8 +260,8 @@ const Profile: React.FC = () => {
         </h1>
 
         <div style={{
-          width: '90px',
-          height: '90px',
+          width: '9px',
+          height: '9px',
           borderRadius: '50%',
           border: '3px solid #FF54BD',
           backgroundColor: '#2D1E5A',
