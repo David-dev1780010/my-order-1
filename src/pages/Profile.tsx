@@ -18,6 +18,12 @@ declare global {
   }
 }
 
+interface UserData {
+  username: string;
+  email: string;
+  photoUrl: string | null;
+}
+
 const Profile: React.FC = () => {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('никнейм');
@@ -26,17 +32,54 @@ const Profile: React.FC = () => {
   const [tempUsername, setTempUsername] = useState('');
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [userId, setUserId] = useState<number | null>(null);
+
+  const saveUserData = (data: UserData) => {
+    if (userId) {
+      localStorage.setItem(`user_${userId}`, JSON.stringify(data));
+    }
+  };
+
+  const loadUserData = () => {
+    if (userId) {
+      const savedData = localStorage.getItem(`user_${userId}`);
+      if (savedData) {
+        const data: UserData = JSON.parse(savedData);
+        setUsername(data.username);
+        setTempUsername(data.username);
+        setEmail(data.email);
+        setTempEmail(data.email);
+        setUserPhoto(data.photoUrl);
+      }
+    }
+  };
 
   useEffect(() => {
     // Получаем данные пользователя из Telegram WebApp
     const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (telegramUser) {
-      if (telegramUser.photo_url) {
-        setUserPhoto(telegramUser.photo_url);
-      }
-      if (telegramUser.username) {
-        setUsername(telegramUser.username);
-        setTempUsername(telegramUser.username);
+      setUserId(telegramUser.id || null);
+      
+      // Загружаем сохраненные данные
+      if (telegramUser.id) {
+        const savedData = localStorage.getItem(`user_${telegramUser.id}`);
+        if (savedData) {
+          const data: UserData = JSON.parse(savedData);
+          setUsername(data.username);
+          setTempUsername(data.username);
+          setEmail(data.email);
+          setTempEmail(data.email);
+          setUserPhoto(data.photoUrl);
+        } else {
+          // Если нет сохраненных данных, используем данные из Telegram
+          if (telegramUser.photo_url) {
+            setUserPhoto(telegramUser.photo_url);
+          }
+          if (telegramUser.username) {
+            setUsername(telegramUser.username);
+            setTempUsername(telegramUser.username);
+          }
+        }
       }
     }
   }, []);
@@ -59,6 +102,14 @@ const Profile: React.FC = () => {
     if (previewUrl) {
       setUserPhoto(previewUrl);
     }
+    
+    // Сохраняем данные в localStorage
+    saveUserData({
+      username: tempUsername.trim() || username,
+      email: tempEmail.trim() || email,
+      photoUrl: previewUrl || userPhoto
+    });
+    
     setIsEditing(false);
   };
 
