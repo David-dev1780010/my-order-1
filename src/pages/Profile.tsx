@@ -13,10 +13,6 @@ declare global {
             id?: number;
           };
         };
-        CloudStorage: {
-          setItem: (key: string, value: string) => Promise<void>;
-          getItem: (key: string) => Promise<string | null>;
-        };
       };
     };
   }
@@ -32,29 +28,6 @@ const Profile: React.FC = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
-    // Загрузка сохраненных данных при инициализации
-    const loadSavedData = async () => {
-      try {
-        const savedUsername = await window.Telegram.WebApp.CloudStorage.getItem('username');
-        const savedEmail = await window.Telegram.WebApp.CloudStorage.getItem('email');
-        const savedPhoto = await window.Telegram.WebApp.CloudStorage.getItem('photo');
-
-        if (savedUsername) {
-          setUsername(savedUsername);
-          setTempUsername(savedUsername);
-        }
-        if (savedEmail) {
-          setEmail(savedEmail);
-          setTempEmail(savedEmail);
-        }
-        if (savedPhoto) {
-          setUserPhoto(savedPhoto);
-        }
-      } catch (error) {
-        console.error('Ошибка при загрузке данных:', error);
-      }
-    };
-
     // Получаем данные пользователя из Telegram WebApp
     const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (telegramUser) {
@@ -66,8 +39,6 @@ const Profile: React.FC = () => {
         setTempUsername(telegramUser.username);
       }
     }
-
-    loadSavedData();
   }, []);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -78,24 +49,17 @@ const Profile: React.FC = () => {
     }
   };
 
-  const handleSave = async () => {
-    try {
-      if (tempUsername.trim()) {
-        setUsername(tempUsername);
-        await window.Telegram.WebApp.CloudStorage.setItem('username', tempUsername);
-      }
-      if (tempEmail.trim()) {
-        setEmail(tempEmail);
-        await window.Telegram.WebApp.CloudStorage.setItem('email', tempEmail);
-      }
-      if (previewUrl) {
-        setUserPhoto(previewUrl);
-        await window.Telegram.WebApp.CloudStorage.setItem('photo', previewUrl);
-      }
-      setIsEditing(false);
-    } catch (error) {
-      console.error('Ошибка при сохранении данных:', error);
+  const handleSave = () => {
+    if (tempUsername.trim()) {
+      setUsername(tempUsername);
     }
+    if (tempEmail.trim()) {
+      setEmail(tempEmail);
+    }
+    if (previewUrl) {
+      setUserPhoto(previewUrl);
+    }
+    setIsEditing(false);
   };
 
   const handleCancel = () => {
