@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import axios from 'axios';
 
 declare global {
   interface Window {
@@ -18,6 +19,14 @@ declare global {
   }
 }
 
+const CRYPTO_PAY_API_TOKEN = '376809:AA8RHtjg7Wq3B0mqXrFLyTmXGK10CBZZtbY';
+const CRYPTO_PAY_API_URL = 'https://pay.crypt.bot/api';
+
+const getInvoiceUrl = (invoice: any) => {
+  // Используем web_app_invoice_url или bot_invoice_url
+  return invoice.web_app_invoice_url || invoice.bot_invoice_url;
+};
+
 const Profile: React.FC = () => {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('никнейм');
@@ -28,7 +37,8 @@ const Profile: React.FC = () => {
   const [tempUsername, setTempUsername] = useState('');
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [balance, setBalance] = useState<number>(0);
+  const [balance, setBalance] = useState(0);
+  const [lastInvoiceId, setLastInvoiceId] = useState<string | null>(null);
 
   // Функция для конвертации файла в base64
   const convertFileToBase64 = (file: File): Promise<string> => {
@@ -127,56 +137,6 @@ const Profile: React.FC = () => {
     }
   };
 
-  // Функция создания счета через Crypto Pay API (строго по документации)
-  async function createInvoice(amount: string) {
-    const res = await fetch('https://pay.crypt.bot/api/createInvoice', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Crypto-Pay-API-Token': '376809:AA8RHtjg7Wq3B0mqXrFLyTmXGK10CBZZtbY'
-      },
-      body: JSON.stringify({
-        asset: 'USDT',
-        amount,
-        description: 'Пополнение баланса'
-      })
-    });
-    const data = await res.json();
-    if (data.ok && data.result && data.result.bot_invoice_url) {
-      return data.result.bot_invoice_url;
-    } else {
-      throw new Error(data.error || 'Ошибка создания счета');
-    }
-  }
-
-  // Функция получения оплаченных счетов (строго по документации)
-  async function getPaidInvoices() {
-    const res = await fetch('https://pay.crypt.bot/api/getInvoices', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Crypto-Pay-API-Token': '376809:AA8RHtjg7Wq3B0mqXrFLyTmXGK10CBZZtbY'
-      },
-      body: JSON.stringify({
-        status: 'paid'
-      })
-    });
-    const data = await res.json();
-    if (data.ok && data.result && Array.isArray(data.result.invoices)) {
-      return data.result.invoices.reduce((sum: number, inv: any) => sum + parseFloat(inv.amount), 0);
-    }
-    return 0;
-  }
-
-  // Проверка баланса при загрузке профиля
-  useEffect(() => {
-    async function fetchBalance() {
-      const paid = await getPaidInvoices();
-      setBalance(paid);
-    }
-    fetchBalance();
-  }, []);
-
   useEffect(() => {
     // Загружаем сохраненные данные
     loadSavedProfile();
@@ -218,6 +178,17 @@ const Profile: React.FC = () => {
       saveProfile();
     }
   }, [username, email, userPhoto, previewUrl]);
+
+  // Проверка оплаты счета при заходе в профиль
+  useEffect(() => {
+    const savedBalance = localStorage.getItem('userBalance');
+    if (savedBalance) setBalance(Number(savedBalance));
+    const savedInvoiceId = localStorage.getItem('lastInvoiceId');
+    if (savedInvoiceId) {
+      setLastInvoiceId(savedInvoiceId);
+      checkInvoiceStatus(savedInvoiceId);
+    }
+  }, []);
 
   // Обработчики изменений полей
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -273,14 +244,65 @@ const Profile: React.FC = () => {
     setIsDepositing(true);
   };
 
-  // Обработчик пополнения
-  const handleDeposit = async () => {
+  // Функция для создания счета через Crypto Pay API
+  const handleCreateInvoice = async () => {
+    if (!depositAmount || isNaN(Number(depositAmount))) return;
     try {
-      const url = await createInvoice(depositAmount);
-      window.open(url, '_blank');
-      setIsDepositing(false);
-    } catch (e: any) {
-      alert('Ошибка при создании счета: ' + e.message);
+      const response = await axios.post(
+        `${CRYPTO_PAY_API_URL}/createInvoice`,
+        {
+          asset: 'USDT',
+          amount: depositAmount,
+          description: 'Пополнение баланса',
+        },
+        {
+          headers: {
+            'Crypto-Pay-API-Token': CRYPTO_PAY_API_TOKEN,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (response.data.ok) {
+        const invoice = response.data.result;
+        setLastInvoiceId(invoice.invoice_id);
+        localStorage.setItem('lastInvoiceId', invoice.invoice_id);
+        // Открываем ссылку на оплату
+        window.open(getInvoiceUrl(invoice), '_blank');
+      } else {
+        alert('Ошибка при создании счета: ' + response.data.error);
+      }
+    } catch (error) {
+      alert('Ошибка при создании счета');
+    }
+  };
+
+  // Функция для проверки статуса счета
+  const checkInvoiceStatus = async (invoiceId: string) => {
+    try {
+      const response = await axios.post(
+        `${CRYPTO_PAY_API_URL}/getInvoices`,
+        { invoice_ids: [invoiceId] },
+        {
+          headers: {
+            'Crypto-Pay-API-Token': CRYPTO_PAY_API_TOKEN,
+            'Content-Type': 'application/json',
+          },
+        }
+      );
+      if (response.data.ok && response.data.result.items.length > 0) {
+        const invoice = response.data.result.items[0];
+        if (invoice.status === 'paid') {
+          setBalance((prev) => {
+            const newBalance = prev + Number(invoice.amount);
+            localStorage.setItem('userBalance', String(newBalance));
+            return newBalance;
+          });
+          localStorage.removeItem('lastInvoiceId');
+          setLastInvoiceId(null);
+        }
+      }
+    } catch (error) {
+      // Можно добавить обработку ошибок
     }
   };
 
@@ -395,7 +417,7 @@ const Profile: React.FC = () => {
               variants={buttonVariants}
               whileHover="hover"
               whileTap="tap"
-              onClick={handleDeposit}
+              onClick={handleCreateInvoice}
               style={{
                 width: '100%',
                 padding: '16px',
