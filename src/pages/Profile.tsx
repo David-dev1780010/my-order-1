@@ -33,7 +33,8 @@ const Profile: React.FC = () => {
       const profileData = {
         savedUsername: username,
         savedEmail: email,
-        savedPhoto: userPhoto
+        savedPhoto: userPhoto,
+        lastUpdated: new Date().toISOString()
       };
       localStorage.setItem('userProfile', JSON.stringify(profileData));
     } catch (error) {
@@ -47,7 +48,7 @@ const Profile: React.FC = () => {
       const savedProfile = localStorage.getItem('userProfile');
       if (savedProfile) {
         const { savedUsername, savedEmail, savedPhoto } = JSON.parse(savedProfile);
-        if (savedUsername) {
+        if (savedUsername && savedUsername !== 'никнейм') {
           setUsername(savedUsername);
           setTempUsername(savedUsername);
         }
@@ -71,10 +72,14 @@ const Profile: React.FC = () => {
     // Получаем данные пользователя из Telegram WebApp
     const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (telegramUser) {
-      if (telegramUser.photo_url) {
+      // Проверяем, есть ли сохраненный никнейм
+      const savedProfile = localStorage.getItem('userProfile');
+      const hasSavedUsername = savedProfile && JSON.parse(savedProfile).savedUsername !== 'никнейм';
+
+      if (telegramUser.photo_url && !userPhoto) {
         setUserPhoto(telegramUser.photo_url);
       }
-      if (telegramUser.username) {
+      if (telegramUser.username && !hasSavedUsername) {
         setUsername(telegramUser.username);
         setTempUsername(telegramUser.username);
       }
@@ -91,7 +96,14 @@ const Profile: React.FC = () => {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, [username, email, userPhoto]); // Добавляем зависимости для useEffect
+  }, []); // Убираем зависимости, чтобы useEffect срабатывал только при монтировании
+
+  // Отдельный useEffect для сохранения при изменении данных
+  useEffect(() => {
+    if (username !== 'никнейм' || email || userPhoto) {
+      saveProfile();
+    }
+  }, [username, email, userPhoto]);
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
