@@ -37,12 +37,49 @@ const Profile: React.FC = () => {
     });
   };
 
+  // Функция для сохранения временных данных
+  const saveTempData = () => {
+    try {
+      const tempData = {
+        tempUsername: tempUsername,
+        tempEmail: tempEmail,
+        tempPhoto: previewUrl,
+        lastUpdated: new Date().toISOString()
+      };
+      localStorage.setItem('tempProfileData', JSON.stringify(tempData));
+    } catch (error) {
+      console.error('Ошибка при сохранении временных данных:', error);
+    }
+  };
+
+  // Функция для загрузки временных данных
+  const loadTempData = () => {
+    try {
+      const savedTempData = localStorage.getItem('tempProfileData');
+      if (savedTempData) {
+        const { tempUsername: savedTempUsername, tempEmail: savedTempEmail, tempPhoto: savedTempPhoto } = JSON.parse(savedTempData);
+        if (savedTempUsername) {
+          setTempUsername(savedTempUsername);
+        }
+        if (savedTempEmail) {
+          setTempEmail(savedTempEmail);
+        }
+        if (savedTempPhoto) {
+          setPreviewUrl(savedTempPhoto);
+        }
+      }
+    } catch (error) {
+      console.error('Ошибка при загрузке временных данных:', error);
+    }
+  };
+
   const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (file) {
       try {
         const base64String = await convertFileToBase64(file);
         setPreviewUrl(base64String);
+        saveTempData();
       } catch (error) {
         console.error('Ошибка при конвертации файла:', error);
       }
@@ -90,6 +127,7 @@ const Profile: React.FC = () => {
   useEffect(() => {
     // Загружаем сохраненные данные
     loadSavedProfile();
+    loadTempData();
 
     // Получаем данные пользователя из Telegram WebApp
     const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -128,6 +166,23 @@ const Profile: React.FC = () => {
     }
   }, [username, email, userPhoto, previewUrl]);
 
+  // Обработчики изменений полей
+  const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTempUsername(e.target.value);
+    saveTempData();
+  };
+
+  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTempEmail(e.target.value);
+    saveTempData();
+  };
+
+  const handleEditClick = () => {
+    setIsEditing(true);
+    // При входе в режим редактирования загружаем последние сохраненные данные
+    loadTempData();
+  };
+
   const handleSave = () => {
     try {
       const newUsername = tempUsername.trim() || username;
@@ -143,6 +198,9 @@ const Profile: React.FC = () => {
       // Сохраняем в localStorage
       saveProfile();
       
+      // Очищаем временные данные
+      localStorage.removeItem('tempProfileData');
+      
       setIsEditing(false);
     } catch (error) {
       console.error('Ошибка при сохранении профиля:', error);
@@ -153,6 +211,8 @@ const Profile: React.FC = () => {
     setTempUsername(username);
     setTempEmail(email);
     setPreviewUrl(null);
+    // Очищаем временные данные при отмене
+    localStorage.removeItem('tempProfileData');
     setIsEditing(false);
   };
 
@@ -296,7 +356,7 @@ const Profile: React.FC = () => {
             exit={{ opacity: 0 }}
             type="text"
             value={tempUsername}
-            onChange={(e) => setTempUsername(e.target.value)}
+            onChange={handleUsernameChange}
             placeholder="Введите никнейм"
             style={{
               backgroundColor: 'rgba(255,255,255,0.1)',
@@ -330,7 +390,7 @@ const Profile: React.FC = () => {
               exit={{ opacity: 0, y: -10 }}
               type="email"
               value={tempEmail}
-              onChange={(e) => setTempEmail(e.target.value)}
+              onChange={handleEmailChange}
               placeholder="Введите email"
               style={{
                 backgroundColor: 'rgba(255,255,255,0.1)',
@@ -382,7 +442,27 @@ const Profile: React.FC = () => {
           </motion.button>
         )}
 
-        {isEditing ? (
+        {!isEditing ? (
+          <motion.button
+            variants={buttonVariants}
+            whileHover="hover"
+            whileTap="tap"
+            onClick={handleEditClick}
+            style={{
+              width: '100%',
+              padding: '16px',
+              borderRadius: '12px',
+              backgroundColor: '#09FBD3',
+              color: '#2D1E5A',
+              border: 'none',
+              fontSize: '17px',
+              fontWeight: '600',
+              cursor: 'pointer'
+            }}
+          >
+            Редактировать профиль
+          </motion.button>
+        ) : (
           <>
             <motion.button
               variants={buttonVariants}
@@ -424,26 +504,6 @@ const Profile: React.FC = () => {
               Отмена
             </motion.button>
           </>
-        ) : (
-          <motion.button
-            variants={buttonVariants}
-            whileHover="hover"
-            whileTap="tap"
-            onClick={() => setIsEditing(true)}
-            style={{
-              width: '100%',
-              padding: '16px',
-              borderRadius: '12px',
-              backgroundColor: '#09FBD3',
-              color: '#2D1E5A',
-              border: 'none',
-              fontSize: '17px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Редактировать профиль
-          </motion.button>
         )}
       </motion.div>
     </div>
