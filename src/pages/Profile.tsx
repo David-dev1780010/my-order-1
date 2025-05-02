@@ -13,6 +13,7 @@ declare global {
             id?: number;
           };
         };
+        openTelegramLink: (url: string) => void;
       };
     };
   }
@@ -224,7 +225,12 @@ const Profile: React.FC = () => {
 
   const handleDeposit = () => {
     if (!depositAmount) return;
-    window.location.href = `https://t.me/orderenineenngbot?start=balance_${depositAmount}`;
+    const url = `https://t.me/orderenineenngbot?start=balance_${depositAmount}`;
+    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+      window.Telegram.WebApp.openTelegramLink(url);
+    } else {
+      window.location.href = url;
+    }
   };
 
   const containerVariants = {
