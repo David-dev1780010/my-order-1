@@ -349,18 +349,12 @@ const Profile: React.FC = () => {
                   src="/images/crypto_pay.png" 
                   alt="CryptoBot"
                   style={{
-                    width: '64px',
-                    height: '64px',
-                    marginBottom: '10px'
+                    width: '140px',
+                    height: '80px',
+                    marginBottom: '0px',
+                    objectFit: 'contain'
                   }}
                 />
-                <span style={{
-                  color: 'white',
-                  fontSize: '24px',
-                  fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
-                }}>
-                  CryptoBot
-                </span>
               </div>
 
               <div style={{
@@ -368,26 +362,6 @@ const Profile: React.FC = () => {
                 gap: '10px',
                 width: '100%'
               }}>
-                <motion.button
-                  variants={buttonVariants}
-                  whileHover="hover"
-                  whileTap="tap"
-                  onClick={handleDepositClose}
-                  style={{
-                    flex: 1,
-                    padding: '16px',
-                    borderRadius: '12px',
-                    backgroundColor: '#B6116B',
-                    color: 'white',
-                    border: 'none',
-                    fontSize: '17px',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
-                  }}
-                >
-                  Отмена
-                </motion.button>
                 <motion.button
                   variants={buttonVariants}
                   whileHover="hover"
