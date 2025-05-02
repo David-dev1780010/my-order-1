@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import axios from 'axios';
 
 declare global {
   interface Window {
@@ -19,14 +18,6 @@ declare global {
   }
 }
 
-const CRYPTO_PAY_API_TOKEN = '376809:AA8RHtjg7Wq3B0mqXrFLyTmXGK10CBZZtbY';
-const CRYPTO_PAY_API_URL = 'https://pay.crypt.bot/api';
-
-const getInvoiceUrl = (invoice: any) => {
-  // Используем web_app_invoice_url или bot_invoice_url
-  return invoice.web_app_invoice_url || invoice.bot_invoice_url;
-};
-
 const Profile: React.FC = () => {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('никнейм');
@@ -37,7 +28,6 @@ const Profile: React.FC = () => {
   const [tempUsername, setTempUsername] = useState('');
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
-  const [balance, setBalance] = useState(0);
 
   // Функция для конвертации файла в base64
   const convertFileToBase64 = (file: File): Promise<string> => {
@@ -178,12 +168,6 @@ const Profile: React.FC = () => {
     }
   }, [username, email, userPhoto, previewUrl]);
 
-  // Проверка оплаты счета при заходе в профиль
-  useEffect(() => {
-    const savedBalance = localStorage.getItem('userBalance');
-    if (savedBalance) setBalance(Number(savedBalance));
-  }, []);
-
   // Обработчики изменений полей
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempUsername(e.target.value);
@@ -236,36 +220,6 @@ const Profile: React.FC = () => {
 
   const handleDepositClick = () => {
     setIsDepositing(true);
-  };
-
-  // Функция для создания счета через Crypto Pay API
-  const handleCreateInvoice = async () => {
-    if (!depositAmount || isNaN(Number(depositAmount))) return;
-    try {
-      const response = await axios.post(
-        `${CRYPTO_PAY_API_URL}/createInvoice`,
-        {
-          asset: 'USDT',
-          amount: depositAmount,
-          description: 'Пополнение баланса',
-        },
-        {
-          headers: {
-            'Crypto-Pay-API-Token': CRYPTO_PAY_API_TOKEN,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      if (response.data.ok) {
-        const invoice = response.data.result;
-        // Открываем ссылку на оплату
-        window.open(getInvoiceUrl(invoice), '_blank');
-      } else {
-        alert('Ошибка при создании счета: ' + response.data.error);
-      }
-    } catch (error) {
-      alert('Ошибка при создании счета');
-    }
   };
 
   const containerVariants = {
@@ -379,7 +333,6 @@ const Profile: React.FC = () => {
               variants={buttonVariants}
               whileHover="hover"
               whileTap="tap"
-              onClick={handleCreateInvoice}
               style={{
                 width: '100%',
                 padding: '16px',
@@ -541,7 +494,7 @@ const Profile: React.FC = () => {
                 alignItems: 'center',
                 gap: '4px'
               }}>
-                Баланс: <span style={{ color: 'white' }}> ${balance}</span>
+                Баланс: <span style={{ color: 'white' }}>💰 $0</span>
               </div>
             )}
 
