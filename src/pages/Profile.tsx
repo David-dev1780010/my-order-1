@@ -18,6 +18,9 @@ declare global {
   }
 }
 
+const CRYPTO_PAY_TOKEN = '376809:AA8RHtjg7Wq3B0mqXrFLyTmXGK10CBZZtbY';
+const CRYPTO_PAY_API = 'https://pay.crypt.bot/api';
+
 const Profile: React.FC = () => {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('никнейм');
@@ -28,6 +31,8 @@ const Profile: React.FC = () => {
   const [tempUsername, setTempUsername] = useState('');
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [balance, setBalance] = useState<number>(0);
+  const [lastInvoiceId, setLastInvoiceId] = useState<number | null>(null);
 
   // Функция для конвертации файла в base64
   const convertFileToBase64 = (file: File): Promise<string> => {
@@ -125,6 +130,64 @@ const Profile: React.FC = () => {
       console.error('Ошибка при загрузке профиля:', error);
     }
   };
+
+  // Функция создания инвойса
+  async function createInvoice(amount: string) {
+    const response = await fetch(`${CRYPTO_PAY_API}/createInvoice`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Crypto-Pay-API-Token': CRYPTO_PAY_TOKEN
+      },
+      body: JSON.stringify({
+        asset: 'USDT',
+        amount: amount,
+        description: 'Пополнение баланса'
+      })
+    });
+    const data = await response.json();
+    return data.result;
+  }
+
+  // Функция проверки статуса инвойса
+  async function getInvoiceStatus(invoiceId: number) {
+    const response = await fetch(`${CRYPTO_PAY_API}/getInvoices`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Crypto-Pay-API-Token': CRYPTO_PAY_TOKEN
+      },
+      body: JSON.stringify({
+        invoice_ids: [invoiceId]
+      })
+    });
+    const data = await response.json();
+    return data.result[0];
+  }
+
+  // При нажатии на "Пополнить"
+  const handleDeposit = async () => {
+    if (!depositAmount || isNaN(Number(depositAmount))) return;
+    const invoice = await createInvoice(depositAmount);
+    if (invoice && invoice.invoice_id && invoice.pay_url) {
+      setLastInvoiceId(invoice.invoice_id);
+      localStorage.setItem('lastInvoiceId', String(invoice.invoice_id));
+      window.location.href = invoice.pay_url;
+    }
+  };
+
+  // Проверка оплаты при заходе на страницу
+  useEffect(() => {
+    const savedInvoiceId = localStorage.getItem('lastInvoiceId');
+    if (savedInvoiceId) {
+      getInvoiceStatus(Number(savedInvoiceId)).then((invoice) => {
+        if (invoice && invoice.status === 'paid') {
+          setBalance(Number(invoice.amount));
+          localStorage.removeItem('lastInvoiceId');
+        }
+      });
+    }
+  }, []);
 
   useEffect(() => {
     // Загружаем сохраненные данные
@@ -345,6 +408,7 @@ const Profile: React.FC = () => {
                 cursor: 'pointer',
                 fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
               }}
+              onClick={handleDeposit}
             >
               Пополнить
             </motion.button>
@@ -485,7 +549,7 @@ const Profile: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {!isEditing && (
+            {!isEditing && !isDepositing && (
               <div style={{
                 color: '#9E9E9E',
                 marginBottom: '25px',
@@ -494,7 +558,7 @@ const Profile: React.FC = () => {
                 alignItems: 'center',
                 gap: '4px'
               }}>
-                Баланс: <span style={{ color: 'white' }}>💰 $0</span>
+                Баланс: <span style={{ color: 'white' }}>�� ${balance}</span>
               </div>
             )}
 
