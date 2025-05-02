@@ -14,6 +14,7 @@ declare global {
           };
         };
         openTelegramLink: (url: string) => void;
+        close: () => void;
       };
     };
   }
@@ -29,6 +30,7 @@ const Profile: React.FC = () => {
   const [tempUsername, setTempUsername] = useState('');
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   // Функция для конвертации файла в base64
   const convertFileToBase64 = (file: File): Promise<string> => {
@@ -225,12 +227,18 @@ const Profile: React.FC = () => {
 
   const handleDeposit = () => {
     if (!depositAmount) return;
+    setIsRedirecting(true);
     const url = `https://t.me/orderenineenngbot?start=balance_${depositAmount}`;
-    if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
-      window.Telegram.WebApp.openTelegramLink(url);
-    } else {
-      window.location.href = url;
-    }
+    setTimeout(() => {
+      if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+        window.Telegram.WebApp.openTelegramLink(url);
+        setTimeout(() => {
+          if (window.Telegram.WebApp.close) window.Telegram.WebApp.close();
+        }, 500);
+      } else {
+        window.location.href = url;
+      }
+    }, 1200);
   };
 
   const containerVariants = {
@@ -600,6 +608,28 @@ const Profile: React.FC = () => {
           </>
         )}
       </motion.div>
+      {isRedirecting && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.7)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+          fontSize: 22,
+          fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+          flexDirection: 'column'
+        }}>
+          <div style={{marginBottom: 20}}>Открываем Telegram-бота для оплаты…</div>
+          <div className="loader" style={{width: 40, height: 40, border: '4px solid #fff', borderTop: '4px solid #B6116B', borderRadius: '50%', animation: 'spin 1s linear infinite'}}></div>
+          <style>{`@keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }`}</style>
+        </div>
+      )}
     </div>
   );
 };
