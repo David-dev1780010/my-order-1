@@ -60,7 +60,7 @@ const Order: React.FC = () => {
           Выберите услугу<br />дизайна
         </h1>
         {/* Кнопки с кругами */}
-        {["GFX баннер", "GFX анимация", "GFX аватарка"].map((text, idx) => (
+        {["GFX баннер", "GFX анимация", "GFX аватарка"].map((text) => (
           <div key={text} style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center', marginBottom: 18 }}>
             <span style={circleStyle} />
             <button style={{
