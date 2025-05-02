@@ -127,7 +127,7 @@ const Profile: React.FC = () => {
     }
   };
 
-  // Функция создания счета через Crypto Pay API
+  // Функция создания счета через Crypto Pay API (строго по документации)
   async function createInvoice(amount: string) {
     const res = await fetch('https://pay.crypt.bot/api/createInvoice', {
       method: 'POST',
@@ -138,18 +138,18 @@ const Profile: React.FC = () => {
       body: JSON.stringify({
         asset: 'USDT',
         amount,
-        description: 'Пополнение баланса через @send'
+        description: 'Пополнение баланса'
       })
     });
     const data = await res.json();
-    if (data.ok) {
+    if (data.ok && data.result && data.result.bot_invoice_url) {
       return data.result.bot_invoice_url;
     } else {
       throw new Error(data.error || 'Ошибка создания счета');
     }
   }
 
-  // Функция получения оплаченных счетов
+  // Функция получения оплаченных счетов (строго по документации)
   async function getPaidInvoices() {
     const res = await fetch('https://pay.crypt.bot/api/getInvoices', {
       method: 'POST',
@@ -162,7 +162,7 @@ const Profile: React.FC = () => {
       })
     });
     const data = await res.json();
-    if (data.ok) {
+    if (data.ok && data.result && Array.isArray(data.result.invoices)) {
       return data.result.invoices.reduce((sum: number, inv: any) => sum + parseFloat(inv.amount), 0);
     }
     return 0;
@@ -557,7 +557,7 @@ const Profile: React.FC = () => {
                 alignItems: 'center',
                 gap: '4px'
               }}>
-                Баланс: <span style={{ color: 'white' }}>�� ${balance}</span>
+                Баланс: <span style={{ color: 'white' }}> ${balance}</span>
               </div>
             )}
 
