@@ -264,117 +264,6 @@ const Profile: React.FC = () => {
       bottom: 0,
       overflow: 'hidden'
     }}>
-      <AnimatePresence>
-        {isDepositing && (
-          <motion.div
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 40 }}
-            style={{
-              position: 'fixed',
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'flex-start',
-              zIndex: 1000,
-              pointerEvents: 'auto',
-              background: 'none',
-            }}
-          >
-            <motion.div
-              initial={{ y: 40 }}
-              animate={{ y: 0 }}
-              style={{
-                backgroundColor: '#2D1E5A',
-                borderRadius: '25px',
-                padding: '30px 20px',
-                width: '100%',
-                maxWidth: '340px',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                marginTop: 60,
-                boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
-              }}
-            >
-              <h1 style={{
-                color: 'white',
-                fontSize: '32px',
-                marginBottom: '40px',
-                fontWeight: '500',
-                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
-              }}>
-                Пополнение баланса
-              </h1>
-
-              <input
-                type="text"
-                value={depositAmount}
-                onChange={(e) => setDepositAmount(e.target.value)}
-                placeholder="Введите сумму ($)"
-                style={{
-                  backgroundColor: '#584C7D',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '16px',
-                  color: 'white',
-                  fontSize: '16px',
-                  width: '100%',
-                  marginBottom: '20px',
-                  outline: 'none',
-                  fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
-                }}
-              />
-
-              <div style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                justifyContent: 'center',
-                marginBottom: '20px',
-              }}>
-                <img
-                  src="/images/crypto_pay.png"
-                  alt="CryptoBot"
-                  style={{
-                    width: '200px',
-                    height: '110px',
-                    objectFit: 'contain',
-                    background: 'none',
-                    boxShadow: 'none',
-                    border: 'none',
-                  }}
-                />
-              </div>
-
-              <motion.button
-                variants={buttonVariants}
-                whileHover="hover"
-                whileTap="tap"
-                style={{
-                  width: '100%',
-                  padding: '16px',
-                  borderRadius: '12px',
-                  backgroundColor: '#B6116B',
-                  color: 'white',
-                  border: 'none',
-                  fontSize: '17px',
-                  fontWeight: '500',
-                  cursor: 'pointer',
-                  fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
-                }}
-              >
-                Пополнить
-              </motion.button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       <motion.div
         variants={containerVariants}
         initial="initial"
@@ -390,121 +279,160 @@ const Profile: React.FC = () => {
           alignItems: 'center',
         }}
       >
-        <h1 style={{
-          color: 'white',
-          fontSize: '32px',
-          marginBottom: '40px',
-          fontWeight: '500',
-          fontFamily: 'SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif'
-        }}>
-          Личный кабинет
-        </h1>
-
-        <div style={{
-          width: '90px',
-          height: '90px',
-          borderRadius: '50%',
-          border: '3px solid #FF54BD',
-          backgroundColor: '#2D1E5A',
-          marginBottom: '15px',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          overflow: 'hidden',
-          position: 'relative',
-          padding: '8px',
-          cursor: isEditing ? 'pointer' : 'default'
-        }}>
-          {isEditing && (
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleFileChange}
-              style={{
-                position: 'absolute',
-                width: '100%',
-                height: '100%',
-                opacity: 0,
-                cursor: 'pointer',
-                zIndex: 2
-              }}
-            />
-          )}
-          {(previewUrl || userPhoto) ? (
-            <img 
-              src={previewUrl || userPhoto || ''}
-              alt="Аватар пользователя"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'cover',
-                borderRadius: '50%'
-              }}
-            />
-          ) : (
-            <div style={{
-              width: '100%',
-              height: '100%',
-              borderRadius: '50%',
-              backgroundColor: '#FF54BD',
-              opacity: 0.5
-            }} />
-          )}
-          {isEditing && (
-            <div style={{
-              position: 'absolute',
-              bottom: 0,
-              width: '100%',
-              backgroundColor: 'rgba(0,0,0,0.5)',
+        {isDepositing ? (
+          <>
+            <h1 style={{
               color: 'white',
-              fontSize: '10px',
-              textAlign: 'center',
-              padding: '2px 0'
+              fontSize: '32px',
+              marginBottom: '40px',
+              fontWeight: '500',
+              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
             }}>
-              Изменить
-            </div>
-          )}
-        </div>
-
-        {isEditing ? (
-          <motion.input
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            type="text"
-            value={tempUsername}
-            onChange={handleUsernameChange}
-            placeholder="Введите никнейм"
-            style={{
-              backgroundColor: 'rgba(255,255,255,0.1)',
-              border: '1px solid #FF54BD',
-              borderRadius: '8px',
-              padding: '8px 12px',
-              color: 'white',
-              fontSize: '16px',
+              Пополнение баланса
+            </h1>
+            <input
+              type="text"
+              value={depositAmount}
+              onChange={(e) => setDepositAmount(e.target.value)}
+              placeholder="Введите сумму ($)"
+              style={{
+                backgroundColor: '#584C7D',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '16px',
+                color: 'white',
+                fontSize: '16px',
+                width: '100%',
+                marginBottom: '20px',
+                outline: 'none',
+                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+              }}
+            />
+            <div style={{
               width: '100%',
-              marginBottom: '10px',
-              outline: 'none'
-            }}
-          />
-        ) : (
-          <div style={{
-            color: 'white',
-            marginBottom: '5px',
-            fontSize: '20px',
-            fontWeight: '400',
-            opacity: '0.9'
-          }}>
-            {username}
-          </div>
-        )}
-
-        <AnimatePresence>
-          {isEditing && (
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              marginBottom: '20px',
+            }}>
+              <img
+                src="/images/crypto_pay.png"
+                alt="CryptoBot"
+                style={{
+                  width: '200px',
+                  height: '110px',
+                  objectFit: 'contain',
+                  background: 'none',
+                  boxShadow: 'none',
+                  border: 'none',
+                }}
+              />
+            </div>
+            <motion.button
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
+              style={{
+                width: '100%',
+                padding: '16px',
+                borderRadius: '12px',
+                backgroundColor: '#B6116B',
+                color: 'white',
+                border: 'none',
+                fontSize: '17px',
+                fontWeight: '500',
+                cursor: 'pointer',
+                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+              }}
+            >
+              Пополнить
+            </motion.button>
+          </>
+        ) : isEditing ? (
+          <>
+            <h1 style={{
+              color: 'white',
+              fontSize: '32px',
+              marginBottom: '40px',
+              fontWeight: '500',
+              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+            }}>
+              Редактирование профиля
+            </h1>
+            <div style={{
+              width: '90px',
+              height: '90px',
+              borderRadius: '50%',
+              border: '3px solid #FF54BD',
+              backgroundColor: '#2D1E5A',
+              marginBottom: '15px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              overflow: 'hidden',
+              position: 'relative',
+              padding: '8px',
+              cursor: 'pointer'
+            }}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  opacity: 0,
+                  cursor: 'pointer',
+                  zIndex: 2
+                }}
+              />
+              {(previewUrl || userPhoto) ? (
+                <img 
+                  src={previewUrl || userPhoto || ''}
+                  alt="Аватар пользователя"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '50%'
+                  }}
+                />
+              ) : (
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '50%',
+                  backgroundColor: '#FF54BD',
+                  opacity: 0.5
+                }} />
+              )}
+            </div>
             <motion.input
-              initial={{ opacity: 0, y: -10 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: -10 }}
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              type="text"
+              value={tempUsername}
+              onChange={handleUsernameChange}
+              placeholder="Введите никнейм"
+              style={{
+                backgroundColor: 'rgba(255,255,255,0.1)',
+                border: '1px solid #FF54BD',
+                borderRadius: '8px',
+                padding: '8px 12px',
+                color: 'white',
+                fontSize: '16px',
+                width: '100%',
+                marginBottom: '10px',
+                outline: 'none'
+              }}
+            />
+            <motion.input
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
               type="email"
               value={tempEmail}
               onChange={handleEmailChange}
@@ -521,68 +449,6 @@ const Profile: React.FC = () => {
                 outline: 'none'
               }}
             />
-          )}
-        </AnimatePresence>
-
-        {!isEditing && (
-          <div style={{
-            color: '#9E9E9E',
-            marginBottom: '25px',
-            fontSize: '16px',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '4px'
-          }}>
-            Баланс: <span style={{ color: 'white' }}>💰 $0</span>
-          </div>
-        )}
-
-        {!isEditing && (
-          <motion.button
-            variants={buttonVariants}
-            whileHover="hover"
-            whileTap="tap"
-            onClick={handleDepositClick}
-            style={{
-              width: '100%',
-              padding: '16px',
-              borderRadius: '12px',
-              backgroundColor: '#B6116B',
-              color: 'white',
-              border: 'none',
-              fontSize: '17px',
-              fontWeight: '500',
-              marginBottom: '12px',
-              cursor: 'pointer',
-              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
-            }}
-          >
-            Пополнить баланс
-          </motion.button>
-        )}
-
-        {!isEditing ? (
-          <motion.button
-            variants={buttonVariants}
-            whileHover="hover"
-            whileTap="tap"
-            onClick={handleEditClick}
-            style={{
-              width: '100%',
-              padding: '16px',
-              borderRadius: '12px',
-              backgroundColor: '#09FBD3',
-              color: '#2D1E5A',
-              border: 'none',
-              fontSize: '17px',
-              fontWeight: '600',
-              cursor: 'pointer'
-            }}
-          >
-            Редактировать профиль
-          </motion.button>
-        ) : (
-          <>
             <motion.button
               variants={buttonVariants}
               whileHover="hover"
@@ -597,8 +463,7 @@ const Profile: React.FC = () => {
                 border: 'none',
                 fontSize: '17px',
                 fontWeight: '600',
-                cursor: 'pointer',
-                marginBottom: '12px'
+                cursor: 'pointer'
               }}
             >
               Сохранить
@@ -621,6 +486,126 @@ const Profile: React.FC = () => {
               }}
             >
               Отмена
+            </motion.button>
+          </>
+        ) : (
+          <>
+            <h1 style={{
+              color: 'white',
+              fontSize: '32px',
+              marginBottom: '40px',
+              fontWeight: '500',
+              fontFamily: 'SF Pro Display, -apple-system, BlinkMacSystemFont, sans-serif'
+            }}>
+              Личный кабинет
+            </h1>
+            <div style={{
+              width: '90px',
+              height: '90px',
+              borderRadius: '50%',
+              border: '3px solid #FF54BD',
+              backgroundColor: '#2D1E5A',
+              marginBottom: '15px',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              overflow: 'hidden',
+              position: 'relative',
+              padding: '8px',
+              cursor: 'pointer'
+            }}>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleFileChange}
+                style={{
+                  position: 'absolute',
+                  width: '100%',
+                  height: '100%',
+                  opacity: 0,
+                  cursor: 'pointer',
+                  zIndex: 2
+                }}
+              />
+              {(previewUrl || userPhoto) ? (
+                <img 
+                  src={previewUrl || userPhoto || ''}
+                  alt="Аватар пользователя"
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    borderRadius: '50%'
+                  }}
+                />
+              ) : (
+                <div style={{
+                  width: '100%',
+                  height: '100%',
+                  borderRadius: '50%',
+                  backgroundColor: '#FF54BD',
+                  opacity: 0.5
+                }} />
+              )}
+            </div>
+            <div style={{
+              color: 'white',
+              marginBottom: '5px',
+              fontSize: '20px',
+              fontWeight: '400',
+              opacity: '0.9'
+            }}>
+              {username}
+            </div>
+            <div style={{
+              color: '#9E9E9E',
+              marginBottom: '25px',
+              fontSize: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '4px'
+            }}>
+              Баланс: <span style={{ color: 'white' }}>💰 $0</span>
+            </div>
+            <motion.button
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
+              onClick={handleDepositClick}
+              style={{
+                width: '100%',
+                padding: '16px',
+                borderRadius: '12px',
+                backgroundColor: '#B6116B',
+                color: 'white',
+                border: 'none',
+                fontSize: '17px',
+                fontWeight: '500',
+                marginBottom: '12px',
+                cursor: 'pointer',
+                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+              }}
+            >
+              Пополнить баланс
+            </motion.button>
+            <motion.button
+              variants={buttonVariants}
+              whileHover="hover"
+              whileTap="tap"
+              onClick={handleEditClick}
+              style={{
+                width: '100%',
+                padding: '16px',
+                borderRadius: '12px',
+                backgroundColor: '#09FBD3',
+                color: '#2D1E5A',
+                border: 'none',
+                fontSize: '17px',
+                fontWeight: '600',
+                cursor: 'pointer'
+              }}
+            >
+              Редактировать профиль
             </motion.button>
           </>
         )}
