@@ -272,24 +272,25 @@ const Profile: React.FC = () => {
       <AnimatePresence>
         {isDepositing && (
           <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.95 }}
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 40 }}
             style={{
               position: 'fixed',
               top: 0,
               left: 0,
               right: 0,
               bottom: 0,
-              backgroundColor: 'rgba(0,0,0,0.8)',
               display: 'flex',
               justifyContent: 'center',
-              alignItems: 'center',
-              zIndex: 1000
+              alignItems: 'flex-start',
+              zIndex: 1000,
+              pointerEvents: 'auto',
+              background: 'none',
             }}
           >
             <motion.div
-              initial={{ y: 50 }}
+              initial={{ y: 40 }}
               animate={{ y: 0 }}
               style={{
                 backgroundColor: '#2D1E5A',
@@ -300,6 +301,8 @@ const Profile: React.FC = () => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
+                marginTop: 60,
+                boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.15)',
               }}
             >
               <h1 style={{
@@ -343,7 +346,7 @@ const Profile: React.FC = () => {
                 justifyContent: 'center'
               }}>
                 <img 
-                  src="/crypto_pay.png" 
+                  src="/images/crypto_pay.png" 
                   alt="CryptoBot"
                   style={{
                     width: '64px',
