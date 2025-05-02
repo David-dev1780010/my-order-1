@@ -222,6 +222,11 @@ const Profile: React.FC = () => {
     setIsDepositing(true);
   };
 
+  const handleDeposit = () => {
+    if (!depositAmount) return;
+    window.location.href = `https://t.me/orderenineenngbot?start=balance_${depositAmount}`;
+  };
+
   const containerVariants = {
     initial: {
       opacity: 0,
@@ -345,6 +350,7 @@ const Profile: React.FC = () => {
                 cursor: 'pointer',
                 fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
               }}
+              onClick={handleDeposit}
             >
               Пополнить
             </motion.button>
