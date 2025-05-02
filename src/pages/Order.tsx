@@ -10,6 +10,48 @@ const Order: React.FC = () => {
     }
   };
 
+  const buttonStyle: React.CSSProperties = {
+    width: '100%',
+    padding: '22px 0',
+    borderRadius: '40px',
+    backgroundColor: '#B6116B',
+    color: 'white',
+    border: 'none',
+    fontSize: '38px',
+    fontWeight: 500,
+    marginBottom: '32px',
+    fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+    cursor: 'pointer',
+    position: 'relative',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxSizing: 'border-box',
+  };
+
+  const dotStyle: React.CSSProperties = {
+    width: 18,
+    height: 18,
+    borderRadius: '50%',
+    background: '#B6116B',
+    margin: '0 18px',
+    flexShrink: 0,
+  };
+
+  const otherButtonStyle: React.CSSProperties = {
+    ...buttonStyle,
+    fontSize: '26px',
+    padding: '12px 0',
+    marginBottom: 0,
+    borderRadius: '22px',
+  };
+  const otherDotStyle: React.CSSProperties = {
+    ...dotStyle,
+    width: 10,
+    height: 10,
+    margin: '0 8px',
+  };
+
   return (
     <div style={{
       display: 'flex',
@@ -32,7 +74,7 @@ const Order: React.FC = () => {
           borderRadius: '25px',
           padding: '30px 20px',
           width: '100%',
-          maxWidth: '340px',
+          maxWidth: '540px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -40,8 +82,8 @@ const Order: React.FC = () => {
       >
         <h1 style={{
           color: 'white',
-          fontSize: '28px',
-          marginBottom: '32px',
+          fontSize: '32px',
+          marginBottom: '40px',
           fontWeight: '500',
           fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
           textAlign: 'center',
@@ -49,73 +91,29 @@ const Order: React.FC = () => {
         }}>
           Выберите услугу<br />дизайна
         </h1>
-        <button style={{
-          width: '100%',
-          padding: '16px',
-          borderRadius: '12px',
-          backgroundColor: '#B6116B',
-          color: 'white',
-          border: 'none',
-          fontSize: '22px',
-          fontWeight: '500',
-          marginBottom: '18px',
-          fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-          cursor: 'pointer',
-          position: 'relative'
-        }}>
-          GFX баннер
-        </button>
-        <button style={{
-          width: '100%',
-          padding: '16px',
-          borderRadius: '12px',
-          backgroundColor: '#B6116B',
-          color: 'white',
-          border: 'none',
-          fontSize: '22px',
-          fontWeight: '500',
-          marginBottom: '18px',
-          fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-          cursor: 'pointer',
-          position: 'relative'
-        }}>
-          GFX анимация
-        </button>
-        <button style={{
-          width: '100%',
-          padding: '16px',
-          borderRadius: '12px',
-          backgroundColor: '#B6116B',
-          color: 'white',
-          border: 'none',
-          fontSize: '22px',
-          fontWeight: '500',
-          marginBottom: '18px',
-          fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-          cursor: 'pointer',
-          position: 'relative'
-        }}>
-          GFX аватарка
-        </button>
-        <button
-          onClick={handleOtherClick}
-          style={{
-            width: '100%',
-            padding: '16px',
-            borderRadius: '12px',
-            backgroundColor: '#B6116B',
-            color: 'white',
-            border: 'none',
-            fontSize: '20px',
-            fontWeight: '500',
-            marginBottom: '0',
-            fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-            cursor: 'pointer',
-            position: 'relative'
-          }}
-        >
-          Другое...
-        </button>
+        {/* Кнопки с точками */}
+        <div style={{width: '100%'}}>
+          <div style={{display: 'flex', alignItems: 'center', marginBottom: 32}}>
+            <div style={dotStyle}></div>
+            <button style={buttonStyle}>GFX баннер</button>
+            <div style={dotStyle}></div>
+          </div>
+          <div style={{display: 'flex', alignItems: 'center', marginBottom: 32}}>
+            <div style={dotStyle}></div>
+            <button style={buttonStyle}>GFX анимация</button>
+            <div style={dotStyle}></div>
+          </div>
+          <div style={{display: 'flex', alignItems: 'center', marginBottom: 32}}>
+            <div style={dotStyle}></div>
+            <button style={buttonStyle}>GFX аватарка</button>
+            <div style={dotStyle}></div>
+          </div>
+          <div style={{display: 'flex', alignItems: 'center', marginBottom: 0}}>
+            <div style={otherDotStyle}></div>
+            <button style={otherButtonStyle} onClick={handleOtherClick}>Другое...</button>
+            <div style={otherDotStyle}></div>
+          </div>
+        </div>
       </div>
     </div>
   );
