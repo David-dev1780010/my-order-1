@@ -23,6 +23,8 @@ const Profile: React.FC = () => {
   const [username, setUsername] = useState<string>('никнейм');
   const [email, setEmail] = useState<string>('');
   const [isEditing, setIsEditing] = useState(false);
+  const [isDepositing, setIsDepositing] = useState(false);
+  const [depositAmount, setDepositAmount] = useState('');
   const [tempUsername, setTempUsername] = useState('');
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
@@ -216,6 +218,15 @@ const Profile: React.FC = () => {
     setIsEditing(false);
   };
 
+  const handleDepositClick = () => {
+    setIsDepositing(true);
+  };
+
+  const handleDepositClose = () => {
+    setIsDepositing(false);
+    setDepositAmount('');
+  };
+
   const containerVariants = {
     initial: {
       opacity: 0,
@@ -258,6 +269,147 @@ const Profile: React.FC = () => {
       bottom: 0,
       overflow: 'hidden'
     }}>
+      <AnimatePresence>
+        {isDepositing && (
+          <motion.div
+            initial={{ opacity: 0, scale: 0.95 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.95 }}
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              backgroundColor: 'rgba(0,0,0,0.8)',
+              display: 'flex',
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 1000
+            }}
+          >
+            <motion.div
+              initial={{ y: 50 }}
+              animate={{ y: 0 }}
+              style={{
+                backgroundColor: '#2D1E5A',
+                borderRadius: '25px',
+                padding: '30px 20px',
+                width: '100%',
+                maxWidth: '340px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+              }}
+            >
+              <h1 style={{
+                color: 'white',
+                fontSize: '32px',
+                marginBottom: '40px',
+                fontWeight: '500',
+                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+              }}>
+                Пополнение баланса
+              </h1>
+
+              <input
+                type="text"
+                value={depositAmount}
+                onChange={(e) => setDepositAmount(e.target.value)}
+                placeholder="Введите сумму ($)"
+                style={{
+                  backgroundColor: '#584C7D',
+                  border: 'none',
+                  borderRadius: '8px',
+                  padding: '16px',
+                  color: 'white',
+                  fontSize: '16px',
+                  width: '100%',
+                  marginBottom: '20px',
+                  outline: 'none',
+                  fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+                }}
+              />
+
+              <div style={{
+                width: '100%',
+                height: '200px',
+                backgroundColor: '#584C7D',
+                borderRadius: '12px',
+                marginBottom: '20px',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center'
+              }}>
+                <img 
+                  src="/crypto_pay.png" 
+                  alt="CryptoBot"
+                  style={{
+                    width: '64px',
+                    height: '64px',
+                    marginBottom: '10px'
+                  }}
+                />
+                <span style={{
+                  color: 'white',
+                  fontSize: '24px',
+                  fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+                }}>
+                  CryptoBot
+                </span>
+              </div>
+
+              <div style={{
+                display: 'flex',
+                gap: '10px',
+                width: '100%'
+              }}>
+                <motion.button
+                  variants={buttonVariants}
+                  whileHover="hover"
+                  whileTap="tap"
+                  onClick={handleDepositClose}
+                  style={{
+                    flex: 1,
+                    padding: '16px',
+                    borderRadius: '12px',
+                    backgroundColor: '#B6116B',
+                    color: 'white',
+                    border: 'none',
+                    fontSize: '17px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+                  }}
+                >
+                  Отмена
+                </motion.button>
+                <motion.button
+                  variants={buttonVariants}
+                  whileHover="hover"
+                  whileTap="tap"
+                  style={{
+                    flex: 1,
+                    padding: '16px',
+                    borderRadius: '12px',
+                    backgroundColor: '#B6116B',
+                    color: 'white',
+                    border: 'none',
+                    fontSize: '17px',
+                    fontWeight: '500',
+                    cursor: 'pointer',
+                    fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+                  }}
+                >
+                  Пополнить
+                </motion.button>
+              </div>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
       <motion.div
         variants={containerVariants}
         initial="initial"
@@ -425,6 +577,7 @@ const Profile: React.FC = () => {
             variants={buttonVariants}
             whileHover="hover"
             whileTap="tap"
+            onClick={handleDepositClick}
             style={{
               width: '100%',
               padding: '16px',
@@ -435,7 +588,8 @@ const Profile: React.FC = () => {
               fontSize: '17px',
               fontWeight: '500',
               marginBottom: '12px',
-              cursor: 'pointer'
+              cursor: 'pointer',
+              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
             }}
           >
             Пополнить баланс
