@@ -27,23 +27,32 @@ const Profile: React.FC = () => {
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Загружаем сохраненные данные из localStorage
-    const savedProfile = localStorage.getItem('userProfile');
-    if (savedProfile) {
-      const { savedUsername, savedEmail, savedPhoto } = JSON.parse(savedProfile);
-      if (savedUsername) {
-        setUsername(savedUsername);
-        setTempUsername(savedUsername);
+  // Функция для загрузки сохраненных данных
+  const loadSavedProfile = () => {
+    try {
+      const savedProfile = localStorage.getItem('userProfile');
+      if (savedProfile) {
+        const { savedUsername, savedEmail, savedPhoto } = JSON.parse(savedProfile);
+        if (savedUsername) {
+          setUsername(savedUsername);
+          setTempUsername(savedUsername);
+        }
+        if (savedEmail) {
+          setEmail(savedEmail);
+          setTempEmail(savedEmail);
+        }
+        if (savedPhoto) {
+          setUserPhoto(savedPhoto);
+        }
       }
-      if (savedEmail) {
-        setEmail(savedEmail);
-        setTempEmail(savedEmail);
-      }
-      if (savedPhoto) {
-        setUserPhoto(savedPhoto);
-      }
+    } catch (error) {
+      console.error('Ошибка при загрузке профиля:', error);
     }
+  };
+
+  useEffect(() => {
+    // Загружаем сохраненные данные
+    loadSavedProfile();
 
     // Получаем данные пользователя из Telegram WebApp
     const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
@@ -67,25 +76,28 @@ const Profile: React.FC = () => {
   };
 
   const handleSave = () => {
-    if (tempUsername.trim()) {
-      setUsername(tempUsername);
+    try {
+      const newUsername = tempUsername.trim() || username;
+      const newEmail = tempEmail.trim() || email;
+      const newPhoto = previewUrl || userPhoto;
+
+      // Обновляем состояние
+      setUsername(newUsername);
+      setEmail(newEmail);
+      setUserPhoto(newPhoto);
+
+      // Сохраняем в localStorage
+      const profileData = {
+        savedUsername: newUsername,
+        savedEmail: newEmail,
+        savedPhoto: newPhoto
+      };
+      localStorage.setItem('userProfile', JSON.stringify(profileData));
+      
+      setIsEditing(false);
+    } catch (error) {
+      console.error('Ошибка при сохранении профиля:', error);
     }
-    if (tempEmail.trim()) {
-      setEmail(tempEmail);
-    }
-    if (previewUrl) {
-      setUserPhoto(previewUrl);
-    }
-    
-    // Сохраняем данные в localStorage
-    const profileData = {
-      savedUsername: tempUsername.trim() || username,
-      savedEmail: tempEmail.trim() || email,
-      savedPhoto: previewUrl || userPhoto
-    };
-    localStorage.setItem('userProfile', JSON.stringify(profileData));
-    
-    setIsEditing(false);
   };
 
   const handleCancel = () => {
