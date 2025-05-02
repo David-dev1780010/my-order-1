@@ -27,6 +27,20 @@ const Profile: React.FC = () => {
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  // Функция для сохранения профиля
+  const saveProfile = () => {
+    try {
+      const profileData = {
+        savedUsername: username,
+        savedEmail: email,
+        savedPhoto: userPhoto
+      };
+      localStorage.setItem('userProfile', JSON.stringify(profileData));
+    } catch (error) {
+      console.error('Ошибка при сохранении профиля:', error);
+    }
+  };
+
   // Функция для загрузки сохраненных данных
   const loadSavedProfile = () => {
     try {
@@ -65,7 +79,19 @@ const Profile: React.FC = () => {
         setTempUsername(telegramUser.username);
       }
     }
-  }, []);
+
+    // Добавляем обработчик события закрытия приложения
+    const handleBeforeUnload = () => {
+      saveProfile();
+    };
+
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    // Очищаем обработчик при размонтировании компонента
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, [username, email, userPhoto]); // Добавляем зависимости для useEffect
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -87,12 +113,7 @@ const Profile: React.FC = () => {
       setUserPhoto(newPhoto);
 
       // Сохраняем в localStorage
-      const profileData = {
-        savedUsername: newUsername,
-        savedEmail: newEmail,
-        savedPhoto: newPhoto
-      };
-      localStorage.setItem('userProfile', JSON.stringify(profileData));
+      saveProfile();
       
       setIsEditing(false);
     } catch (error) {
