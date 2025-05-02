@@ -18,9 +18,6 @@ declare global {
   }
 }
 
-const CRYPTO_PAY_TOKEN = '376809:AA8RHtjg7Wq3B0mqXrFLyTmXGK10CBZZtbY';
-const CRYPTO_PAY_API = 'https://pay.crypt.bot/api';
-
 const Profile: React.FC = () => {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('никнейм');
@@ -130,61 +127,54 @@ const Profile: React.FC = () => {
     }
   };
 
-  // Функция создания инвойса
+  // Функция создания счета через Crypto Pay API
   async function createInvoice(amount: string) {
-    const response = await fetch(`${CRYPTO_PAY_API}/createInvoice`, {
+    const res = await fetch('https://pay.crypt.bot/api/createInvoice', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Crypto-Pay-API-Token': CRYPTO_PAY_TOKEN
+        'Crypto-Pay-API-Token': '376809:AA8RHtjg7Wq3B0mqXrFLyTmXGK10CBZZtbY'
       },
       body: JSON.stringify({
         asset: 'USDT',
-        amount: amount,
-        description: 'Пополнение баланса'
+        amount,
+        description: 'Пополнение баланса через @send'
       })
     });
-    const data = await response.json();
-    return data.result;
+    const data = await res.json();
+    if (data.ok) {
+      return data.result.bot_invoice_url;
+    } else {
+      throw new Error(data.error || 'Ошибка создания счета');
+    }
   }
 
-  // Функция проверки статуса инвойса
-  async function getInvoiceStatus(invoiceId: number) {
-    const response = await fetch(`${CRYPTO_PAY_API}/getInvoices`, {
+  // Функция получения оплаченных счетов
+  async function getPaidInvoices() {
+    const res = await fetch('https://pay.crypt.bot/api/getInvoices', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
-        'Crypto-Pay-API-Token': CRYPTO_PAY_TOKEN
+        'Crypto-Pay-API-Token': '376809:AA8RHtjg7Wq3B0mqXrFLyTmXGK10CBZZtbY'
       },
       body: JSON.stringify({
-        invoice_ids: [invoiceId]
+        status: 'paid'
       })
     });
-    const data = await response.json();
-    return data.result[0];
+    const data = await res.json();
+    if (data.ok) {
+      return data.result.invoices.reduce((sum: number, inv: any) => sum + parseFloat(inv.amount), 0);
+    }
+    return 0;
   }
 
-  // При нажатии на "Пополнить"
-  const handleDeposit = async () => {
-    if (!depositAmount || isNaN(Number(depositAmount))) return;
-    const invoice = await createInvoice(depositAmount);
-    if (invoice && invoice.invoice_id && invoice.pay_url) {
-      localStorage.setItem('lastInvoiceId', String(invoice.invoice_id));
-      window.location.href = invoice.pay_url;
-    }
-  };
-
-  // Проверка оплаты при заходе на страницу
+  // Проверка баланса при загрузке профиля
   useEffect(() => {
-    const savedInvoiceId = localStorage.getItem('lastInvoiceId');
-    if (savedInvoiceId) {
-      getInvoiceStatus(Number(savedInvoiceId)).then((invoice) => {
-        if (invoice && invoice.status === 'paid') {
-          setBalance(Number(invoice.amount));
-          localStorage.removeItem('lastInvoiceId');
-        }
-      });
+    async function fetchBalance() {
+      const paid = await getPaidInvoices();
+      setBalance(paid);
     }
+    fetchBalance();
   }, []);
 
   useEffect(() => {
@@ -281,6 +271,17 @@ const Profile: React.FC = () => {
 
   const handleDepositClick = () => {
     setIsDepositing(true);
+  };
+
+  // Обработчик пополнения
+  const handleDeposit = async () => {
+    try {
+      const url = await createInvoice(depositAmount);
+      window.open(url, '_blank');
+      setIsDepositing(false);
+    } catch (e: any) {
+      alert('Ошибка при создании счета: ' + e.message);
+    }
   };
 
   const containerVariants = {
@@ -394,6 +395,7 @@ const Profile: React.FC = () => {
               variants={buttonVariants}
               whileHover="hover"
               whileTap="tap"
+              onClick={handleDeposit}
               style={{
                 width: '100%',
                 padding: '16px',
@@ -406,7 +408,6 @@ const Profile: React.FC = () => {
                 cursor: 'pointer',
                 fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
               }}
-              onClick={handleDeposit}
             >
               Пополнить
             </motion.button>
@@ -547,7 +548,7 @@ const Profile: React.FC = () => {
               )}
             </AnimatePresence>
 
-            {!isEditing && !isDepositing && (
+            {!isEditing && (
               <div style={{
                 color: '#9E9E9E',
                 marginBottom: '25px',
@@ -556,7 +557,7 @@ const Profile: React.FC = () => {
                 alignItems: 'center',
                 gap: '4px'
               }}>
-                Баланс: <span style={{ color: 'white' }}> ${balance}</span>
+                Баланс: <span style={{ color: 'white' }}>�� ${balance}</span>
               </div>
             )}
 
