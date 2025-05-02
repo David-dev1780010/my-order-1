@@ -32,7 +32,6 @@ const Profile: React.FC = () => {
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [balance, setBalance] = useState<number>(0);
-  const [lastInvoiceId, setLastInvoiceId] = useState<number | null>(null);
 
   // Функция для конвертации файла в base64
   const convertFileToBase64 = (file: File): Promise<string> => {
@@ -170,7 +169,6 @@ const Profile: React.FC = () => {
     if (!depositAmount || isNaN(Number(depositAmount))) return;
     const invoice = await createInvoice(depositAmount);
     if (invoice && invoice.invoice_id && invoice.pay_url) {
-      setLastInvoiceId(invoice.invoice_id);
       localStorage.setItem('lastInvoiceId', String(invoice.invoice_id));
       window.location.href = invoice.pay_url;
     }
@@ -558,7 +556,7 @@ const Profile: React.FC = () => {
                 alignItems: 'center',
                 gap: '4px'
               }}>
-                Баланс: <span style={{ color: 'white' }}>�� ${balance}</span>
+                Баланс: <span style={{ color: 'white' }}> ${balance}</span>
               </div>
             )}
 
