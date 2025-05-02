@@ -27,13 +27,35 @@ const Profile: React.FC = () => {
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
+  // Функция для конвертации файла в base64
+  const convertFileToBase64 = (file: File): Promise<string> => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result as string);
+      reader.onerror = error => reject(error);
+    });
+  };
+
+  const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      try {
+        const base64String = await convertFileToBase64(file);
+        setPreviewUrl(base64String);
+      } catch (error) {
+        console.error('Ошибка при конвертации файла:', error);
+      }
+    }
+  };
+
   // Функция для сохранения профиля
   const saveProfile = () => {
     try {
       const profileData = {
         savedUsername: username,
         savedEmail: email,
-        savedPhoto: userPhoto,
+        savedPhoto: previewUrl || userPhoto,
         lastUpdated: new Date().toISOString()
       };
       localStorage.setItem('userProfile', JSON.stringify(profileData));
@@ -75,8 +97,9 @@ const Profile: React.FC = () => {
       // Проверяем, есть ли сохраненный никнейм
       const savedProfile = localStorage.getItem('userProfile');
       const hasSavedUsername = savedProfile && JSON.parse(savedProfile).savedUsername !== 'никнейм';
+      const hasSavedPhoto = savedProfile && JSON.parse(savedProfile).savedPhoto;
 
-      if (telegramUser.photo_url && !userPhoto) {
+      if (telegramUser.photo_url && !hasSavedPhoto) {
         setUserPhoto(telegramUser.photo_url);
       }
       if (telegramUser.username && !hasSavedUsername) {
@@ -96,22 +119,14 @@ const Profile: React.FC = () => {
     return () => {
       window.removeEventListener('beforeunload', handleBeforeUnload);
     };
-  }, []); // Убираем зависимости, чтобы useEffect срабатывал только при монтировании
+  }, []);
 
   // Отдельный useEffect для сохранения при изменении данных
   useEffect(() => {
-    if (username !== 'никнейм' || email || userPhoto) {
+    if (username !== 'никнейм' || email || userPhoto || previewUrl) {
       saveProfile();
     }
-  }, [username, email, userPhoto]);
-
-  const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      const url = URL.createObjectURL(file);
-      setPreviewUrl(url);
-    }
-  };
+  }, [username, email, userPhoto, previewUrl]);
 
   const handleSave = () => {
     try {
@@ -123,6 +138,7 @@ const Profile: React.FC = () => {
       setUsername(newUsername);
       setEmail(newEmail);
       setUserPhoto(newPhoto);
+      setPreviewUrl(null);
 
       // Сохраняем в localStorage
       saveProfile();
