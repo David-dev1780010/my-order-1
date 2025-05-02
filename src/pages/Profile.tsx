@@ -222,11 +222,6 @@ const Profile: React.FC = () => {
     setIsDepositing(true);
   };
 
-  const handleDepositClose = () => {
-    setIsDepositing(false);
-    setDepositAmount('');
-  };
-
   const containerVariants = {
     initial: {
       opacity: 0,
