@@ -38,7 +38,6 @@ const Profile: React.FC = () => {
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [balance, setBalance] = useState(0);
-  const [lastInvoiceId, setLastInvoiceId] = useState<string | null>(null);
 
   // Функция для конвертации файла в base64
   const convertFileToBase64 = (file: File): Promise<string> => {
@@ -183,11 +182,6 @@ const Profile: React.FC = () => {
   useEffect(() => {
     const savedBalance = localStorage.getItem('userBalance');
     if (savedBalance) setBalance(Number(savedBalance));
-    const savedInvoiceId = localStorage.getItem('lastInvoiceId');
-    if (savedInvoiceId) {
-      setLastInvoiceId(savedInvoiceId);
-      checkInvoiceStatus(savedInvoiceId);
-    }
   }, []);
 
   // Обработчики изменений полей
@@ -264,8 +258,6 @@ const Profile: React.FC = () => {
       );
       if (response.data.ok) {
         const invoice = response.data.result;
-        setLastInvoiceId(invoice.invoice_id);
-        localStorage.setItem('lastInvoiceId', invoice.invoice_id);
         // Открываем ссылку на оплату
         window.open(getInvoiceUrl(invoice), '_blank');
       } else {
@@ -273,36 +265,6 @@ const Profile: React.FC = () => {
       }
     } catch (error) {
       alert('Ошибка при создании счета');
-    }
-  };
-
-  // Функция для проверки статуса счета
-  const checkInvoiceStatus = async (invoiceId: string) => {
-    try {
-      const response = await axios.post(
-        `${CRYPTO_PAY_API_URL}/getInvoices`,
-        { invoice_ids: [invoiceId] },
-        {
-          headers: {
-            'Crypto-Pay-API-Token': CRYPTO_PAY_API_TOKEN,
-            'Content-Type': 'application/json',
-          },
-        }
-      );
-      if (response.data.ok && response.data.result.items.length > 0) {
-        const invoice = response.data.result.items[0];
-        if (invoice.status === 'paid') {
-          setBalance((prev) => {
-            const newBalance = prev + Number(invoice.amount);
-            localStorage.setItem('userBalance', String(newBalance));
-            return newBalance;
-          });
-          localStorage.removeItem('lastInvoiceId');
-          setLastInvoiceId(null);
-        }
-      }
-    } catch (error) {
-      // Можно добавить обработку ошибок
     }
   };
 
