@@ -341,8 +341,8 @@ const Profile: React.FC = () => {
                   src="/images/crypto_pay.png"
                   alt="CryptoBot"
                   style={{
-                    width: '280px',
-                    height: '160px',
+                    width: '200px',
+                    height: '110px',
                     objectFit: 'contain',
                     background: 'none',
                     boxShadow: 'none',
