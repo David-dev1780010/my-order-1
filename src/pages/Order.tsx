@@ -1,14 +1,35 @@
 import React from 'react';
 
-const circleStyle = {
-  width: 12,
-  height: 12,
-  background: '#B6116B',
-  borderRadius: '50%',
-  display: 'inline-block',
-  margin: '0 8px',
-  verticalAlign: 'middle',
-};
+const ButtonWithDots: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({ children, ...props }) => (
+  <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: '18px' }}>
+    <span style={{
+      width: 10, height: 10, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginRight: 8
+    }} />
+    <button
+      {...props}
+      style={{
+        flex: 1,
+        padding: '16px',
+        borderRadius: '12px',
+        backgroundColor: '#B6116B',
+        color: 'white',
+        border: 'none',
+        fontSize: '22px',
+        fontWeight: '500',
+        fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+        cursor: 'pointer',
+        position: 'relative',
+        textAlign: 'center',
+        ...props.style
+      }}
+    >
+      {children}
+    </button>
+    <span style={{
+      width: 10, height: 10, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginLeft: 8
+    }} />
+  </div>
+);
 
 const Order: React.FC = () => {
   // Обработчик для кнопки "Другое..."
@@ -59,52 +80,31 @@ const Order: React.FC = () => {
         }}>
           Выберите услугу<br />дизайна
         </h1>
-        {/* Кнопки с кругами */}
-        {["GFX баннер", "GFX анимация", "GFX аватарка"].map((text) => (
-          <div key={text} style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center', marginBottom: 18 }}>
-            <span style={circleStyle} />
-            <button style={{
-              width: '85%',
-              padding: '16px',
-              borderRadius: '24px',
-              backgroundColor: '#B6116B',
-              color: 'white',
-              border: 'none',
-              fontSize: '28px',
-              fontWeight: '500',
-              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-              cursor: 'pointer',
-              position: 'relative',
-              display: 'block',
-              textAlign: 'center',
-            }}>{text}</button>
-            <span style={circleStyle} />
-          </div>
-        ))}
-        {/* Кнопка другое... */}
-        <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center', marginTop: 10 }}>
-          <span style={{ ...circleStyle, width: 8, height: 8, margin: '0 6px' }} />
+        <ButtonWithDots>GFX баннер</ButtonWithDots>
+        <ButtonWithDots>GFX анимация</ButtonWithDots>
+        <ButtonWithDots>GFX аватарка</ButtonWithDots>
+        <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: 0, marginTop: 8 }}>
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginRight: 8 }} />
           <button
             onClick={handleOtherClick}
             style={{
-              width: '55%',
-              padding: '10px',
-              borderRadius: '16px',
+              flex: 1,
+              padding: '12px',
+              borderRadius: '12px',
               backgroundColor: '#B6116B',
               color: 'white',
               border: 'none',
-              fontSize: '20px',
+              fontSize: '18px',
               fontWeight: '500',
               fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
               cursor: 'pointer',
               position: 'relative',
-              display: 'block',
-              textAlign: 'center',
+              textAlign: 'center'
             }}
           >
             Другое...
           </button>
-          <span style={{ ...circleStyle, width: 8, height: 8, margin: '0 6px' }} />
+          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginLeft: 8 }} />
         </div>
       </div>
     </div>
