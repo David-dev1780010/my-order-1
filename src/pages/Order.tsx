@@ -1,5 +1,15 @@
 import React from 'react';
 
+const circleStyle = {
+  width: 12,
+  height: 12,
+  background: '#B6116B',
+  borderRadius: '50%',
+  display: 'inline-block',
+  margin: '0 8px',
+  verticalAlign: 'middle',
+};
+
 const Order: React.FC = () => {
   // Обработчик для кнопки "Другое..."
   const handleOtherClick = () => {
@@ -8,48 +18,6 @@ const Order: React.FC = () => {
     } else {
       alert('Функция временно не доступна');
     }
-  };
-
-  const buttonStyle: React.CSSProperties = {
-    width: '100%',
-    padding: '22px 0',
-    borderRadius: '40px',
-    backgroundColor: '#B6116B',
-    color: 'white',
-    border: 'none',
-    fontSize: '38px',
-    fontWeight: 500,
-    marginBottom: '32px',
-    fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-    cursor: 'pointer',
-    position: 'relative',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    boxSizing: 'border-box',
-  };
-
-  const dotStyle: React.CSSProperties = {
-    width: 18,
-    height: 18,
-    borderRadius: '50%',
-    background: '#B6116B',
-    margin: '0 18px',
-    flexShrink: 0,
-  };
-
-  const otherButtonStyle: React.CSSProperties = {
-    ...buttonStyle,
-    fontSize: '26px',
-    padding: '12px 0',
-    marginBottom: 0,
-    borderRadius: '22px',
-  };
-  const otherDotStyle: React.CSSProperties = {
-    ...dotStyle,
-    width: 10,
-    height: 10,
-    margin: '0 8px',
   };
 
   return (
@@ -74,7 +42,7 @@ const Order: React.FC = () => {
           borderRadius: '25px',
           padding: '30px 20px',
           width: '100%',
-          maxWidth: '540px',
+          maxWidth: '340px',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
@@ -82,8 +50,8 @@ const Order: React.FC = () => {
       >
         <h1 style={{
           color: 'white',
-          fontSize: '32px',
-          marginBottom: '40px',
+          fontSize: '28px',
+          marginBottom: '32px',
           fontWeight: '500',
           fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
           textAlign: 'center',
@@ -91,28 +59,52 @@ const Order: React.FC = () => {
         }}>
           Выберите услугу<br />дизайна
         </h1>
-        {/* Кнопки с точками */}
-        <div style={{width: '100%'}}>
-          <div style={{display: 'flex', alignItems: 'center', marginBottom: 32}}>
-            <div style={dotStyle}></div>
-            <button style={buttonStyle}>GFX баннер</button>
-            <div style={dotStyle}></div>
+        {/* Кнопки с кругами */}
+        {["GFX баннер", "GFX анимация", "GFX аватарка"].map((text, idx) => (
+          <div key={text} style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center', marginBottom: 18 }}>
+            <span style={circleStyle} />
+            <button style={{
+              width: '85%',
+              padding: '16px',
+              borderRadius: '24px',
+              backgroundColor: '#B6116B',
+              color: 'white',
+              border: 'none',
+              fontSize: '28px',
+              fontWeight: '500',
+              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+              cursor: 'pointer',
+              position: 'relative',
+              display: 'block',
+              textAlign: 'center',
+            }}>{text}</button>
+            <span style={circleStyle} />
           </div>
-          <div style={{display: 'flex', alignItems: 'center', marginBottom: 32}}>
-            <div style={dotStyle}></div>
-            <button style={buttonStyle}>GFX анимация</button>
-            <div style={dotStyle}></div>
-          </div>
-          <div style={{display: 'flex', alignItems: 'center', marginBottom: 32}}>
-            <div style={dotStyle}></div>
-            <button style={buttonStyle}>GFX аватарка</button>
-            <div style={dotStyle}></div>
-          </div>
-          <div style={{display: 'flex', alignItems: 'center', marginBottom: 0}}>
-            <div style={otherDotStyle}></div>
-            <button style={otherButtonStyle} onClick={handleOtherClick}>Другое...</button>
-            <div style={otherDotStyle}></div>
-          </div>
+        ))}
+        {/* Кнопка другое... */}
+        <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center', marginTop: 10 }}>
+          <span style={{ ...circleStyle, width: 8, height: 8, margin: '0 6px' }} />
+          <button
+            onClick={handleOtherClick}
+            style={{
+              width: '55%',
+              padding: '10px',
+              borderRadius: '16px',
+              backgroundColor: '#B6116B',
+              color: 'white',
+              border: 'none',
+              fontSize: '20px',
+              fontWeight: '500',
+              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+              cursor: 'pointer',
+              position: 'relative',
+              display: 'block',
+              textAlign: 'center',
+            }}
+          >
+            Другое...
+          </button>
+          <span style={{ ...circleStyle, width: 8, height: 8, margin: '0 6px' }} />
         </div>
       </div>
     </div>
