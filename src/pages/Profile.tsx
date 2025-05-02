@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 declare global {
   interface Window {
@@ -349,145 +349,6 @@ const Profile: React.FC = () => {
               Пополнить
             </motion.button>
           </>
-        ) : isEditing ? (
-          <>
-            <h1 style={{
-              color: 'white',
-              fontSize: '32px',
-              marginBottom: '40px',
-              fontWeight: '500',
-              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
-            }}>
-              Редактирование профиля
-            </h1>
-            <div style={{
-              width: '90px',
-              height: '90px',
-              borderRadius: '50%',
-              border: '3px solid #FF54BD',
-              backgroundColor: '#2D1E5A',
-              marginBottom: '15px',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              overflow: 'hidden',
-              position: 'relative',
-              padding: '8px',
-              cursor: 'pointer'
-            }}>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                style={{
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  opacity: 0,
-                  cursor: 'pointer',
-                  zIndex: 2
-                }}
-              />
-              {(previewUrl || userPhoto) ? (
-                <img 
-                  src={previewUrl || userPhoto || ''}
-                  alt="Аватар пользователя"
-                  style={{
-                    width: '100%',
-                    height: '100%',
-                    objectFit: 'cover',
-                    borderRadius: '50%'
-                  }}
-                />
-              ) : (
-                <div style={{
-                  width: '100%',
-                  height: '100%',
-                  borderRadius: '50%',
-                  backgroundColor: '#FF54BD',
-                  opacity: 0.5
-                }} />
-              )}
-            </div>
-            <motion.input
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              type="text"
-              value={tempUsername}
-              onChange={handleUsernameChange}
-              placeholder="Введите никнейм"
-              style={{
-                backgroundColor: 'rgba(255,255,255,0.1)',
-                border: '1px solid #FF54BD',
-                borderRadius: '8px',
-                padding: '8px 12px',
-                color: 'white',
-                fontSize: '16px',
-                width: '100%',
-                marginBottom: '10px',
-                outline: 'none'
-              }}
-            />
-            <motion.input
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              type="email"
-              value={tempEmail}
-              onChange={handleEmailChange}
-              placeholder="Введите email"
-              style={{
-                backgroundColor: 'rgba(255,255,255,0.1)',
-                border: '1px solid #FF54BD',
-                borderRadius: '8px',
-                padding: '8px 12px',
-                color: 'white',
-                fontSize: '16px',
-                width: '100%',
-                marginBottom: '10px',
-                outline: 'none'
-              }}
-            />
-            <motion.button
-              variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
-              onClick={handleSave}
-              style={{
-                width: '100%',
-                padding: '16px',
-                borderRadius: '12px',
-                backgroundColor: '#09FBD3',
-                color: '#2D1E5A',
-                border: 'none',
-                fontSize: '17px',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}
-            >
-              Сохранить
-            </motion.button>
-            <motion.button
-              variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
-              onClick={handleCancel}
-              style={{
-                width: '100%',
-                padding: '16px',
-                borderRadius: '12px',
-                backgroundColor: '#B6116B',
-                color: 'white',
-                border: 'none',
-                fontSize: '17px',
-                fontWeight: '500',
-                cursor: 'pointer'
-              }}
-            >
-              Отмена
-            </motion.button>
-          </>
         ) : (
           <>
             <h1 style={{
@@ -499,6 +360,7 @@ const Profile: React.FC = () => {
             }}>
               Личный кабинет
             </h1>
+
             <div style={{
               width: '90px',
               height: '90px',
@@ -512,21 +374,23 @@ const Profile: React.FC = () => {
               overflow: 'hidden',
               position: 'relative',
               padding: '8px',
-              cursor: 'pointer'
+              cursor: isEditing ? 'pointer' : 'default'
             }}>
-              <input
-                type="file"
-                accept="image/*"
-                onChange={handleFileChange}
-                style={{
-                  position: 'absolute',
-                  width: '100%',
-                  height: '100%',
-                  opacity: 0,
-                  cursor: 'pointer',
-                  zIndex: 2
-                }}
-              />
+              {isEditing && (
+                <input
+                  type="file"
+                  accept="image/*"
+                  onChange={handleFileChange}
+                  style={{
+                    position: 'absolute',
+                    width: '100%',
+                    height: '100%',
+                    opacity: 0,
+                    cursor: 'pointer',
+                    zIndex: 2
+                  }}
+                />
+              )}
               {(previewUrl || userPhoto) ? (
                 <img 
                   src={previewUrl || userPhoto || ''}
@@ -547,66 +411,180 @@ const Profile: React.FC = () => {
                   opacity: 0.5
                 }} />
               )}
+              {isEditing && (
+                <div style={{
+                  position: 'absolute',
+                  bottom: 0,
+                  width: '100%',
+                  backgroundColor: 'rgba(0,0,0,0.5)',
+                  color: 'white',
+                  fontSize: '10px',
+                  textAlign: 'center',
+                  padding: '2px 0'
+                }}>
+                  Изменить
+                </div>
+              )}
             </div>
-            <div style={{
-              color: 'white',
-              marginBottom: '5px',
-              fontSize: '20px',
-              fontWeight: '400',
-              opacity: '0.9'
-            }}>
-              {username}
-            </div>
-            <div style={{
-              color: '#9E9E9E',
-              marginBottom: '25px',
-              fontSize: '16px',
-              display: 'flex',
-              alignItems: 'center',
-              gap: '4px'
-            }}>
-              Баланс: <span style={{ color: 'white' }}>💰 $0</span>
-            </div>
-            <motion.button
-              variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
-              onClick={handleDepositClick}
-              style={{
-                width: '100%',
-                padding: '16px',
-                borderRadius: '12px',
-                backgroundColor: '#B6116B',
+
+            {isEditing ? (
+              <motion.input
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                type="text"
+                value={tempUsername}
+                onChange={handleUsernameChange}
+                placeholder="Введите никнейм"
+                style={{
+                  backgroundColor: 'rgba(255,255,255,0.1)',
+                  border: '1px solid #FF54BD',
+                  borderRadius: '8px',
+                  padding: '8px 12px',
+                  color: 'white',
+                  fontSize: '16px',
+                  width: '100%',
+                  marginBottom: '10px',
+                  outline: 'none'
+                }}
+              />
+            ) : (
+              <div style={{
                 color: 'white',
-                border: 'none',
-                fontSize: '17px',
-                fontWeight: '500',
-                marginBottom: '12px',
-                cursor: 'pointer',
-                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
-              }}
-            >
-              Пополнить баланс
-            </motion.button>
-            <motion.button
-              variants={buttonVariants}
-              whileHover="hover"
-              whileTap="tap"
-              onClick={handleEditClick}
-              style={{
-                width: '100%',
-                padding: '16px',
-                borderRadius: '12px',
-                backgroundColor: '#09FBD3',
-                color: '#2D1E5A',
-                border: 'none',
-                fontSize: '17px',
-                fontWeight: '600',
-                cursor: 'pointer'
-              }}
-            >
-              Редактировать профиль
-            </motion.button>
+                marginBottom: '5px',
+                fontSize: '20px',
+                fontWeight: '400',
+                opacity: '0.9'
+              }}>
+                {username}
+              </div>
+            )}
+
+            <AnimatePresence>
+              {isEditing && (
+                <motion.input
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  type="email"
+                  value={tempEmail}
+                  onChange={handleEmailChange}
+                  placeholder="Введите email"
+                  style={{
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    border: '1px solid #FF54BD',
+                    borderRadius: '8px',
+                    padding: '8px 12px',
+                    color: 'white',
+                    fontSize: '16px',
+                    width: '100%',
+                    marginBottom: '10px',
+                    outline: 'none'
+                  }}
+                />
+              )}
+            </AnimatePresence>
+
+            {!isEditing && (
+              <div style={{
+                color: '#9E9E9E',
+                marginBottom: '25px',
+                fontSize: '16px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '4px'
+              }}>
+                Баланс: <span style={{ color: 'white' }}>💰 $0</span>
+              </div>
+            )}
+
+            {!isEditing && (
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                onClick={handleDepositClick}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  borderRadius: '12px',
+                  backgroundColor: '#B6116B',
+                  color: 'white',
+                  border: 'none',
+                  fontSize: '17px',
+                  fontWeight: '500',
+                  marginBottom: '12px',
+                  cursor: 'pointer',
+                  fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+                }}
+              >
+                Пополнить баланс
+              </motion.button>
+            )}
+
+            {!isEditing ? (
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                onClick={handleEditClick}
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  borderRadius: '12px',
+                  backgroundColor: '#09FBD3',
+                  color: '#2D1E5A',
+                  border: 'none',
+                  fontSize: '17px',
+                  fontWeight: '600',
+                  cursor: 'pointer'
+                }}
+              >
+                Редактировать профиль
+              </motion.button>
+            ) : (
+              <>
+                <motion.button
+                  variants={buttonVariants}
+                  whileHover="hover"
+                  whileTap="tap"
+                  onClick={handleSave}
+                  style={{
+                    width: '100%',
+                    padding: '16px',
+                    borderRadius: '12px',
+                    backgroundColor: '#09FBD3',
+                    color: '#2D1E5A',
+                    border: 'none',
+                    fontSize: '17px',
+                    fontWeight: '600',
+                    cursor: 'pointer',
+                    marginBottom: '12px'
+                  }}
+                >
+                  Сохранить
+                </motion.button>
+                <motion.button
+                  variants={buttonVariants}
+                  whileHover="hover"
+                  whileTap="tap"
+                  onClick={handleCancel}
+                  style={{
+                    width: '100%',
+                    padding: '16px',
+                    borderRadius: '12px',
+                    backgroundColor: '#B6116B',
+                    color: 'white',
+                    border: 'none',
+                    fontSize: '17px',
+                    fontWeight: '500',
+                    cursor: 'pointer'
+                  }}
+                >
+                  Отмена
+                </motion.button>
+              </>
+            )}
           </>
         )}
       </motion.div>
