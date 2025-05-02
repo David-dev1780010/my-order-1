@@ -28,6 +28,23 @@ const Profile: React.FC = () => {
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
   useEffect(() => {
+    // Загружаем сохраненные данные из localStorage
+    const savedProfile = localStorage.getItem('userProfile');
+    if (savedProfile) {
+      const { savedUsername, savedEmail, savedPhoto } = JSON.parse(savedProfile);
+      if (savedUsername) {
+        setUsername(savedUsername);
+        setTempUsername(savedUsername);
+      }
+      if (savedEmail) {
+        setEmail(savedEmail);
+        setTempEmail(savedEmail);
+      }
+      if (savedPhoto) {
+        setUserPhoto(savedPhoto);
+      }
+    }
+
     // Получаем данные пользователя из Telegram WebApp
     const telegramUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
     if (telegramUser) {
@@ -59,6 +76,15 @@ const Profile: React.FC = () => {
     if (previewUrl) {
       setUserPhoto(previewUrl);
     }
+    
+    // Сохраняем данные в localStorage
+    const profileData = {
+      savedUsername: tempUsername.trim() || username,
+      savedEmail: tempEmail.trim() || email,
+      savedPhoto: previewUrl || userPhoto
+    };
+    localStorage.setItem('userProfile', JSON.stringify(profileData));
+    
     setIsEditing(false);
   };
 
