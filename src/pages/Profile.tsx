@@ -331,52 +331,45 @@ const Profile: React.FC = () => {
 
               <div style={{
                 width: '100%',
-                height: '200px',
-                backgroundColor: '#584C7D',
-                borderRadius: '12px',
-                marginBottom: '20px',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'center',
-                justifyContent: 'center'
+                justifyContent: 'center',
+                marginBottom: '20px',
               }}>
-                <img 
-                  src="/images/crypto_pay.png" 
+                <img
+                  src="/images/crypto_pay.png"
                   alt="CryptoBot"
                   style={{
-                    width: '140px',
-                    height: '80px',
-                    marginBottom: '0px',
-                    objectFit: 'contain'
+                    width: '280px',
+                    height: '160px',
+                    objectFit: 'contain',
+                    background: 'none',
+                    boxShadow: 'none',
+                    border: 'none',
                   }}
                 />
               </div>
 
-              <div style={{
-                display: 'flex',
-                gap: '10px',
-                width: '100%'
-              }}>
-                <motion.button
-                  variants={buttonVariants}
-                  whileHover="hover"
-                  whileTap="tap"
-                  style={{
-                    flex: 1,
-                    padding: '16px',
-                    borderRadius: '12px',
-                    backgroundColor: '#B6116B',
-                    color: 'white',
-                    border: 'none',
-                    fontSize: '17px',
-                    fontWeight: '500',
-                    cursor: 'pointer',
-                    fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
-                  }}
-                >
-                  Пополнить
-                </motion.button>
-              </div>
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                style={{
+                  width: '100%',
+                  padding: '16px',
+                  borderRadius: '12px',
+                  backgroundColor: '#B6116B',
+                  color: 'white',
+                  border: 'none',
+                  fontSize: '17px',
+                  fontWeight: '500',
+                  cursor: 'pointer',
+                  fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+                }}
+              >
+                Пополнить
+              </motion.button>
             </motion.div>
           </motion.div>
         )}
