@@ -6,9 +6,16 @@ from flask import Flask, request, jsonify
 import threading
 import hmac
 from hashlib import sha256
+import os
+from dotenv import load_dotenv
 
-BOT_TOKEN = "7736951923:AAHaXa-zYyM2i3bu7zi5usGZiU0UXRoV8hI"
-CRYPTO_PAY_TOKEN = "376809:AA8RHtjg7Wq3B0mqXrFLyTmXGK10CBZZtbY"
+# Загружаем переменные окружения
+load_dotenv()
+BOT_TOKEN = os.getenv("BOT_TOKEN")
+CRYPTO_PAY_TOKEN = os.getenv("CRYPTO_PAY_TOKEN")
+
+if not BOT_TOKEN or not CRYPTO_PAY_TOKEN:
+    raise ValueError("Не найдены необходимые токены в переменных окружения")
 
 logging.basicConfig(level=logging.INFO)
 
