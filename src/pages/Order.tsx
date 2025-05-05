@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import axios from 'axios';
 
 const services = [
   {
@@ -59,6 +60,72 @@ const ButtonWithDots: React.FC<{ children: React.ReactNode; onClick?: () => void
 const Order: React.FC = () => {
   const [selected, setSelected] = useState<string | null>(null);
   const [details, setDetails] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [balance, setBalance] = useState<number>(0);
+  const [username, setUsername] = useState<string>('');
+
+  // Получаем баланс и username из localStorage/profile
+  React.useEffect(() => {
+    // Баланс
+    axios.get('/get_balance', { params: { user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id } })
+      .then(res => setBalance(res.data.balance || 0))
+      .catch(() => setBalance(0));
+    // Username
+    const profile = localStorage.getItem('userProfile');
+    if (profile) {
+      try {
+        const { savedUsername } = JSON.parse(profile);
+        setUsername(savedUsername);
+      } catch {}
+    } else {
+      setUsername(window.Telegram?.WebApp?.initDataUnsafe?.user?.username || '');
+    }
+  }, [selected]);
+
+  const handleOrder = async () => {
+    setError(null);
+    if (!details || details.length < 50) {
+      setError('Техническое задание должно содержать минимум 50 символов.');
+      return;
+    }
+    if (details.length > 560) {
+      setError('Техническое задание не должно превышать 560 символов.');
+      return;
+    }
+    if (!username || username === 'никнейм') {
+      setError('Пожалуйста, укажите ваш username в профиле.');
+      return;
+    }
+    if (balance < (service?.price || 0)) {
+      setError('Недостаточно средств на балансе для оформления заказа.');
+      return;
+    }
+    setIsLoading(true);
+    try {
+      // Отправляем заказ в backend (например, в balance_bot.py)
+      await axios.post('/send_order_result', {
+        user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id,
+        file_id: null, // файл будет позже, сейчас просто уведомление
+        comment: 'Ваш заказ успешно оформлен и сейчас находиться в работе у наших специалистов'
+      });
+      setSuccess(true);
+    } catch (e) {
+      setError('Ошибка при оформлении заказа. Попробуйте позже.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleSuccessClose = () => {
+    setSelected(null);
+    setDetails('');
+    setError(null);
+    setSuccess(false);
+    // Можно добавить переход на главную страницу, если есть роутинг
+    // Например: navigate('/')
+  };
 
   const handleOtherClick = () => {
     if (window.Telegram && window.Telegram.WebApp && (window.Telegram.WebApp as any).showAlert) {
@@ -191,7 +258,12 @@ const Order: React.FC = () => {
                 boxSizing: 'border-box',
               }}
             />
+            {error && (
+              <div style={{ color: '#FF53C0', marginBottom: 12, textAlign: 'center', fontWeight: 500 }}>{error}</div>
+            )}
             <button
+              onClick={handleOrder}
+              disabled={isLoading}
               style={{
                 padding: '6px 40px',
                 margin: '0 auto 16px',
@@ -203,11 +275,12 @@ const Order: React.FC = () => {
                 fontSize: '22px',
                 fontWeight: '600',
                 fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-                cursor: 'pointer',
+                cursor: isLoading ? 'not-allowed' : 'pointer',
+                opacity: isLoading ? 0.7 : 1,
                 transition: 'background 0.2s',
               }}
             >
-              Оформить заказ
+              {isLoading ? 'Оформляем...' : 'Оформить заказ'}
             </button>
             <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#09FBD3', display: 'inline-block', marginRight: 4 }} />
@@ -271,6 +344,52 @@ const Order: React.FC = () => {
           zIndex: 0
         }} />
       </div>
+      {success && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          right: 0,
+          bottom: 0,
+          background: 'rgba(0,0,0,0.7)',
+          zIndex: 9999,
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: 'white',
+          fontSize: 22,
+          fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+          flexDirection: 'column'
+        }}>
+          <div style={{
+            background: '#2D1E5A',
+            borderRadius: 24,
+            padding: 32,
+            maxWidth: 320,
+            textAlign: 'center',
+            boxShadow: '0 4px 32px rgba(0,0,0,0.25)'
+          }}>
+            <div style={{ fontSize: 28, fontWeight: 600, marginBottom: 18 }}>Поздравляем!🥳</div>
+            <div style={{ fontSize: 18, marginBottom: 24 }}>Ваш заказ успешно оформлен и сейчас находиться в работе у наших специалистов</div>
+            <button
+              onClick={handleSuccessClose}
+              style={{
+                padding: '10px 32px',
+                borderRadius: 12,
+                background: '#09FBD3',
+                color: '#2D1E5A',
+                border: 'none',
+                fontSize: 20,
+                fontWeight: 600,
+                cursor: 'pointer',
+                marginTop: 8
+              }}
+            >
+              Хорошо
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
