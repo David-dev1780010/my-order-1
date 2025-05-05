@@ -4,6 +4,9 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, InputFile
 from dotenv import load_dotenv
 from aiogram.utils import executor
+from aiogram.dispatcher import FSMContext, filters
+from aiogram.dispatcher.filters.state import State, StatesGroup
+import requests
 
 # Загрузка переменных окружения
 load_dotenv()
@@ -106,6 +109,41 @@ async def handle_png(message: types.Message, order_id, call):
     await message.answer('PNG принят! Заказ отмечен как выполненный.')
     # Здесь можно реализовать отправку результата в balance_bot.py (например, через базу или отдельный канал)
     # Например, balance_bot.py может периодически проверять базу на новые выполненные заказы
+
+class SupportReply(StatesGroup):
+    waiting_for_reply = State()
+
+# --- Обработка кнопки 'Ответить пользователю' ---
+@dp.callback_query_handler(lambda c: c.data.startswith('reply_support_'))
+async def support_reply_callback(call: types.CallbackQuery, state: FSMContext):
+    username = call.data.replace('reply_support_', '')
+    await call.message.answer(f'Введите ответ для пользователя @{username}:')
+    await state.update_data(username=username)
+    await SupportReply.waiting_for_reply.set()
+
+@dp.message_handler(state=SupportReply.waiting_for_reply)
+async def process_support_reply(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    username = data.get('username')
+    answer = message.text
+    # Найти user_id по username
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('SELECT user_id FROM orders WHERE usertag=? ORDER BY id DESC LIMIT 1', (username,))
+    row = c.fetchone()
+    conn.close()
+    user_id = row[0] if row else None
+    if user_id:
+        # Отправить ответ пользователю через основной бот
+        USER_BOT_TOKEN = os.getenv('BOT_TOKEN')
+        requests.post(f'https://api.telegram.org/bot{USER_BOT_TOKEN}/sendMessage', json={
+            'chat_id': user_id,
+            'text': f'Тех.поддержка ответила вам:\n\n{answer}'
+        })
+        await message.answer('Ответ отправлен пользователю!')
+    else:
+        await message.answer('Не удалось найти пользователя по username.')
+    await state.finish()
 
 if __name__ == '__main__':
     executor.start_polling(dp, skip_updates=True) 
