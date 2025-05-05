@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const services = [
   {
@@ -55,6 +56,20 @@ const ButtonWithDots: React.FC<{ children: React.ReactNode; onClick?: () => void
     <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginLeft: 8 }} />
   </div>
 );
+
+const containerVariants = {
+  initial: {
+    opacity: 0,
+    y: 20
+  },
+  animate: {
+    opacity: 1,
+    y: 0,
+    transition: {
+      duration: 0.5
+    }
+  }
+};
 
 const Order: React.FC = () => {
   const [selected, setSelected] = useState<string | null>(null);
@@ -121,7 +136,10 @@ const Order: React.FC = () => {
       overflow: 'hidden',
       fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
     }}>
-      <div
+      <motion.div
+        variants={containerVariants}
+        initial="initial"
+        animate="animate"
         style={{
           backgroundColor: '#2D1E5A',
           borderRadius: '25px',
@@ -138,8 +156,15 @@ const Order: React.FC = () => {
           fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
         }}
       >
+        <AnimatePresence mode="wait">
         {!selected ? (
-          <>
+          <motion.div
+            key="choose"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
+            exit={{ opacity: 0, y: 40, transition: { duration: 0.3 } }}
+            style={{ width: '100%' }}
+          >
             <h1 style={{
               color: 'white',
               fontSize: '28px',
@@ -182,9 +207,15 @@ const Order: React.FC = () => {
                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block' }} />
               </button>
             </div>
-          </>
+          </motion.div>
         ) : (
-          <>
+          <motion.div
+            key="order"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0, transition: { duration: 0.5 } }}
+            exit={{ opacity: 0, y: 40, transition: { duration: 0.3 } }}
+            style={{ width: '100%' }}
+          >
             <div style={{ position: 'absolute', top: 24, right: 24, color: '#FF53C0', fontWeight: 700, fontSize: 32, fontFamily: 'Montserrat Alternates', zIndex: 2 }}>
               {service?.price}$
             </div>
@@ -274,9 +305,10 @@ const Order: React.FC = () => {
               </button>
               <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#09FBD3', display: 'inline-block', marginLeft: 4 }} />
             </div>
-          </>
+          </motion.div>
         )}
-      </div>
+        </AnimatePresence>
+      </motion.div>
       <div style={{
         position: 'fixed',
         top: '50%',
