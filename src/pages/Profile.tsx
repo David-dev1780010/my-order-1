@@ -31,6 +31,7 @@ const Profile: React.FC = () => {
   const [tempEmail, setTempEmail] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
+  const [isInputFocused, setIsInputFocused] = useState(false);
 
   // Функция для конвертации файла в base64
   const convertFileToBase64 = (file: File): Promise<string> => {
@@ -257,6 +258,14 @@ const Profile: React.FC = () => {
     }
   };
 
+  const handleInputFocus = () => {
+    setIsInputFocused(true);
+  };
+
+  const handleInputBlur = () => {
+    setIsInputFocused(false);
+  };
+
   const containerVariants = {
     initial: {
       opacity: 0,
@@ -327,8 +336,10 @@ const Profile: React.FC = () => {
             </h1>
             <input
               type="text"
-              value={depositAmount ? `${depositAmount}$` : ''}
+              value={isInputFocused ? depositAmount : (depositAmount ? `${depositAmount}$` : '')}
               onChange={handleDepositAmountChange}
+              onFocus={handleInputFocus}
+              onBlur={handleInputBlur}
               placeholder="Введите сумму (1-1000$)"
               style={{
                 backgroundColor: '#584C7D',
