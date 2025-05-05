@@ -63,6 +63,8 @@ const Order: React.FC = () => {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          position: 'relative',
+          zIndex: 1
         }}
       >
         <h1 style={{
@@ -103,6 +105,41 @@ const Order: React.FC = () => {
           </button>
           <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginLeft: 8 }} />
         </div>
+      </div>
+      <div style={{
+        position: 'fixed',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        width: '100%',
+        height: '100%',
+        pointerEvents: 'none',
+        zIndex: 0
+      }}>
+        <div style={{
+          position: 'absolute',
+          top: '20%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '600px',
+          height: '600px',
+          borderRadius: '50%',
+          background: 'rgba(9, 251, 211, 0.1)',
+          filter: 'blur(100px)',
+          zIndex: 0
+        }} />
+        <div style={{
+          position: 'absolute',
+          top: '80%',
+          left: '50%',
+          transform: 'translate(-50%, -50%)',
+          width: '600px',
+          height: '600px',
+          borderRadius: '50%',
+          background: 'rgba(254, 83, 187, 0.1)',
+          filter: 'blur(100px)',
+          zIndex: 0
+        }} />
       </div>
     </div>
   );
