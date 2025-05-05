@@ -8,6 +8,9 @@ import hmac
 from hashlib import sha256
 import os
 from dotenv import load_dotenv
+import sqlite3
+from aiogram import Bot, Dispatcher, types, executor
+import asyncio
 
 # Загружаем переменные окружения
 load_dotenv()
@@ -54,24 +57,6 @@ def get_balance():
     if not user_id:
         return jsonify(balance=0)
     return jsonify(balance=balances.get(int(user_id), 0))
-
-@app.route('/send_order_result', methods=['POST'])
-def send_order_result():
-    data = request.json
-    user_id = data.get('user_id')
-    file_id = data.get('file_id')
-    comment = data.get('comment', 'Ваш заказ выполнен успешно')
-    if not user_id or not file_id:
-        return jsonify({'ok': False, 'error': 'user_id и file_id обязательны'}), 400
-    try:
-        requests.post(f'https://api.telegram.org/bot{BOT_TOKEN}/sendDocument', json={
-            'chat_id': user_id,
-            'document': file_id,
-            'caption': comment
-        })
-        return jsonify({'ok': True})
-    except Exception as e:
-        return jsonify({'ok': False, 'error': str(e)}), 500
 
 # --- Telegram Bot ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
@@ -170,6 +155,34 @@ def run_telegram():
     app_telegram.add_handler(CommandHandler("Balance", balance))
     app_telegram.run_polling()
 
+async def check_orders():
+    while True:
+        conn = sqlite3.connect("orders.db")
+        c = conn.cursor()
+        # Новые заказы (ожидают уведомления)
+        c.execute("SELECT id, user_id FROM orders WHERE status='new' AND (notified IS NULL OR notified=0)")
+        for order_id, user_id in c.fetchall():
+            try:
+                await bot.send_message(user_id, "Ваш заказ принят! Ожидайте выполнения.")
+                c.execute("UPDATE orders SET notified=1 WHERE id=?", (order_id,))
+            except Exception as e:
+                print(f"Ошибка отправки уведомления: {e}")
+        # Выполненные заказы (ожидают отправки PNG)
+        c.execute("SELECT id, user_id, result_file FROM orders WHERE status='done' AND (delivered IS NULL OR delivered=0)")
+        for order_id, user_id, result_file in c.fetchall():
+            if result_file and os.path.exists(result_file):
+                try:
+                    await bot.send_document(user_id, open(result_file, "rb"), caption="Ваш заказ выполнен!")
+                    c.execute("UPDATE orders SET delivered=1 WHERE id=?", (order_id,))
+                except Exception as e:
+                    print(f"Ошибка отправки PNG: {e}")
+        conn.commit()
+        conn.close()
+        await asyncio.sleep(10)  # Проверять каждые 10 секунд
+
 if __name__ == "__main__":
     threading.Thread(target=run_flask, daemon=True).start()
     run_telegram()
+    loop = asyncio.get_event_loop()
+    loop.create_task(check_orders())
+    executor.start_polling(dp, skip_updates=True)
