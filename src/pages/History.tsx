@@ -81,7 +81,7 @@ const History: React.FC = () => {
         }}>Мои заказы</h2>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '40px 2fr 1.2fr 1fr',
+          gridTemplateColumns: '40px 2fr 1.2fr 1.5fr 1fr',
           color: 'white',
           fontSize: 16,
           fontWeight: 400,
@@ -91,8 +91,9 @@ const History: React.FC = () => {
         }}>
           <div>№</div>
           <div>Услуга</div>
+          <div>Дата</div>
           <div>Статус</div>
-          <div>Цена</div>
+          <div style={{marginLeft: 18}}>Цена</div>
         </div>
         {loading ? (
           <div style={{ color: '#BEB8D1', textAlign: 'center', marginTop: 24 }}>Загрузка...</div>
@@ -100,7 +101,7 @@ const History: React.FC = () => {
           orders.map((order, idx) => (
             <div key={order.id} style={{
               display: 'grid',
-              gridTemplateColumns: '40px 2fr 1.2fr 1fr',
+              gridTemplateColumns: '40px 2fr 1.2fr 1.5fr 1fr',
               alignItems: 'center',
               color: 'white',
               fontSize: 16,
@@ -110,11 +111,9 @@ const History: React.FC = () => {
             }}>
               <div style={{ fontFamily: 'monospace', fontSize: 15 }}>{String(idx + 1).padStart(2, '0')}</div>
               <div style={{ wordBreak: 'break-word' }}>{order.service}</div>
-              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
-                {STATUS_ICONS[order.status] || STATUS_ICONS['new']}
-                {STATUS_TEXT[order.status] || STATUS_TEXT['new']}
-              </div>
-              <div style={{ color: '#09FBD3', fontWeight: 600 }}>${order.price}</div>
+              <div>{order.created_at ? new Date(order.created_at).toLocaleDateString() : '-'}</div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>{STATUS_ICONS[order.status] || STATUS_ICONS['new']}{STATUS_TEXT[order.status] || STATUS_TEXT['new']}</div>
+              <div style={{ color: '#09FBD3', fontWeight: 600, marginLeft: 18 }}>${order.price}</div>
             </div>
           ))
         )}
