@@ -78,7 +78,7 @@ const Order: React.FC = () => {
       justifyContent: 'flex-start',
       minHeight: '100vh',
       padding: '20px',
-      paddingTop: '100px',
+      paddingTop: selected ? '40px' : '100px',
       position: 'fixed',
       top: 0,
       left: 0,
@@ -91,17 +91,17 @@ const Order: React.FC = () => {
         style={{
           backgroundColor: '#2D1E5A',
           borderRadius: '25px',
-          padding: '18px 10px',
+          padding: selected ? '18px 10px' : '30px 20px',
           width: '100%',
-          maxWidth: selected ? '340px' : '340px',
+          maxWidth: '340px',
           maxHeight: selected ? '90vh' : undefined,
           overflowY: selected ? 'auto' : undefined,
-          top: selected ? '40px' : '0',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
+          position: 'relative',
           zIndex: 1,
-          fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+          fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
         }}
       >
         {!selected ? (
@@ -221,31 +221,30 @@ const Order: React.FC = () => {
               Оформить заказ
             </button>
             <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#09FBD3', display: 'inline-block', marginRight: 8 }} />
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#09FBD3', display: 'inline-block', marginRight: 4 }} />
               <button
                 onClick={() => setSelected(null)}
                 style={{
-                  padding: '12px 0',
+                  minWidth: '160px',
+                  maxWidth: '200px',
+                  padding: '16px',
                   borderRadius: '14px',
                   backgroundColor: '#09FBD3',
                   color: '#2D1E5A',
                   border: 'none',
-                  fontSize: '20px',
+                  fontSize: '22px',
                   fontWeight: '600',
                   fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
                   margin: '0 auto',
                   cursor: 'pointer',
                   transition: 'background 0.2s',
                   textAlign: 'center',
-                  width: '170px',
-                  minWidth: '120px',
-                  maxWidth: '180px',
                   display: 'block',
                 }}
               >
                 Выбрать другую услугу
               </button>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#09FBD3', display: 'inline-block', marginLeft: 8 }} />
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#09FBD3', display: 'inline-block', marginLeft: 4 }} />
             </div>
           </>
         )}
