@@ -36,12 +36,12 @@ const History: React.FC = () => {
     let user_id = null;
     if (profile) {
       try {
-        user_id = JSON.parse(profile).savedUsername || null;
+        user_id = JSON.parse(profile).savedUserTag || null;
       } catch {}
     }
     // Для теста можно подставить user_id вручную
     if (!user_id) return;
-    fetch(`/api/orders/${user_id}`)
+    fetch(`http://localhost:8000/orders/${user_id}`)
       .then(res => res.json())
       .then(data => {
         setOrders(data);
