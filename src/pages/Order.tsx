@@ -225,9 +225,7 @@ const Order: React.FC = () => {
               <button
                 onClick={() => setSelected(null)}
                 style={{
-                  minWidth: '160px',
-                  maxWidth: '200px',
-                  padding: '16px',
+                  padding: '6px 16px',
                   borderRadius: '14px',
                   backgroundColor: '#09FBD3',
                   color: '#2D1E5A',
