@@ -83,18 +83,7 @@ const Order: React.FC = () => {
         <ButtonWithDots>GFX баннер</ButtonWithDots>
         <ButtonWithDots>GFX анимация</ButtonWithDots>
         <ButtonWithDots>GFX аватарка</ButtonWithDots>
-        <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: 0, marginTop: 8, justifyContent: 'center', position: 'relative' }}>
-          <span style={{
-            width: 16,
-            height: 16,
-            borderRadius: '50%',
-            background: 'rgba(254, 83, 187, 0.7)',
-            boxShadow: '0 0 16px 8px rgba(254, 83, 187, 0.3)',
-            display: 'inline-block',
-            marginRight: 8,
-            position: 'relative',
-            zIndex: 1
-          }} />
+        <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: 0, marginTop: 8, justifyContent: 'center' }}>
           <button
             onClick={handleOtherClick}
             style={{
@@ -111,22 +100,16 @@ const Order: React.FC = () => {
               textAlign: 'center',
               width: '112px',
               margin: '0 auto',
-              zIndex: 2
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '6px'
             }}
           >
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block' }} />
             Другое...
+            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block' }} />
           </button>
-          <span style={{
-            width: 16,
-            height: 16,
-            borderRadius: '50%',
-            background: 'rgba(254, 83, 187, 0.7)',
-            boxShadow: '0 0 16px 8px rgba(254, 83, 187, 0.3)',
-            display: 'inline-block',
-            marginLeft: 8,
-            position: 'relative',
-            zIndex: 1
-          }} />
         </div>
       </div>
       <div style={{
