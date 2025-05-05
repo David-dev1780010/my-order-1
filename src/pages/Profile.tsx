@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 declare global {
   interface Window {
@@ -23,12 +23,12 @@ declare global {
 const Profile: React.FC = () => {
   const [userPhoto, setUserPhoto] = useState<string | null>(null);
   const [username, setUsername] = useState<string>('никнейм');
-  const [email, setEmail] = useState<string>('');
+  const [userTag, setUserTag] = useState<string>('');
   const [isEditing, setIsEditing] = useState(false);
   const [isDepositing, setIsDepositing] = useState(false);
   const [depositAmount, setDepositAmount] = useState('');
   const [tempUsername, setTempUsername] = useState('');
-  const [tempEmail, setTempEmail] = useState('');
+  const [tempUserTag, setTempUserTag] = useState('');
   const [previewUrl, setPreviewUrl] = useState<string | null>(null);
   const [isRedirecting, setIsRedirecting] = useState(false);
   const [isInputFocused, setIsInputFocused] = useState(false);
@@ -48,7 +48,7 @@ const Profile: React.FC = () => {
     try {
       const tempData = {
         tempUsername: tempUsername,
-        tempEmail: tempEmail,
+        tempUserTag: tempUserTag,
         tempPhoto: previewUrl,
         lastUpdated: new Date().toISOString()
       };
@@ -63,12 +63,12 @@ const Profile: React.FC = () => {
     try {
       const savedTempData = localStorage.getItem('tempProfileData');
       if (savedTempData) {
-        const { tempUsername: savedTempUsername, tempEmail: savedTempEmail, tempPhoto: savedTempPhoto } = JSON.parse(savedTempData);
+        const { tempUsername: savedTempUsername, tempUserTag: savedTempUserTag, tempPhoto: savedTempPhoto } = JSON.parse(savedTempData);
         if (savedTempUsername) {
           setTempUsername(savedTempUsername);
         }
-        if (savedTempEmail) {
-          setTempEmail(savedTempEmail);
+        if (savedTempUserTag) {
+          setTempUserTag(savedTempUserTag);
         }
         if (savedTempPhoto) {
           setPreviewUrl(savedTempPhoto);
@@ -97,7 +97,7 @@ const Profile: React.FC = () => {
     try {
       const profileData = {
         savedUsername: username,
-        savedEmail: email,
+        savedUserTag: userTag,
         savedPhoto: previewUrl || userPhoto,
         lastUpdated: new Date().toISOString()
       };
@@ -112,14 +112,14 @@ const Profile: React.FC = () => {
     try {
       const savedProfile = localStorage.getItem('userProfile');
       if (savedProfile) {
-        const { savedUsername, savedEmail, savedPhoto } = JSON.parse(savedProfile);
+        const { savedUsername, savedUserTag, savedPhoto } = JSON.parse(savedProfile);
         if (savedUsername && savedUsername !== 'никнейм') {
           setUsername(savedUsername);
           setTempUsername(savedUsername);
         }
-        if (savedEmail) {
-          setEmail(savedEmail);
-          setTempEmail(savedEmail);
+        if (savedUserTag) {
+          setUserTag(savedUserTag);
+          setTempUserTag(savedUserTag);
         }
         if (savedPhoto) {
           setUserPhoto(savedPhoto);
@@ -167,14 +167,19 @@ const Profile: React.FC = () => {
 
   // Отдельный useEffect для сохранения при изменении данных
   useEffect(() => {
-    if (username !== 'никнейм' || email || userPhoto || previewUrl) {
+    if (username !== 'никнейм' || userTag || userPhoto || previewUrl) {
       saveProfile();
     }
-  }, [username, email, userPhoto, previewUrl]);
+  }, [username, userTag, userPhoto, previewUrl]);
 
   // Обработчики изменений полей
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempUsername(e.target.value);
+    saveTempData();
+  };
+
+  const handleUserTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setTempUserTag(e.target.value);
     saveTempData();
   };
 
@@ -187,12 +192,12 @@ const Profile: React.FC = () => {
   const handleSave = () => {
     try {
       const newUsername = tempUsername.trim() || username;
-      const newEmail = tempEmail.trim() || email;
+      const newUserTag = tempUserTag.trim() || userTag;
       const newPhoto = previewUrl || userPhoto;
 
       // Обновляем состояние
       setUsername(newUsername);
-      setEmail(newEmail);
+      setUserTag(newUserTag);
       setUserPhoto(newPhoto);
       setPreviewUrl(null);
 
@@ -210,7 +215,7 @@ const Profile: React.FC = () => {
 
   const handleCancel = () => {
     setTempUsername(username);
-    setTempEmail(email);
+    setTempUserTag(userTag);
     setPreviewUrl(null);
     // Очищаем временные данные при отмене
     localStorage.removeItem('tempProfileData');
@@ -477,7 +482,7 @@ const Profile: React.FC = () => {
                 type="text"
                 value={tempUsername}
                 onChange={handleUsernameChange}
-                placeholder="Введите юзернейм"
+                placeholder="Введите никнейм"
                 style={{
                   backgroundColor: 'rgba(255,255,255,0.1)',
                   border: '1px solid #FF54BD',
@@ -502,8 +507,32 @@ const Profile: React.FC = () => {
               </div>
             )}
 
-            {/* Показываем @username над балансом, если он есть и не режим редактирования */}
-            {!isEditing && username && username !== 'никнейм' && (
+            <AnimatePresence>
+              {isEditing && (
+                <motion.input
+                  initial={{ opacity: 0, y: -10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0, y: -10 }}
+                  type="text"
+                  value={tempUserTag}
+                  onChange={handleUserTagChange}
+                  placeholder="Введите username (user_tag)"
+                  style={{
+                    backgroundColor: 'rgba(255,255,255,0.1)',
+                    border: '1px solid #FF54BD',
+                    borderRadius: '8px',
+                    padding: '8px 12px',
+                    color: 'white',
+                    fontSize: '16px',
+                    width: '100%',
+                    marginBottom: '10px',
+                    outline: 'none'
+                  }}
+                />
+              )}
+            </AnimatePresence>
+
+            {!isEditing && userTag && (
               <div style={{
                 color: '#FF53C0',
                 fontSize: '18px',
@@ -511,11 +540,8 @@ const Profile: React.FC = () => {
                 marginBottom: '8px',
                 textAlign: 'center',
                 fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
-              }}>
-                @{username}
-              </div>
+              }}>@{userTag}</div>
             )}
-
             {!isEditing && (
               <div style={{
                 color: '#9E9E9E',
