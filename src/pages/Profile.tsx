@@ -625,8 +625,14 @@ const Profile: React.FC = () => {
           fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
           flexDirection: 'column'
         }}>
-          <div style={{marginBottom: 20}}>Открываем Telegram-бота для оплаты…</div>
-          <div className="loader" style={{width: 40, height: 40, border: '4px solid #fff', borderTop: '4px solid #B6116B', borderRadius: '50%', animation: 'spin 1s linear infinite'}}></div>
+          <div className="loader" style={{
+            width: 40, 
+            height: 40, 
+            border: '4px solid #fff', 
+            borderTop: '4px solid #B6116B', 
+            borderRadius: '50%', 
+            animation: 'spin 1s linear infinite'
+          }}></div>
           <style>{`@keyframes spin { 0% { transform: rotate(0deg);} 100% { transform: rotate(360deg);} }`}</style>
         </div>
       )}
