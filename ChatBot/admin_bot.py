@@ -4,9 +4,8 @@ from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, InputFile
 from dotenv import load_dotenv
 from aiogram.utils import executor
-from aiogram.dispatcher import FSMContext, filters
-from aiogram.dispatcher.filters.state import State, StatesGroup
-import requests
+import time
+import asyncio
 
 # Загрузка переменных окружения
 load_dotenv()
@@ -110,40 +109,63 @@ async def handle_png(message: types.Message, order_id, call):
     # Здесь можно реализовать отправку результата в balance_bot.py (например, через базу или отдельный канал)
     # Например, balance_bot.py может периодически проверять базу на новые выполненные заказы
 
-class SupportReply(StatesGroup):
-    waiting_for_reply = State()
+# --- Проверка новых обращений в поддержку ---
+async def check_support():
+    while True:
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("SELECT id, username, message FROM support WHERE status='new'")
+        supports = c.fetchall()
+        for support_id, username, message in supports:
+            for admin_id in ADMIN_IDS:
+                if not admin_id:
+                    continue
+                text = f"Пользователь @{username} написал новое сообщение в поддержку:\n\n{message}"
+                ikb = InlineKeyboardMarkup().add(InlineKeyboardButton('Ответить пользователю', callback_data=f'support_reply_{support_id}'))
+                await bot.send_message(int(admin_id), text, reply_markup=ikb)
+            c.execute("UPDATE support SET status='notified' WHERE id=?", (support_id,))
+        conn.commit()
+        conn.close()
+        await asyncio.sleep(10)
 
-# --- Обработка кнопки 'Ответить пользователю' ---
-@dp.callback_query_handler(lambda c: c.data.startswith('reply_support_'))
-async def support_reply_callback(call: types.CallbackQuery, state: FSMContext):
-    username = call.data.replace('reply_support_', '')
-    await call.message.answer(f'Введите ответ для пользователя @{username}:')
-    await state.update_data(username=username)
-    await SupportReply.waiting_for_reply.set()
+# --- Обработка ответа администратора ---
+@dp.callback_query_handler(lambda c: c.data.startswith('support_reply_'))
+async def support_reply(call: types.CallbackQuery):
+    support_id = int(call.data.split('_')[-1])
+    await call.message.answer('Введите ответ пользователю. Ваше следующее сообщение будет отправлено ему. (Можно только текст)')
+    dp.register_message_handler(lambda m: True, lambda m: m.from_user.id == call.from_user.id, content_types=types.ContentType.TEXT, state=None, once=True)(lambda m: handle_support_answer(m, support_id, call))
 
-@dp.message_handler(state=SupportReply.waiting_for_reply)
-async def process_support_reply(message: types.Message, state: FSMContext):
-    data = await state.get_data()
-    username = data.get('username')
-    answer = message.text
-    # Найти user_id по username
+async def handle_support_answer(message: types.Message, support_id, call):
+    answer = message.text.strip()
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('SELECT user_id FROM orders WHERE usertag=? ORDER BY id DESC LIMIT 1', (username,))
-    row = c.fetchone()
+    c.execute("UPDATE support SET admin_reply=?, status='answered' WHERE id=?", (answer, support_id))
+    c.execute("SELECT username FROM support WHERE id=?", (support_id,))
+    username = c.fetchone()[0]
+    conn.commit()
     conn.close()
-    user_id = row[0] if row else None
-    if user_id:
-        # Отправить ответ пользователю через основной бот
+    await message.answer('Ответ отправлен пользователю!')
+    # Отправка ответа пользователю через обычного бота (balance_bot)
+    try:
+        from telegram import Bot as TgBot
         USER_BOT_TOKEN = os.getenv('BOT_TOKEN')
-        requests.post(f'https://api.telegram.org/bot{USER_BOT_TOKEN}/sendMessage', json={
-            'chat_id': user_id,
-            'text': f'Тех.поддержка ответила вам:\n\n{answer}'
-        })
-        await message.answer('Ответ отправлен пользователю!')
-    else:
-        await message.answer('Не удалось найти пользователя по username.')
-    await state.finish()
+        user_bot = TgBot(token=USER_BOT_TOKEN)
+        # Получаем user_id по username (или сохраняем user_id в support при обращении)
+        # Здесь предполагается, что username = usertag, а user_id можно получить из базы
+        conn = sqlite3.connect(DB_PATH)
+        c = conn.cursor()
+        c.execute("SELECT user_id FROM orders WHERE usertag=? ORDER BY id DESC LIMIT 1", (username,))
+        row = c.fetchone()
+        conn.close()
+        if row:
+            user_id = row[0]
+            text = f"Тех.поддержка ответила вам:\n\n{answer}"
+            await user_bot.send_message(chat_id=user_id, text=text)
+    except Exception as e:
+        print(f"Ошибка отправки ответа пользователю: {e}")
 
+# --- Запуск проверки обращений ---
 if __name__ == '__main__':
+    loop = asyncio.get_event_loop()
+    loop.create_task(check_support())
     executor.start_polling(dp, skip_updates=True) 

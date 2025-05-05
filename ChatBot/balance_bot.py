@@ -202,6 +202,22 @@ async def check_orders():
         conn.close()
         await asyncio.sleep(10)  # Проверять каждые 10 секунд
 
+async def check_support_requests():
+    while True:
+        conn = sqlite3.connect("orders.db")
+        c = conn.cursor()
+        c.execute("SELECT id, username, user_id, message FROM support WHERE status='new'")
+        for support_id, username, user_id, message in c.fetchall():
+            try:
+                if user_id:
+                    await bot.send_message(user_id, "Ваш запрос в поддержку успешно отправлен! Ожидайте ответа.")
+                c.execute("UPDATE support SET status='user_notified' WHERE id=?", (support_id,))
+            except Exception as e:
+                print(f"Ошибка отправки уведомления о поддержке: {e}")
+        conn.commit()
+        conn.close()
+        await asyncio.sleep(10)
+
 if __name__ == "__main__":
     # Запускаем Flask в отдельном потоке
     threading.Thread(target=run_flask, daemon=True).start()
@@ -211,9 +227,10 @@ if __name__ == "__main__":
     app_telegram.add_handler(CommandHandler("start", start))
     app_telegram.add_handler(CommandHandler("Balance", balance))
     
-    # Запускаем проверку заказов
+    # Запускаем проверку заказов и обращений в поддержку
     loop = asyncio.get_event_loop()
     loop.create_task(check_orders())
+    loop.create_task(check_support_requests())
     
     # Запускаем бота
     app_telegram.run_polling()
