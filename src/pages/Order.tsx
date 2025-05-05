@@ -205,6 +205,8 @@ const Order: React.FC = () => {
             <button
               style={{
                 width: '100%',
+                maxWidth: '200px',
+                margin: '0 auto 16px',
                 padding: '18px',
                 borderRadius: '14px',
                 backgroundColor: '#B6116B',
@@ -213,7 +215,6 @@ const Order: React.FC = () => {
                 fontSize: '22px',
                 fontWeight: '600',
                 fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-                marginBottom: 16,
                 cursor: 'pointer',
                 transition: 'background 0.2s',
               }}
@@ -225,6 +226,9 @@ const Order: React.FC = () => {
               <button
                 onClick={() => setSelected(null)}
                 style={{
+                  maxWidth: '200px',
+                  margin: '0 auto',
+                  display: 'block',
                   padding: '6px 16px',
                   borderRadius: '14px',
                   backgroundColor: '#09FBD3',
@@ -233,11 +237,9 @@ const Order: React.FC = () => {
                   fontSize: '22px',
                   fontWeight: '600',
                   fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-                  margin: '0 auto',
                   cursor: 'pointer',
                   transition: 'background 0.2s',
                   textAlign: 'center',
-                  display: 'block',
                 }}
               >
                 Выбрать другую услугу
