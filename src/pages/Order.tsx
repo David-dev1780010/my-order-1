@@ -78,7 +78,7 @@ const Order: React.FC = () => {
       justifyContent: 'flex-start',
       minHeight: '100vh',
       padding: '20px',
-      paddingTop: '30px',
+      paddingTop: '100px',
       position: 'fixed',
       top: 0,
       left: 0,
@@ -93,15 +93,15 @@ const Order: React.FC = () => {
           borderRadius: '25px',
           padding: '18px 10px',
           width: '100%',
-          maxWidth: '340px',
-          maxHeight: '90vh',
-          overflowY: 'auto',
+          maxWidth: selected ? '340px' : '340px',
+          maxHeight: selected ? '90vh' : undefined,
+          overflowY: selected ? 'auto' : undefined,
+          top: selected ? '40px' : '0',
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          position: 'relative',
           zIndex: 1,
-          fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+          fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
         }}
       >
         {!selected ? (
@@ -225,20 +225,21 @@ const Order: React.FC = () => {
               <button
                 onClick={() => setSelected(null)}
                 style={{
-                  flex: 1,
-                  padding: '16px',
+                  padding: '12px 0',
                   borderRadius: '14px',
                   backgroundColor: '#09FBD3',
                   color: '#2D1E5A',
                   border: 'none',
-                  fontSize: '22px',
+                  fontSize: '20px',
                   fontWeight: '600',
                   fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
                   margin: '0 auto',
                   cursor: 'pointer',
                   transition: 'background 0.2s',
                   textAlign: 'center',
-                  maxWidth: '340px',
+                  width: '170px',
+                  minWidth: '120px',
+                  maxWidth: '180px',
                   display: 'block',
                 }}
               >
