@@ -227,8 +227,17 @@ const Profile: React.FC = () => {
 
   const handleDeposit = () => {
     if (!depositAmount) return;
+    const amount = parseFloat(depositAmount);
+    if (isNaN(amount) || amount < 1 || amount > 1000) {
+      if (window.Telegram && window.Telegram.WebApp && (window.Telegram.WebApp as any).showAlert) {
+        (window.Telegram.WebApp as any).showAlert('Сумма должна быть от 1 до 1000$');
+      } else {
+        alert('Сумма должна быть от 1 до 1000$');
+      }
+      return;
+    }
     setIsRedirecting(true);
-    const url = `https://t.me/orderenineenngbot?start=balance_${depositAmount}`;
+    const url = `https://t.me/orderenineenngbot?start=balance_${amount}`;
     setTimeout(() => {
       if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
         window.Telegram.WebApp.openTelegramLink(url);
@@ -239,6 +248,13 @@ const Profile: React.FC = () => {
         window.location.href = url;
       }
     }, 1200);
+  };
+
+  const handleDepositAmountChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/[^\d.]/g, '');
+    if (value === '' || (parseFloat(value) >= 1 && parseFloat(value) <= 1000)) {
+      setDepositAmount(value);
+    }
   };
 
   const containerVariants = {
@@ -311,9 +327,9 @@ const Profile: React.FC = () => {
             </h1>
             <input
               type="text"
-              value={depositAmount}
-              onChange={(e) => setDepositAmount(e.target.value)}
-              placeholder="Введите сумму ($)"
+              value={depositAmount ? `${depositAmount}$` : ''}
+              onChange={handleDepositAmountChange}
+              placeholder="Введите сумму (1-1000$)"
               style={{
                 backgroundColor: '#584C7D',
                 border: 'none',
