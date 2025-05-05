@@ -70,7 +70,7 @@ const Order: React.FC = () => {
   React.useEffect(() => {
     // Баланс
     axios.get('/get_balance', { params: { user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id } })
-      .then(res => setBalance(res.data.balance || 0))
+      .then((res: any) => setBalance(res.data.balance || 0))
       .catch(() => setBalance(0));
     // Username
     const profile = localStorage.getItem('userProfile');
@@ -109,6 +109,15 @@ const Order: React.FC = () => {
         user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id,
         file_id: null, // файл будет позже, сейчас просто уведомление
         comment: 'Ваш заказ успешно оформлен и сейчас находиться в работе у наших специалистов'
+      });
+      // Отправляем заказ админу (Order.py)
+      await axios.post('http://localhost:8080/new_order', {
+        user_id: window.Telegram?.WebApp?.initDataUnsafe?.user?.id,
+        username,
+        price: service?.price,
+        service: service?.title,
+        tz: details,
+        order_id: Date.now().toString() // уникальный id заказа
       });
       setSuccess(true);
     } catch (e) {
