@@ -63,25 +63,27 @@ const History: React.FC = () => {
       <div style={{
         background: '#2D1E5A',
         borderRadius: '40px',
-        padding: '36px 18px',
-        maxWidth: 480,
+        padding: '24px 18px',
+        maxWidth: '340px',
         width: '100%',
-        margin: '0 auto',
+        margin: '20px auto',
         boxShadow: '0 4px 32px 0 rgba(0,0,0,0.12)',
+        position: 'relative',
+        top: '-40px'
       }}>
         <h2 style={{
           color: 'white',
-          fontSize: 32,
+          fontSize: '24px',
           fontWeight: 500,
           textAlign: 'center',
-          marginBottom: 28,
+          marginBottom: '20px',
           fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
         }}>Мои заказы</h2>
         <div style={{
           display: 'grid',
-          gridTemplateColumns: '40px 1.5fr 1.2fr 1.2fr 1fr',
+          gridTemplateColumns: '40px 2fr 1.2fr 1fr',
           color: 'white',
-          fontSize: 18,
+          fontSize: 16,
           fontWeight: 400,
           marginBottom: 12,
           borderBottom: '2px solid #fff2',
@@ -89,7 +91,6 @@ const History: React.FC = () => {
         }}>
           <div>№</div>
           <div>Услуга</div>
-          <div>Дата</div>
           <div>Статус</div>
           <div>Цена</div>
         </div>
@@ -99,17 +100,16 @@ const History: React.FC = () => {
           orders.map((order, idx) => (
             <div key={order.id} style={{
               display: 'grid',
-              gridTemplateColumns: '40px 1.5fr 1.2fr 1.2fr 1fr',
+              gridTemplateColumns: '40px 2fr 1.2fr 1fr',
               alignItems: 'center',
               color: 'white',
-              fontSize: 18,
+              fontSize: 16,
               fontWeight: 400,
               borderBottom: '1px solid #fff1',
-              padding: '12px 0',
+              padding: '10px 0',
             }}>
-              <div style={{ fontFamily: 'monospace', fontSize: 17 }}>{String(idx + 1).padStart(3, '0')}</div>
+              <div style={{ fontFamily: 'monospace', fontSize: 15 }}>{String(idx + 1).padStart(2, '0')}</div>
               <div style={{ wordBreak: 'break-word' }}>{order.service}</div>
-              <div>{order.created_at ? new Date(order.created_at).toLocaleDateString() : '-'}</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6 }}>
                 {STATUS_ICONS[order.status] || STATUS_ICONS['new']}
                 {STATUS_TEXT[order.status] || STATUS_TEXT['new']}
