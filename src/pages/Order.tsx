@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 const services = [
   {
@@ -104,6 +105,32 @@ const Order: React.FC = () => {
     setSuccess('Заказ успешно оформлен!');
   };
 
+  const containerVariants = {
+    initial: {
+      opacity: 0,
+      y: 20
+    },
+    animate: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.5
+      }
+    }
+  };
+
+  const buttonVariants = {
+    hover: {
+      scale: 1.02,
+      transition: {
+        duration: 0.2
+      }
+    },
+    tap: {
+      scale: 0.98
+    }
+  };
+
   return (
     <div style={{
       display: 'flex',
@@ -121,7 +148,10 @@ const Order: React.FC = () => {
       overflow: 'hidden',
       fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
     }}>
-      <div
+      <motion.div
+        variants={containerVariants}
+        initial="initial"
+        animate="animate"
         style={{
           backgroundColor: '#2D1E5A',
           borderRadius: '25px',
@@ -151,11 +181,21 @@ const Order: React.FC = () => {
             }}>
               Выберите услугу<br />дизайна
             </h1>
-            <ButtonWithDots onClick={() => setSelected('banner')}>GFX баннер</ButtonWithDots>
-            <ButtonWithDots onClick={() => setSelected('animation')}>GFX анимация</ButtonWithDots>
-            <ButtonWithDots onClick={() => setSelected('avatar')}>GFX аватарка</ButtonWithDots>
+            <motion.div
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5 }}
+              style={{ width: '100%' }}
+            >
+              <ButtonWithDots onClick={() => setSelected('banner')}>GFX баннер</ButtonWithDots>
+              <ButtonWithDots onClick={() => setSelected('animation')}>GFX анимация</ButtonWithDots>
+              <ButtonWithDots onClick={() => setSelected('avatar')}>GFX аватарка</ButtonWithDots>
+            </motion.div>
             <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: 0, marginTop: 8, justifyContent: 'center' }}>
-              <button
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
                 onClick={handleOtherClick}
                 style={{
                   padding: '12px',
@@ -180,103 +220,118 @@ const Order: React.FC = () => {
                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block' }} />
                 Другое...
                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block' }} />
-              </button>
+              </motion.button>
             </div>
           </>
         ) : (
-          <>
-            <div style={{ position: 'absolute', top: 24, right: 24, color: '#FF53C0', fontWeight: 700, fontSize: 32, fontFamily: 'Montserrat Alternates', zIndex: 2 }}>
-              {service?.price}$
-            </div>
-            <img src={service?.image} alt="color" style={{ width: 80, height: 80, margin: '0 auto 12px', display: 'block' }} />
-            <div style={{
-              color: 'white',
-              fontSize: '28px',
-              fontWeight: 500,
-              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-              textAlign: 'center',
-              marginBottom: 8
-            }}>{service?.title}</div>
-            <div style={{
-              color: '#BEB8D1',
-              fontSize: '18px',
-              fontWeight: 400,
-              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-              textAlign: 'center',
-              marginBottom: 18
-            }}>{service?.description}</div>
-            <textarea
-              placeholder={service?.placeholder}
-              value={details}
-              onChange={e => setDetails(e.target.value)}
-              style={{
-                width: '100%',
-                minHeight: 90,
-                background: '#584C7D',
-                border: 'none',
-                borderRadius: 18,
-                color: 'white',
-                fontSize: 17,
-                padding: 18,
-                marginBottom: 12,
-                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-                resize: 'none',
-                outline: 'none',
-                boxSizing: 'border-box',
-              }}
-            />
-            {error && (
-              <div style={{ color: '#FF53C0', background: 'rgba(255,83,192,0.08)', borderRadius: 10, padding: '8px 12px', marginBottom: 10, whiteSpace: 'pre-line', fontSize: 15, textAlign: 'center' }}>{error}</div>
-            )}
-            {success && (
-              <div style={{ color: '#09FBD3', background: 'rgba(9,251,211,0.08)', borderRadius: 10, padding: '8px 12px', marginBottom: 10, fontSize: 15, textAlign: 'center' }}>{success}</div>
-            )}
-            <button
-              onClick={handleOrder}
-              style={{
-                padding: '6px 40px',
-                margin: '0 auto 16px',
-                display: 'block',
-                borderRadius: '14px',
-                backgroundColor: '#B6116B',
-                color: 'white',
-                border: 'none',
-                fontSize: '22px',
-                fontWeight: '600',
-                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-                cursor: 'pointer',
-                transition: 'background 0.2s',
-              }}
+          <AnimatePresence>
+            <motion.div
+              key={selected}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 40 }}
+              transition={{ duration: 0.4 }}
+              style={{ width: '100%' }}
             >
-              Оформить заказ
-            </button>
-            <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#09FBD3', display: 'inline-block', marginRight: 4 }} />
-              <button
-                onClick={() => setSelected(null)}
+              <div style={{ position: 'absolute', top: 24, right: 24, color: '#FF53C0', fontWeight: 700, fontSize: 32, fontFamily: 'Montserrat Alternates', zIndex: 2 }}>
+                {service?.price}$
+              </div>
+              <img src={service?.image} alt="color" style={{ width: 80, height: 80, margin: '0 auto 12px', display: 'block' }} />
+              <div style={{
+                color: 'white',
+                fontSize: '28px',
+                fontWeight: 500,
+                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+                textAlign: 'center',
+                marginBottom: 8
+              }}>{service?.title}</div>
+              <div style={{
+                color: '#BEB8D1',
+                fontSize: '18px',
+                fontWeight: 400,
+                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+                textAlign: 'center',
+                marginBottom: 18
+              }}>{service?.description}</div>
+              <textarea
+                placeholder={service?.placeholder}
+                value={details}
+                onChange={e => setDetails(e.target.value)}
+                style={{
+                  width: '100%',
+                  minHeight: 90,
+                  background: '#584C7D',
+                  border: 'none',
+                  borderRadius: 18,
+                  color: 'white',
+                  fontSize: 17,
+                  padding: 18,
+                  marginBottom: 12,
+                  fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+                  resize: 'none',
+                  outline: 'none',
+                  boxSizing: 'border-box',
+                }}
+              />
+              {error && (
+                <div style={{ color: '#FF53C0', background: 'rgba(255,83,192,0.08)', borderRadius: 10, padding: '8px 12px', marginBottom: 10, whiteSpace: 'pre-line', fontSize: 15, textAlign: 'center' }}>{error}</div>
+              )}
+              {success && (
+                <div style={{ color: '#09FBD3', background: 'rgba(9,251,211,0.08)', borderRadius: 10, padding: '8px 12px', marginBottom: 10, fontSize: 15, textAlign: 'center' }}>{success}</div>
+              )}
+              <motion.button
+                variants={buttonVariants}
+                whileHover="hover"
+                whileTap="tap"
+                onClick={handleOrder}
                 style={{
                   padding: '6px 40px',
-                  margin: '0 auto',
+                  margin: '0 auto 16px',
                   display: 'block',
                   borderRadius: '14px',
-                  backgroundColor: '#09FBD3',
-                  color: '#2D1E5A',
+                  backgroundColor: '#B6116B',
+                  color: 'white',
                   border: 'none',
                   fontSize: '22px',
                   fontWeight: '600',
                   fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
                   cursor: 'pointer',
                   transition: 'background 0.2s',
-                  textAlign: 'center',
                 }}
               >
-                Выбрать другую услугу
-              </button>
-              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#09FBD3', display: 'inline-block', marginLeft: 4 }} />
-            </div>
-          </>
+                Оформить заказ
+              </motion.button>
+              <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#09FBD3', display: 'inline-block', marginRight: 4 }} />
+                <motion.button
+                  variants={buttonVariants}
+                  whileHover="hover"
+                  whileTap="tap"
+                  onClick={() => setSelected(null)}
+                  style={{
+                    padding: '6px 40px',
+                    margin: '0 auto',
+                    display: 'block',
+                    borderRadius: '14px',
+                    backgroundColor: '#09FBD3',
+                    color: '#2D1E5A',
+                    border: 'none',
+                    fontSize: '22px',
+                    fontWeight: '600',
+                    fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+                    cursor: 'pointer',
+                    transition: 'background 0.2s',
+                    textAlign: 'center',
+                  }}
+                >
+                  Выбрать другую услугу
+                </motion.button>
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#09FBD3', display: 'inline-block', marginLeft: 4 }} />
+              </div>
+            </motion.div>
+          </AnimatePresence>
         )}
-      </div>
+      </motion.div>
       <div style={{
         position: 'fixed',
         top: '50%',
