@@ -59,6 +59,8 @@ const ButtonWithDots: React.FC<{ children: React.ReactNode; onClick?: () => void
 const Order: React.FC = () => {
   const [selected, setSelected] = useState<string | null>(null);
   const [details, setDetails] = useState('');
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState<string | null>(null);
 
   const handleOtherClick = () => {
     if (window.Telegram && window.Telegram.WebApp && (window.Telegram.WebApp as any).showAlert) {
@@ -69,6 +71,38 @@ const Order: React.FC = () => {
   };
 
   const service = services.find(s => s.key === selected);
+
+  let userTag = '';
+  let balance = 0;
+  try {
+    const profile = localStorage.getItem('userProfile');
+    if (profile) {
+      const parsed = JSON.parse(profile);
+      userTag = parsed.savedUserTag || '';
+    }
+    const savedBalance = localStorage.getItem('userBalance');
+    if (savedBalance) {
+      balance = parseFloat(savedBalance);
+    }
+  } catch {}
+
+  const handleOrder = () => {
+    setError(null);
+    setSuccess(null);
+    if (!details || details.length < 50 || details.length > 560) {
+      setError('Техническое задание должно содержать от 50 до 560 символов.\n\nИнструкция: подробно опишите, что вы хотите получить, чтобы достичь минимального количества символов.');
+      return;
+    }
+    if (!userTag) {
+      setError('В профиле не заполнен username!\n\nИнструкция: перейдите в профиль и укажите ваш username, чтобы мы могли связаться с вами.');
+      return;
+    }
+    if (balance < (service?.price || 0)) {
+      setError(`Недостаточно средств на балансе!\n\nИнструкция: пополните баланс минимум на ${service?.price}$ для оформления заказа.`);
+      return;
+    }
+    setSuccess('Заказ успешно оформлен!');
+  };
 
   return (
     <div style={{
@@ -184,14 +218,21 @@ const Order: React.FC = () => {
                 color: 'white',
                 fontSize: 17,
                 padding: 18,
-                marginBottom: 24,
+                marginBottom: 12,
                 fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
                 resize: 'none',
                 outline: 'none',
                 boxSizing: 'border-box',
               }}
             />
+            {error && (
+              <div style={{ color: '#FF53C0', background: 'rgba(255,83,192,0.08)', borderRadius: 10, padding: '8px 12px', marginBottom: 10, whiteSpace: 'pre-line', fontSize: 15, textAlign: 'center' }}>{error}</div>
+            )}
+            {success && (
+              <div style={{ color: '#09FBD3', background: 'rgba(9,251,211,0.08)', borderRadius: 10, padding: '8px 12px', marginBottom: 10, fontSize: 15, textAlign: 'center' }}>{success}</div>
+            )}
             <button
+              onClick={handleOrder}
               style={{
                 padding: '6px 40px',
                 margin: '0 auto 16px',
