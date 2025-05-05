@@ -25,6 +25,28 @@ logging.basicConfig(level=logging.INFO)
 # Балансы пользователей (user_id: balance)
 balances = {}
 
+# Инициализация базы данных
+def init_db():
+    conn = sqlite3.connect("orders.db")
+    c = conn.cursor()
+    c.execute('''CREATE TABLE IF NOT EXISTS orders (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        username TEXT,
+        usertag TEXT,
+        service TEXT,
+        price INTEGER,
+        details TEXT,
+        status TEXT,
+        result_file TEXT,
+        notified INTEGER DEFAULT 0,
+        delivered INTEGER DEFAULT 0
+    )''')
+    conn.commit()
+    conn.close()
+
+init_db()
+
 # Flask-приложение для webhook и баланса
 app = Flask(__name__)
 
@@ -181,8 +203,17 @@ async def check_orders():
         await asyncio.sleep(10)  # Проверять каждые 10 секунд
 
 if __name__ == "__main__":
+    # Запускаем Flask в отдельном потоке
     threading.Thread(target=run_flask, daemon=True).start()
-    run_telegram()
+    
+    # Создаем и запускаем бота
+    app_telegram = ApplicationBuilder().token(BOT_TOKEN).build()
+    app_telegram.add_handler(CommandHandler("start", start))
+    app_telegram.add_handler(CommandHandler("Balance", balance))
+    
+    # Запускаем проверку заказов
     loop = asyncio.get_event_loop()
     loop.create_task(check_orders())
-    executor.start_polling(dp, skip_updates=True)
+    
+    # Запускаем бота
+    app_telegram.run_polling()
