@@ -491,14 +491,14 @@ const Profile: React.FC = () => {
                   color: 'white',
                   fontSize: '16px',
                   width: '100%',
-                  marginBottom: '10px',
+                  marginBottom: '4px',
                   outline: 'none'
                 }}
               />
             ) : (
               <div style={{
                 color: 'white',
-                marginBottom: '5px',
+                marginBottom: '2px',
                 fontSize: '20px',
                 fontWeight: '400',
                 opacity: '0.9'
@@ -525,7 +525,7 @@ const Profile: React.FC = () => {
                     color: 'white',
                     fontSize: '16px',
                     width: '100%',
-                    marginBottom: '10px',
+                    marginBottom: '2px',
                     outline: 'none'
                   }}
                 />
@@ -537,7 +537,7 @@ const Profile: React.FC = () => {
                 color: '#FF53C0',
                 fontSize: '18px',
                 fontWeight: 500,
-                marginBottom: '8px',
+                marginBottom: '2px',
                 textAlign: 'center',
                 fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
               }}>@{userTag}</div>
@@ -545,7 +545,7 @@ const Profile: React.FC = () => {
             {!isEditing && (
               <div style={{
                 color: '#9E9E9E',
-                marginBottom: '25px',
+                marginBottom: '18px',
                 fontSize: '16px',
                 display: 'flex',
                 alignItems: 'center',
