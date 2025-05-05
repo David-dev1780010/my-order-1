@@ -154,17 +154,6 @@ const Order: React.FC = () => {
             <div style={{ position: 'absolute', top: 24, right: 24, color: '#FF53C0', fontWeight: 700, fontSize: 32, fontFamily: 'Montserrat Alternates', zIndex: 2 }}>
               {service?.price}$
             </div>
-            <h1 style={{
-              color: 'white',
-              fontSize: '28px',
-              marginBottom: '16px',
-              fontWeight: '500',
-              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-              textAlign: 'center',
-              lineHeight: 1.2
-            }}>
-              Оформление заказа
-            </h1>
             <img src={service?.image} alt="color" style={{ width: 80, height: 80, margin: '0 auto 12px', display: 'block' }} />
             <div style={{
               color: 'white',
