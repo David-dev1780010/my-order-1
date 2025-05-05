@@ -482,7 +482,7 @@ const Profile: React.FC = () => {
                 type="text"
                 value={tempUsername}
                 onChange={handleUsernameChange}
-                placeholder="Введите никнейм"
+                placeholder="Введите юзернейм"
                 style={{
                   backgroundColor: 'rgba(255,255,255,0.1)',
                   border: '1px solid #FF54BD',
@@ -507,30 +507,19 @@ const Profile: React.FC = () => {
               </div>
             )}
 
-            <AnimatePresence>
-              {isEditing && (
-                <motion.input
-                  initial={{ opacity: 0, y: -10 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, y: -10 }}
-                  type="email"
-                  value={tempEmail}
-                  onChange={handleEmailChange}
-                  placeholder="Введите email"
-                  style={{
-                    backgroundColor: 'rgba(255,255,255,0.1)',
-                    border: '1px solid #FF54BD',
-                    borderRadius: '8px',
-                    padding: '8px 12px',
-                    color: 'white',
-                    fontSize: '16px',
-                    width: '100%',
-                    marginBottom: '10px',
-                    outline: 'none'
-                  }}
-                />
-              )}
-            </AnimatePresence>
+            {/* Показываем @username над балансом, если он есть и не режим редактирования */}
+            {!isEditing && username && username !== 'никнейм' && (
+              <div style={{
+                color: '#FF53C0',
+                fontSize: '18px',
+                fontWeight: 500,
+                marginBottom: '8px',
+                textAlign: 'center',
+                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+              }}>
+                @{username}
+              </div>
+            )}
 
             {!isEditing && (
               <div style={{
