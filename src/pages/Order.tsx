@@ -1,9 +1,37 @@
-import React from 'react';
+import React, { useState } from 'react';
 
-const ButtonWithDots: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+const services = [
+  {
+    key: 'banner',
+    title: 'GFX баннер',
+    price: 20,
+    description: 'Мы создадим уникальный GFX баннер, учитывая все ваши пожелания.',
+    placeholder: 'Чем подробнее, тем лучше. Например: Ник, цвет, тематика и tg',
+    image: '/images/color.png',
+  },
+  {
+    key: 'animation',
+    title: 'GFX анимация',
+    price: 40,
+    description: 'Анимированный GFX-баннер или аватарка для вашего профиля или проекта.',
+    placeholder: 'Опишите, что должно анимироваться, стиль, цвета, ник и т.д.',
+    image: '/images/color.png',
+  },
+  {
+    key: 'avatar',
+    title: 'GFX аватарка',
+    price: 20,
+    description: 'Яркая и запоминающаяся GFX-аватарка для соцсетей или мессенджеров.',
+    placeholder: 'Например: Ник, цвет, стиль, тематика',
+    image: '/images/color.png',
+  },
+];
+
+const ButtonWithDots: React.FC<{ children: React.ReactNode; onClick?: () => void }> = ({ children, onClick }) => (
   <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: 12 }}>
     <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginRight: 8 }} />
     <button
+      onClick={onClick}
       style={{
         flex: 1,
         padding: '12px',
@@ -18,7 +46,8 @@ const ButtonWithDots: React.FC<{ children: React.ReactNode }> = ({ children }) =
         position: 'relative',
         textAlign: 'center',
         maxWidth: '280px',
-        margin: '0 auto'
+        margin: '0 auto',
+        transition: 'background 0.2s',
       }}
     >
       {children}
@@ -28,7 +57,9 @@ const ButtonWithDots: React.FC<{ children: React.ReactNode }> = ({ children }) =
 );
 
 const Order: React.FC = () => {
-  // Обработчик для кнопки "Другое..."
+  const [selected, setSelected] = useState<string | null>(null);
+  const [details, setDetails] = useState('');
+
   const handleOtherClick = () => {
     if (window.Telegram && window.Telegram.WebApp && (window.Telegram.WebApp as any).showAlert) {
       (window.Telegram.WebApp as any).showAlert('Функция временно не доступна');
@@ -36,6 +67,8 @@ const Order: React.FC = () => {
       alert('Функция временно не доступна');
     }
   };
+
+  const service = services.find(s => s.key === selected);
 
   return (
     <div style={{
@@ -69,48 +102,150 @@ const Order: React.FC = () => {
           fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
         }}
       >
-        <h1 style={{
-          color: 'white',
-          fontSize: '28px',
-          marginBottom: '32px',
-          fontWeight: '500',
-          fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-          textAlign: 'center',
-          lineHeight: 1.2
-        }}>
-          Выберите услугу<br />дизайна
-        </h1>
-        <ButtonWithDots>GFX баннер</ButtonWithDots>
-        <ButtonWithDots>GFX анимация</ButtonWithDots>
-        <ButtonWithDots>GFX аватарка</ButtonWithDots>
-        <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: 0, marginTop: 8, justifyContent: 'center' }}>
-          <button
-            onClick={handleOtherClick}
-            style={{
-              padding: '12px',
-              borderRadius: '12px',
-              backgroundColor: '#B6116B',
+        {!selected ? (
+          <>
+            <h1 style={{
               color: 'white',
-              border: 'none',
-              fontSize: '22px',
+              fontSize: '28px',
+              marginBottom: '32px',
               fontWeight: '500',
               fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-              cursor: 'pointer',
-              position: 'relative',
               textAlign: 'center',
-              width: '180px',
-              margin: '0 auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '6px'
-            }}
-          >
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block' }} />
-            Другое...
-            <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block' }} />
-          </button>
-        </div>
+              lineHeight: 1.2
+            }}>
+              Выберите услугу<br />дизайна
+            </h1>
+            <ButtonWithDots onClick={() => setSelected('banner')}>GFX баннер</ButtonWithDots>
+            <ButtonWithDots onClick={() => setSelected('animation')}>GFX анимация</ButtonWithDots>
+            <ButtonWithDots onClick={() => setSelected('avatar')}>GFX аватарка</ButtonWithDots>
+            <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: 0, marginTop: 8, justifyContent: 'center' }}>
+              <button
+                onClick={handleOtherClick}
+                style={{
+                  padding: '12px',
+                  borderRadius: '12px',
+                  backgroundColor: '#B6116B',
+                  color: 'white',
+                  border: 'none',
+                  fontSize: '22px',
+                  fontWeight: '500',
+                  fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+                  cursor: 'pointer',
+                  position: 'relative',
+                  textAlign: 'center',
+                  width: '180px',
+                  margin: '0 auto',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '6px'
+                }}
+              >
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block' }} />
+                Другое...
+                <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block' }} />
+              </button>
+            </div>
+          </>
+        ) : (
+          <>
+            <div style={{ position: 'absolute', top: 24, right: 24, color: '#FF53C0', fontWeight: 700, fontSize: 32, fontFamily: 'Montserrat Alternates', zIndex: 2 }}>
+              {service?.price}$
+            </div>
+            <h1 style={{
+              color: 'white',
+              fontSize: '28px',
+              marginBottom: '16px',
+              fontWeight: '500',
+              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+              textAlign: 'center',
+              lineHeight: 1.2
+            }}>
+              Оформление заказа
+            </h1>
+            <img src={service?.image} alt="color" style={{ width: 80, height: 80, margin: '0 auto 12px', display: 'block' }} />
+            <div style={{
+              color: 'white',
+              fontSize: '28px',
+              fontWeight: 500,
+              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+              textAlign: 'center',
+              marginBottom: 8
+            }}>{service?.title}</div>
+            <div style={{
+              color: '#BEB8D1',
+              fontSize: '18px',
+              fontWeight: 400,
+              fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+              textAlign: 'center',
+              marginBottom: 18
+            }}>{service?.description}</div>
+            <textarea
+              placeholder={service?.placeholder}
+              value={details}
+              onChange={e => setDetails(e.target.value)}
+              style={{
+                width: '100%',
+                minHeight: 90,
+                background: '#584C7D',
+                border: 'none',
+                borderRadius: 18,
+                color: 'white',
+                fontSize: 17,
+                padding: 18,
+                marginBottom: 24,
+                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+                resize: 'none',
+                outline: 'none',
+                boxSizing: 'border-box',
+              }}
+            />
+            <button
+              style={{
+                width: '100%',
+                padding: '18px',
+                borderRadius: '14px',
+                backgroundColor: '#B6116B',
+                color: 'white',
+                border: 'none',
+                fontSize: '22px',
+                fontWeight: '600',
+                fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+                marginBottom: 16,
+                cursor: 'pointer',
+                transition: 'background 0.2s',
+              }}
+            >
+              Оформить заказ
+            </button>
+            <div style={{ display: 'flex', alignItems: 'center', width: '100%', justifyContent: 'center' }}>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#09FBD3', display: 'inline-block', marginRight: 8 }} />
+              <button
+                onClick={() => setSelected(null)}
+                style={{
+                  flex: 1,
+                  padding: '16px',
+                  borderRadius: '14px',
+                  backgroundColor: '#09FBD3',
+                  color: '#2D1E5A',
+                  border: 'none',
+                  fontSize: '22px',
+                  fontWeight: '600',
+                  fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
+                  margin: '0 auto',
+                  cursor: 'pointer',
+                  transition: 'background 0.2s',
+                  textAlign: 'center',
+                  maxWidth: '340px',
+                  display: 'block',
+                }}
+              >
+                Выбрать другую услугу
+              </button>
+              <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#09FBD3', display: 'inline-block', marginLeft: 8 }} />
+            </div>
+          </>
+        )}
       </div>
       <div style={{
         position: 'fixed',
