@@ -55,6 +55,24 @@ def get_balance():
         return jsonify(balance=0)
     return jsonify(balance=balances.get(int(user_id), 0))
 
+@app.route('/send_order_result', methods=['POST'])
+def send_order_result():
+    data = request.json
+    user_id = data.get('user_id')
+    file_id = data.get('file_id')
+    comment = data.get('comment', 'Ваш заказ выполнен успешно')
+    if not user_id or not file_id:
+        return jsonify({'ok': False, 'error': 'user_id и file_id обязательны'}), 400
+    try:
+        requests.post(f'https://api.telegram.org/bot{BOT_TOKEN}/sendDocument', json={
+            'chat_id': user_id,
+            'document': file_id,
+            'caption': comment
+        })
+        return jsonify({'ok': True})
+    except Exception as e:
+        return jsonify({'ok': False, 'error': str(e)}), 500
+
 # --- Telegram Bot ---
 async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context.args and context.args[0].startswith("balance_"):
@@ -78,24 +96,33 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if result.get("ok"):
             invoice_url = result["result"].get("pay_url") or result["result"].get("bot_invoice_url")
             keyboard = [
-                [InlineKeyboardButton("Оплатить через CryptoBot", url=invoice_url)]
+                [InlineKeyboardButton("Pay via CryptoBot", url=invoice_url)]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
-            await update.message.reply_text(
-                f"Счет на пополнение баланса на {amount} USDT создан!\nНажмите кнопку ниже для оплаты:",
-                reply_markup=reply_markup
-            )
+            
+            # Отправляем анимацию с текстом
+            with open('../public/images/Crypto Pay.mp4', 'rb') as video:
+                await update.message.reply_animation(
+                    animation=video,
+                    caption=f"Счет на пополнение баланса на {amount} USDT создан!💰\n\nНажмите кнопку ниже для оплаты:",
+                    reply_markup=reply_markup
+                )
         else:
             await update.message.reply_text("Ошибка при создании счета.")
         return
+    
     keyboard = [
-        [InlineKeyboardButton("Открыть мини-приложение", url="https://t.me/orderenineenngbot/Ordering")]
+        [InlineKeyboardButton("Open moodern-app", url="https://t.me/orderenineenngbot/Ordering")]
     ]
     reply_markup = InlineKeyboardMarkup(keyboard)
-    await update.message.reply_text(
-        "Добро пожаловать! Здесь вы можете заказать дизайн. Для заказа используйте наше мини-приложение:",
-        reply_markup=reply_markup
-    )
+    
+    # Отправляем видео как анимацию вместе с текстом
+    with open('../public/images/Hello_bot.mp4', 'rb') as video:
+        await update.message.reply_animation(
+            animation=video,
+            caption="Добро пожаловать в Moodern design!👾\n\nЗдесь вы сможете заказать дизайн в нашем мини-приложении🚀",
+            reply_markup=reply_markup
+        )
 
 async def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
     if context.args:
@@ -119,13 +146,17 @@ async def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
         if result.get("ok"):
             invoice_url = result["result"].get("pay_url") or result["result"].get("bot_invoice_url")
             keyboard = [
-                [InlineKeyboardButton("Оплатить через CryptoBot", url=invoice_url)]
+                [InlineKeyboardButton("Pay via CryptoBot", url=invoice_url)]
             ]
             reply_markup = InlineKeyboardMarkup(keyboard)
-            await update.message.reply_text(
-                f"Счет на пополнение баланса на {amount} USDT создан!\nНажмите кнопку ниже для оплаты:",
-                reply_markup=reply_markup
-            )
+            
+            # Отправляем анимацию с текстом
+            with open('../public/images/Crypto Pay.mp4', 'rb') as video:
+                await update.message.reply_animation(
+                    animation=video,
+                    caption=f"Счет на пополнение баланса на {amount} USDT создан!💰\n\nНажмите кнопку ниже для оплаты:",
+                    reply_markup=reply_markup
+                )
         else:
             await update.message.reply_text("Ошибка при создании счета.")
 
