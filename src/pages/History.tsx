@@ -91,7 +91,7 @@ const History: React.FC = () => {
         }}>
           <div>№</div>
           <div>Услуга</div>
-          <div>Дата</div>
+          <div style={{marginLeft: 16}}>Дата</div>
           <div style={{marginLeft: 16}}>Статус</div>
           <div style={{marginLeft: 18}}>Цена</div>
         </div>
@@ -111,7 +111,7 @@ const History: React.FC = () => {
             }}>
               <div style={{ fontFamily: 'monospace', fontSize: 15 }}>{String(idx + 1).padStart(2, '0')}</div>
               <div style={{ wordBreak: 'break-word' }}>{order.service}</div>
-              <div>{order.created_at ? new Date(order.created_at).toLocaleDateString() : '-'}</div>
+              <div style={{marginLeft: 16}}>{order.created_at ? new Date(order.created_at).toLocaleDateString() : '-'}</div>
               <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginLeft: 16 }}>{STATUS_ICONS[order.status] || STATUS_ICONS['new']}{STATUS_TEXT[order.status] || STATUS_TEXT['new']}</div>
               <div style={{ color: '#09FBD3', fontWeight: 600, marginLeft: 18 }}>${order.price}</div>
             </div>
