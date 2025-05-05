@@ -11,7 +11,7 @@ const ButtonWithDots: React.FC<{ children: React.ReactNode }> = ({ children }) =
         backgroundColor: '#B6116B',
         color: 'white',
         border: 'none',
-        fontSize: '18px',
+        fontSize: '22px',
         fontWeight: '500',
         fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
         cursor: 'pointer',
@@ -51,7 +51,8 @@ const Order: React.FC = () => {
       left: 0,
       right: 0,
       bottom: 0,
-      overflow: 'hidden'
+      overflow: 'hidden',
+      fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
     }}>
       <div
         style={{
@@ -64,7 +65,8 @@ const Order: React.FC = () => {
           flexDirection: 'column',
           alignItems: 'center',
           position: 'relative',
-          zIndex: 1
+          zIndex: 1,
+          fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
         }}
       >
         <h1 style={{
@@ -81,8 +83,18 @@ const Order: React.FC = () => {
         <ButtonWithDots>GFX баннер</ButtonWithDots>
         <ButtonWithDots>GFX анимация</ButtonWithDots>
         <ButtonWithDots>GFX аватарка</ButtonWithDots>
-        <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: 0, marginTop: 8 }}>
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginRight: 8 }} />
+        <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: 0, marginTop: 8, justifyContent: 'center', position: 'relative' }}>
+          <span style={{
+            width: 16,
+            height: 16,
+            borderRadius: '50%',
+            background: 'rgba(254, 83, 187, 0.7)',
+            boxShadow: '0 0 16px 8px rgba(254, 83, 187, 0.3)',
+            display: 'inline-block',
+            marginRight: 8,
+            position: 'relative',
+            zIndex: 1
+          }} />
           <button
             onClick={handleOtherClick}
             style={{
@@ -91,19 +103,30 @@ const Order: React.FC = () => {
               backgroundColor: '#B6116B',
               color: 'white',
               border: 'none',
-              fontSize: '18px',
+              fontSize: '22px',
               fontWeight: '500',
               fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
               cursor: 'pointer',
               position: 'relative',
               textAlign: 'center',
               width: '112px',
-              margin: '0 auto'
+              margin: '0 auto',
+              zIndex: 2
             }}
           >
             Другое...
           </button>
-          <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginLeft: 8 }} />
+          <span style={{
+            width: 16,
+            height: 16,
+            borderRadius: '50%',
+            background: 'rgba(254, 83, 187, 0.7)',
+            boxShadow: '0 0 16px 8px rgba(254, 83, 187, 0.3)',
+            display: 'inline-block',
+            marginLeft: 8,
+            position: 'relative',
+            zIndex: 1
+          }} />
         </div>
       </div>
       <div style={{
