@@ -78,7 +78,7 @@ const Order: React.FC = () => {
       justifyContent: 'flex-start',
       minHeight: '100vh',
       padding: '20px',
-      paddingTop: '100px',
+      paddingTop: '30px',
       position: 'fixed',
       top: 0,
       left: 0,
