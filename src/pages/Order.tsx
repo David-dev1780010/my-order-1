@@ -98,7 +98,7 @@ const Order: React.FC = () => {
               cursor: 'pointer',
               position: 'relative',
               textAlign: 'center',
-              width: '112px',
+              width: '180px',
               margin: '0 auto',
               display: 'flex',
               alignItems: 'center',
