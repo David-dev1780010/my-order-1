@@ -8,19 +8,24 @@ const Support: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Получаем username из localStorage
+  // Получаем user_id, username, usertag из localStorage
+  let user_id = '';
   let username = '';
+  let usertag = '';
   try {
     const profile = localStorage.getItem('userProfile');
     if (profile) {
-      username = JSON.parse(profile).savedUserTag || '';
+      const parsed = JSON.parse(profile);
+      user_id = parsed.savedUserId || '';
+      username = parsed.savedUsername || '';
+      usertag = parsed.savedUserTag || '';
     }
   } catch {}
 
   const handleSend = async () => {
     setError(null);
     setSuccess(null);
-    if (!username) {
+    if (!usertag) {
       setError('Для обращения в поддержку у вас должен быть установлен username в Telegram.');
       return;
     }
@@ -37,7 +42,7 @@ const Support: React.FC = () => {
       const res = await fetch('http://localhost:8000/support', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, message }),
+        body: JSON.stringify({ user_id, username, usertag, message }),
       });
       if (res.ok) {
         setSuccess('Ваш запрос успешно отправлен в поддержку!');

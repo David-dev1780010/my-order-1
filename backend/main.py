@@ -71,24 +71,22 @@ def init_support_table():
 init_support_table()
 
 class SupportIn(BaseModel):
+    user_id: int
     username: str
+    usertag: str
     message: str
 
 @app.post('/support')
 def create_support(support: SupportIn):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('''INSERT INTO support (username, message, status) VALUES (?, ?, ?)''',
-              (support.username, support.message, 'new'))
+    c.execute('''INSERT INTO support (user_id, username, usertag, message, status) VALUES (?, ?, ?, ?, ?)''',
+              (support.user_id, support.username, support.usertag, support.message, 'new'))
     support_id = c.lastrowid
     conn.commit()
     c.execute('SELECT * FROM support WHERE id=?', (support_id,))
     row = c.fetchone()
     conn.close()
     # Здесь вызываем функцию для отправки сообщения в админ-бот
-    try:
-        from send_to_admin import send_support_to_admin
-        send_support_to_admin(row)
-    except Exception:
-        pass
+    # (оставим заглушку, если потребуется)
     return {"ok": True, "id": support_id} 
