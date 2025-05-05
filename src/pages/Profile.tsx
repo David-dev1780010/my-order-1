@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { motion } from 'framer-motion';
 
 declare global {
   interface Window {
@@ -175,11 +175,6 @@ const Profile: React.FC = () => {
   // Обработчики изменений полей
   const handleUsernameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setTempUsername(e.target.value);
-    saveTempData();
-  };
-
-  const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setTempEmail(e.target.value);
     saveTempData();
   };
 
