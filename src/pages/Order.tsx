@@ -1,33 +1,29 @@
 import React from 'react';
 
-const ButtonWithDots: React.FC<React.ButtonHTMLAttributes<HTMLButtonElement>> = ({ children, ...props }) => (
-  <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: '18px' }}>
-    <span style={{
-      width: 10, height: 10, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginRight: 8
-    }} />
+const ButtonWithDots: React.FC<{ children: React.ReactNode }> = ({ children }) => (
+  <div style={{ display: 'flex', alignItems: 'center', width: '100%', marginBottom: 12 }}>
+    <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginRight: 8 }} />
     <button
-      {...props}
       style={{
         flex: 1,
-        padding: '16px',
+        padding: '12px',
         borderRadius: '12px',
         backgroundColor: '#B6116B',
         color: 'white',
         border: 'none',
-        fontSize: '22px',
+        fontSize: '18px',
         fontWeight: '500',
         fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
         cursor: 'pointer',
         position: 'relative',
         textAlign: 'center',
-        ...props.style
+        maxWidth: '280px',
+        margin: '0 auto'
       }}
     >
       {children}
     </button>
-    <span style={{
-      width: 10, height: 10, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginLeft: 8
-    }} />
+    <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#B6116B', display: 'inline-block', marginLeft: 8 }} />
   </div>
 );
 
@@ -88,7 +84,6 @@ const Order: React.FC = () => {
           <button
             onClick={handleOtherClick}
             style={{
-              flex: 1,
               padding: '12px',
               borderRadius: '12px',
               backgroundColor: '#B6116B',
@@ -99,7 +94,9 @@ const Order: React.FC = () => {
               fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
               cursor: 'pointer',
               position: 'relative',
-              textAlign: 'center'
+              textAlign: 'center',
+              width: '112px',
+              margin: '0 auto'
             }}
           >
             Другое...
