@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 const MAX_LENGTH = 560;
 
@@ -7,27 +7,22 @@ const Support: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [profile, setProfile] = useState<any>({});
+
+  useEffect(() => {
+    const p = localStorage.getItem('userProfile');
+    setProfile(p ? JSON.parse(p) : {});
+  }, []);
 
   const handleSend = async () => {
     setError(null);
     setSuccess(null);
     setLoading(true);
-    // Получаем профиль пользователя
-    const profile = localStorage.getItem('userProfile');
-    let user_id = null, username = '', usertag = '';
-    if (profile) {
-      try {
-        const parsed = JSON.parse(profile);
-        user_id = parsed.savedUserId;
-        username = parsed.savedUsername;
-        usertag = parsed.savedUserTag;
-      } catch {}
-    }
-    if (!username || !user_id) {
-      setError('Для обращения в поддержку у вас должен быть установлен username в Telegram!');
-      setLoading(false);
-      return;
-    }
+    // Получаем профиль пользователя всегда актуально
+    const p = localStorage.getItem('userProfile');
+    const parsed = p ? JSON.parse(p) : {};
+    const user_id = parsed.savedUserId;
+    const usertag = parsed.savedUserTag;
     if (message.trim().length < 1) {
       setError('Пожалуйста, опишите ваш запрос.');
       setLoading(false);
@@ -42,7 +37,7 @@ const Support: React.FC = () => {
       const res = await fetch('http://localhost:8000/support', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id, username, usertag, message })
+        body: JSON.stringify({ user_id, usertag, message })
       });
       if (res.ok) {
         setSuccess('Ваш запрос успешно отправлен в поддержку!');
