@@ -202,21 +202,23 @@ async def check_orders():
         conn.close()
         await asyncio.sleep(10)  # Проверять каждые 10 секунд
 
-async def check_support_requests():
+SUPPORT_ANSWERED_API = 'http://localhost:8000/support/new'
+
+async def check_support_answers():
     while True:
-        conn = sqlite3.connect("orders.db")
-        c = conn.cursor()
-        c.execute("SELECT id, username, user_id, message FROM support WHERE status='new'")
-        for support_id, username, user_id, message in c.fetchall():
-            try:
-                if user_id:
-                    await bot.send_message(user_id, "Ваш запрос в поддержку успешно отправлен! Ожидайте ответа.")
-                c.execute("UPDATE support SET status='user_notified' WHERE id=?", (support_id,))
-            except Exception as e:
-                print(f"Ошибка отправки уведомления о поддержке: {e}")
-        conn.commit()
-        conn.close()
-        await asyncio.sleep(10)
+        try:
+            resp = requests.get(SUPPORT_ANSWERED_API)
+            if resp.ok:
+                supports = resp.json()
+                for s in supports:
+                    if s['status'] == 'answered' and s['answer']:
+                        # Отправить пользователю ответ
+                        await bot.send_message(s['user_id'], f'Тех.поддержка ответила вам:\n\n{s["answer"]}')
+                        # Пометить как доставленное (можно добавить delivered=1 в таблицу support при необходимости)
+            await asyncio.sleep(10)
+        except Exception as e:
+            print('Ошибка поддержки (user):', e)
+            await asyncio.sleep(10)
 
 if __name__ == "__main__":
     # Запускаем Flask в отдельном потоке
@@ -227,10 +229,10 @@ if __name__ == "__main__":
     app_telegram.add_handler(CommandHandler("start", start))
     app_telegram.add_handler(CommandHandler("Balance", balance))
     
-    # Запускаем проверку заказов и обращений в поддержку
+    # Запускаем проверку заказов
     loop = asyncio.get_event_loop()
     loop.create_task(check_orders())
-    loop.create_task(check_support_requests())
+    loop.create_task(check_support_answers())
     
     # Запускаем бота
     app_telegram.run_polling()

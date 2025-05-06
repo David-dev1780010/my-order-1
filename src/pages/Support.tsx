@@ -8,147 +8,106 @@ const Support: React.FC = () => {
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
 
-  // Получаем user_id, username, usertag из localStorage
-  let user_id = '';
-  let username = '';
-  let usertag = '';
-  try {
-    const profile = localStorage.getItem('userProfile');
-    if (profile) {
-      const parsed = JSON.parse(profile);
-      user_id = parsed.savedUserId || '';
-      username = parsed.savedUsername || '';
-      usertag = parsed.savedUserTag || '';
-    }
-  } catch {}
-
   const handleSend = async () => {
     setError(null);
     setSuccess(null);
-    if (!usertag) {
-      setError('Для обращения в поддержку у вас должен быть установлен username в Telegram.');
+    setLoading(true);
+    // Получаем профиль пользователя
+    const profile = localStorage.getItem('userProfile');
+    let user_id = null, username = '', usertag = '';
+    if (profile) {
+      try {
+        const parsed = JSON.parse(profile);
+        user_id = parsed.savedUserId;
+        username = parsed.savedUsername;
+        usertag = parsed.savedUserTag;
+      } catch {}
+    }
+    if (!username || !user_id) {
+      setError('Для обращения в поддержку у вас должен быть установлен username в Telegram!');
+      setLoading(false);
       return;
     }
     if (message.trim().length < 1) {
       setError('Пожалуйста, опишите ваш запрос.');
+      setLoading(false);
       return;
     }
     if (message.length > MAX_LENGTH) {
       setError(`Максимальная длина сообщения — ${MAX_LENGTH} символов.`);
+      setLoading(false);
       return;
     }
-    setLoading(true);
     try {
-      // Попробуем оба варианта адреса
-      let res = await fetch('http://localhost:8000/support', {
+      const res = await fetch('http://localhost:8000/support', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id, username, usertag, message }),
+        body: JSON.stringify({ user_id, username, usertag, message })
       });
-      if (!res.ok) {
-        // fallback на 127.0.0.1
-        res = await fetch('http://127.0.0.1:8000/support', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ user_id, username, usertag, message }),
-        });
-      }
       if (res.ok) {
         setSuccess('Ваш запрос успешно отправлен в поддержку!');
         setMessage('');
       } else {
-        const errText = await res.text();
-        setError('Ошибка при отправке. Попробуйте позже.');
-        console.error('Ошибка отправки в поддержку:', errText);
+        setError('Ошибка отправки. Попробуйте позже.');
       }
-    } catch (e) {
+    } catch {
       setError('Ошибка соединения с сервером.');
-      console.error('Ошибка соединения с сервером:', e);
     }
     setLoading(false);
   };
 
   return (
-    <div style={{
-      minHeight: '100vh',
-      width: '100%',
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'center',
-      background: 'none',
-      fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
-    }}>
-      <div style={{
-        background: '#2D1E5A',
-        borderRadius: 36,
-        padding: '36px 18px',
-        maxWidth: 400,
-        width: '100%',
-        margin: '0 auto',
-        boxShadow: '0 4px 32px 0 rgba(0,0,0,0.12)',
-        display: 'flex',
-        flexDirection: 'column',
-        alignItems: 'center',
-      }}>
-        <h2 style={{
-          color: 'white',
-          fontSize: 28,
-          fontWeight: 600,
-          textAlign: 'center',
-          marginBottom: 24,
-        }}>Поддержка</h2>
+    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none' }}>
+      <div style={{ background: '#2D1E5A', borderRadius: 40, padding: '36px 18px', maxWidth: 400, width: '100%', boxShadow: '0 4px 32px 0 rgba(0,0,0,0.12)' }}>
+        <h2 style={{ color: 'white', fontSize: 32, fontWeight: 500, textAlign: 'center', marginBottom: 28, fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif' }}>Поддержка</h2>
         <textarea
-          value={message}
-          onChange={e => {
-            if (e.target.value.length <= MAX_LENGTH) setMessage(e.target.value);
-          }}
-          placeholder="Опишите ваш запрос"
           style={{
             width: '100%',
             minHeight: 100,
             maxHeight: 180,
             background: '#584C7D',
             border: 'none',
-            borderRadius: 22,
+            borderRadius: 24,
             color: 'white',
             fontSize: 18,
-            padding: '18px 16px',
+            padding: 18,
             marginBottom: 18,
             resize: 'vertical',
             outline: 'none',
-            fontFamily: 'inherit',
+            fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif',
           }}
           maxLength={MAX_LENGTH}
+          placeholder="Опишите ваш запрос"
+          value={message}
+          onChange={e => setMessage(e.target.value)}
         />
-        <div style={{ color: '#BEB8D1', fontSize: 14, alignSelf: 'flex-end', marginBottom: 8 }}>
-          {message.length}/{MAX_LENGTH}
-        </div>
+        <div style={{ color: '#BEB8D1', fontSize: 14, marginBottom: 10, textAlign: 'right' }}>{message.length}/{MAX_LENGTH}</div>
         {error && <div style={{ color: '#FF6B6B', marginBottom: 10, textAlign: 'center' }}>{error}</div>}
         {success && <div style={{ color: '#09FBD3', marginBottom: 10, textAlign: 'center' }}>{success}</div>}
         <button
-          onClick={handleSend}
-          disabled={loading}
           style={{
             width: '100%',
             background: '#B6116B',
             color: 'white',
             border: 'none',
-            borderRadius: 18,
-            fontSize: 18,
+            borderRadius: 20,
+            fontSize: 20,
             fontWeight: 500,
             padding: '16px 0',
-            marginBottom: 18,
+            marginBottom: 16,
             cursor: loading ? 'not-allowed' : 'pointer',
             transition: 'background 0.2s',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            gap: 10,
+            gap: 10
           }}
+          disabled={loading}
+          onClick={handleSend}
         >
           <span role="img" aria-label="mail">📩</span> Отправить в поддержку
         </button>
-        <div style={{ color: 'white', fontSize: 17, textAlign: 'center', marginTop: 6 }}>
+        <div style={{ color: 'white', textAlign: 'center', fontSize: 18, marginTop: 8 }}>
           @neo_mailers2
         </div>
       </div>

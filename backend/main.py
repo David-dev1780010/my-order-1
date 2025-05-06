@@ -26,6 +26,22 @@ class OrderOut(BaseModel):
     status: str
     result_file: str = ''
 
+# --- Support system ---
+class SupportIn(BaseModel):
+    user_id: int
+    username: str
+    usertag: str
+    message: str
+
+class SupportOut(BaseModel):
+    id: int
+    user_id: int
+    username: str
+    usertag: str
+    message: str
+    status: str
+    answer: str
+
 @app.post('/order', response_model=OrderOut)
 def create_order(order: OrderIn):
     conn = sqlite3.connect(DB_PATH)
@@ -52,41 +68,45 @@ def get_orders(user_id: int):
         id=row[0], user_id=row[1], username=row[2], usertag=row[3], service=row[4], price=row[5], details=row[6], status=row[7], result_file=row[8] or ''
     ) for row in rows]
 
-# --- Support Table Init ---
-def init_support_table():
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('''CREATE TABLE IF NOT EXISTS support (
-        id INTEGER PRIMARY KEY AUTOINCREMENT,
-        username TEXT,
-        user_id INTEGER,
-        message TEXT,
-        status TEXT DEFAULT 'new',
-        admin_reply TEXT,
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )''')
-    conn.commit()
-    conn.close()
-
-init_support_table()
-
-class SupportIn(BaseModel):
-    user_id: int
-    username: str
-    usertag: str
-    message: str
+# Инициализация таблицы поддержки
+conn = sqlite3.connect(DB_PATH)
+c = conn.cursor()
+c.execute('''CREATE TABLE IF NOT EXISTS support (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    username TEXT,
+    usertag TEXT,
+    message TEXT,
+    status TEXT DEFAULT 'new',
+    answer TEXT DEFAULT ''
+)''')
+conn.commit()
+conn.close()
 
 @app.post('/support')
 def create_support(support: SupportIn):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('''INSERT INTO support (user_id, username, usertag, message, status) VALUES (?, ?, ?, ?, ?)''',
-              (support.user_id, support.username, support.usertag, support.message, 'new'))
-    support_id = c.lastrowid
+    c.execute('''INSERT INTO support (user_id, username, usertag, message, status) VALUES (?, ?, ?, ?, 'new')''',
+              (support.user_id, support.username, support.usertag, support.message))
     conn.commit()
-    c.execute('SELECT * FROM support WHERE id=?', (support_id,))
-    row = c.fetchone()
     conn.close()
-    # Здесь вызываем функцию для отправки сообщения в админ-бот
-    # (оставим заглушку, если потребуется)
-    return {"ok": True, "id": support_id} 
+    return {"ok": True}
+
+@app.get('/support/new', response_model=List[SupportOut])
+def get_new_support():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('SELECT * FROM support WHERE status="new" ORDER BY id ASC')
+    rows = c.fetchall()
+    conn.close()
+    return [SupportOut(id=row[0], user_id=row[1], username=row[2], usertag=row[3], message=row[4], status=row[5], answer=row[6]) for row in rows]
+
+@app.post('/support/answer')
+def answer_support(id: int, answer: str):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('UPDATE support SET status="answered", answer=? WHERE id=?', (answer, id))
+    conn.commit()
+    conn.close()
+    return {"ok": True} 
