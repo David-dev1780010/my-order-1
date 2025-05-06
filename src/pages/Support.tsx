@@ -39,19 +39,31 @@ const Support: React.FC = () => {
     }
     setLoading(true);
     try {
-      const res = await fetch('http://localhost:8000/support', {
+      // Попробуем оба варианта адреса
+      let res = await fetch('http://localhost:8000/support', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id, username, usertag, message }),
       });
+      if (!res.ok) {
+        // fallback на 127.0.0.1
+        res = await fetch('http://127.0.0.1:8000/support', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ user_id, username, usertag, message }),
+        });
+      }
       if (res.ok) {
         setSuccess('Ваш запрос успешно отправлен в поддержку!');
         setMessage('');
       } else {
+        const errText = await res.text();
         setError('Ошибка при отправке. Попробуйте позже.');
+        console.error('Ошибка отправки в поддержку:', errText);
       }
-    } catch {
+    } catch (e) {
       setError('Ошибка соединения с сервером.');
+      console.error('Ошибка соединения с сервером:', e);
     }
     setLoading(false);
   };
