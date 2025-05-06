@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const MAX_LENGTH = 560;
 
@@ -7,12 +7,6 @@ const Support: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-  const [profile, setProfile] = useState<any>({});
-
-  useEffect(() => {
-    const p = localStorage.getItem('userProfile');
-    setProfile(p ? JSON.parse(p) : {});
-  }, []);
 
   const handleSend = async () => {
     setError(null);

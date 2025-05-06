@@ -2,8 +2,9 @@ from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import sqlite3
 from typing import List
+import os
 
-DB_PATH = '../ChatBot/orders.db'
+DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../ChatBot/orders.db'))
 
 app = FastAPI()
 
@@ -32,6 +33,7 @@ class SupportIn(BaseModel):
     username: str
     usertag: str
     message: str
+    savedUsername: str = ''
 
 class SupportOut(BaseModel):
     id: int
@@ -41,6 +43,7 @@ class SupportOut(BaseModel):
     message: str
     status: str
     answer: str
+    savedUsername: str = ''
 
 @app.post('/order', response_model=OrderOut)
 def create_order(order: OrderIn):
@@ -78,7 +81,8 @@ c.execute('''CREATE TABLE IF NOT EXISTS support (
     usertag TEXT,
     message TEXT,
     status TEXT DEFAULT 'new',
-    answer TEXT DEFAULT ''
+    answer TEXT DEFAULT '',
+    savedUsername TEXT DEFAULT ''
 )''')
 conn.commit()
 conn.close()
@@ -87,8 +91,8 @@ conn.close()
 def create_support(support: SupportIn):
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('''INSERT INTO support (user_id, username, usertag, message, status) VALUES (?, ?, ?, ?, 'new')''',
-              (support.user_id, support.username, support.usertag, support.message))
+    c.execute('''INSERT INTO support (user_id, username, usertag, message, status, savedUsername) VALUES (?, ?, ?, ?, 'new', ?)''',
+              (support.user_id, support.username, support.usertag, support.message, support.savedUsername))
     conn.commit()
     conn.close()
     return {"ok": True}
@@ -100,7 +104,7 @@ def get_new_support():
     c.execute('SELECT * FROM support WHERE status="new" ORDER BY id ASC')
     rows = c.fetchall()
     conn.close()
-    return [SupportOut(id=row[0], user_id=row[1], username=row[2], usertag=row[3], message=row[4], status=row[5], answer=row[6]) for row in rows]
+    return [SupportOut(id=row[0], user_id=row[1], username=row[2], usertag=row[3], message=row[4], status=row[5], answer=row[6], savedUsername=row[7] if len(row) > 7 else '') for row in rows]
 
 @app.post('/support/answer')
 def answer_support(id: int, answer: str):

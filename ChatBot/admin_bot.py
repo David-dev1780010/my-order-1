@@ -119,8 +119,19 @@ async def check_support():
             if resp.ok:
                 supports = resp.json()
                 for s in supports:
-                    text = f"Пользователь @{s['username']} написал новое сообщение в поддержку:\n\n{s['message']}"
-                    ikb = InlineKeyboardMarkup().add(InlineKeyboardButton('Ответить пользователю', callback_data=f'support_reply_{s['id']}'))
+                    username_display = s['username'] if s['username'] else 'нет username'
+                    usertag_display = s['usertag'] if s['usertag'] else 'нет usertag'
+                    nickname_display = s['savedUsername'] if 'savedUsername' in s and s['savedUsername'] else 'нет никнейма'
+                    text = (
+                        f"Пользователь:\n"
+                        f"- user_id: {s['user_id']}\n"
+                        f"- username (Telegram): @{username_display}\n"
+                        f"- usertag (из профиля): @{usertag_display}\n"
+                        f"- Никнейм: {nickname_display}\n\n"
+                        f"Написал в поддержку:\n\n"
+                        f"{s['message']}"
+                    )
+                    ikb = InlineKeyboardMarkup().add(InlineKeyboardButton('Ответить пользователю', callback_data=f'support_reply_{s["id"]}'))
                     for admin_id in ADMIN_IDS:
                         if admin_id:
                             await bot.send_message(int(admin_id), text, reply_markup=ikb)
