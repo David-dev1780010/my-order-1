@@ -28,7 +28,7 @@ const Support: React.FC = () => {
       return;
     }
     try {
-      const res = await fetch('http://localhost:8000/support', {
+      const res = await fetch('https://your-backend-domain/support', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id, usertag, message })
