@@ -27,7 +27,7 @@ balances = {}
 
 # Инициализация базы данных
 def init_db():
-    conn = sqlite3.connect("orders.db")
+    conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('''CREATE TABLE IF NOT EXISTS orders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,10 +45,16 @@ def init_db():
     conn.commit()
     conn.close()
 
+DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../ChatBot/orders.db'))
 init_db()
 
 # Flask-приложение для webhook и баланса
 app = Flask(__name__)
+
+# Получаем абсолютный путь к Hello_bot.mp4
+HELLO_BOT_MP4 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../public/images/Hello_bot.mp4'))
+# Получаем абсолютный путь к Crypto Pay.mp4
+CRYPTO_PAY_MP4 = os.path.abspath(os.path.join(os.path.dirname(__file__), '../public/images/Crypto Pay.mp4'))
 
 @app.route('/crypto_pay_webhook', methods=['POST'])
 def crypto_pay_webhook():
@@ -108,7 +114,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup = InlineKeyboardMarkup(keyboard)
             
             # Отправляем анимацию с текстом
-            with open('../public/images/Crypto Pay.mp4', 'rb') as video:
+            with open(CRYPTO_PAY_MP4, 'rb') as video:
                 await update.message.reply_animation(
                     animation=video,
                     caption=f"Счет на пополнение баланса на {amount} USDT создан!💰\n\nНажмите кнопку ниже для оплаты:",
@@ -124,7 +130,7 @@ async def start(update: Update, context: ContextTypes.DEFAULT_TYPE):
     reply_markup = InlineKeyboardMarkup(keyboard)
     
     # Отправляем видео как анимацию вместе с текстом
-    with open('../public/images/Hello_bot.mp4', 'rb') as video:
+    with open(HELLO_BOT_MP4, 'rb') as video:
         await update.message.reply_animation(
             animation=video,
             caption="Добро пожаловать в Moodern design!👾\n\nЗдесь вы сможете заказать дизайн в нашем мини-приложении🚀",
@@ -158,7 +164,7 @@ async def balance(update: Update, context: ContextTypes.DEFAULT_TYPE):
             reply_markup = InlineKeyboardMarkup(keyboard)
             
             # Отправляем анимацию с текстом
-            with open('../public/images/Crypto Pay.mp4', 'rb') as video:
+            with open(CRYPTO_PAY_MP4, 'rb') as video:
                 await update.message.reply_animation(
                     animation=video,
                     caption=f"Счет на пополнение баланса на {amount} USDT создан!💰\n\nНажмите кнопку ниже для оплаты:",
@@ -179,7 +185,7 @@ def run_telegram():
 
 async def check_orders():
     while True:
-        conn = sqlite3.connect("orders.db")
+        conn = sqlite3.connect(DB_PATH)
         c = conn.cursor()
         # Новые заказы (ожидают уведомления)
         c.execute("SELECT id, user_id FROM orders WHERE status='new' AND (notified IS NULL OR notified=0)")
