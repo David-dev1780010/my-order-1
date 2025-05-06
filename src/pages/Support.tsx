@@ -1,5 +1,13 @@
 import React, { useState } from 'react';
 
+// Для поддержки import.meta.env в TypeScript
+interface ImportMeta {
+  env: {
+    VITE_API_URL?: string;
+    [key: string]: any;
+  };
+}
+
 const MAX_LENGTH = 560;
 
 const Support: React.FC = () => {
@@ -28,7 +36,8 @@ const Support: React.FC = () => {
       return;
     }
     try {
-      const res = await fetch('https://your-backend-domain/support', {
+      const API_URL = import.meta.env.VITE_API_URL || 'https://your-backend-domain';
+      const res = await fetch(`${API_URL}/support`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ user_id, usertag, message })
