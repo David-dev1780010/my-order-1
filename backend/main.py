@@ -1,7 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from pydantic import BaseModel
 import sqlite3
-from typing import List
+from typing import List, Optional
 import os
 from fastapi.middleware.cors import CORSMiddleware
 
@@ -39,9 +39,9 @@ class OrderOut(BaseModel):
 
 # --- Support system ---
 class SupportIn(BaseModel):
-    user_id: int
-    username: str
-    usertag: str
+    user_id: Optional[int] = None
+    username: str = ''
+    usertag: str = ''
     message: str
     savedUsername: str = ''
 
