@@ -112,17 +112,24 @@ def create_support(support: SupportIn):
     c.execute('''INSERT INTO support (user_id, username, usertag, message, status, savedUsername) VALUES (?, ?, ?, ?, 'new', ?)''',
               (support.user_id, support.username, support.usertag, support.message, support.savedUsername))
     conn.commit()
+    # Выводим все обращения из базы для отладки
+    c.execute('SELECT * FROM support ORDER BY id DESC')
+    all_supports = c.fetchall()
+    print('Все обращения в поддержку:', all_supports)
     conn.close()
     # Отправляем уведомление пользователю в Telegram
     TELEGRAM_BOT_TOKEN = os.getenv('BOT_TOKEN')
     if TELEGRAM_BOT_TOKEN and support.user_id:
         try:
-            requests.post(f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage', json={
+            resp = requests.post(f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage', json={
                 'chat_id': support.user_id,
                 'text': 'Ваш запрос успешно отправлен в поддержку! Ожидайте ответа.'
             })
+            print('Ответ Telegram API:', resp.status_code, resp.text)
         except Exception as e:
             print('Ошибка отправки уведомления пользователю:', e)
+    else:
+        print('BOT_TOKEN или user_id не определены!')
     return {"ok": True}
 
 @app.get('/support/new', response_model=List[SupportOut])
