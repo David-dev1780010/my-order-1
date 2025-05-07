@@ -3,10 +3,20 @@ from pydantic import BaseModel
 import sqlite3
 from typing import List
 import os
+from fastapi.middleware.cors import CORSMiddleware
 
 DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../ChatBot/orders.db'))
 
 app = FastAPI()
+
+# Разрешаем CORS для всех доменов (или укажи свой фронт)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Лучше указать конкретный домен Vercel
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"]
+)
 
 class OrderIn(BaseModel):
     user_id: int
