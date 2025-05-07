@@ -14,15 +14,10 @@ const Support: React.FC = () => {
     setLoading(true);
     // Получаем профиль пользователя из Telegram WebApp API
     const tgUser: any = window.Telegram?.WebApp?.initDataUnsafe?.user || {};
-    const user_id = tgUser.id;
+    const user_id = tgUser.id || 0;
     const username = tgUser.username || '';
     const usertag = tgUser.username || '';
     const savedUsername = tgUser.first_name || '';
-    if (!user_id || !usertag) {
-      setError('Не удалось получить данные Telegram. Откройте мини-приложение через Telegram.');
-      setLoading(false);
-      return;
-    }
     if (message.trim().length < 1) {
       setError('Пожалуйста, опишите ваш запрос.');
       setLoading(false);
