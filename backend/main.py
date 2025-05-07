@@ -142,7 +142,6 @@ def get_new_support():
     supports = []
     for row in rows:
         try:
-            # Проверяем, что user_id — число, username — строка, status — строка
             user_id = int(row[1])
             username = str(row[2])
             usertag = str(row[3])
