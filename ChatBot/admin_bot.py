@@ -17,8 +17,8 @@ dp = Dispatcher(bot)
 
 DB_PATH = 'orders.db'
 
-SUPPORT_API = 'http://localhost:8000/support/new'
-SUPPORT_ANSWER_API = 'http://localhost:8000/support/answer'
+SUPPORT_API = 'https://my-order-1.onrender.com/support/new'
+SUPPORT_ANSWER_API = 'https://my-order-1.onrender.com/support/answer'
 
 # --- Инициализация базы ---
 def init_db():

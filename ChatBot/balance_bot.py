@@ -208,7 +208,7 @@ async def check_orders():
         conn.close()
         await asyncio.sleep(10)  # Проверять каждые 10 секунд
 
-SUPPORT_ANSWERED_API = 'http://localhost:8000/support/new'
+SUPPORT_ANSWERED_API = 'https://my-order-1.onrender.com/support/new'
 
 async def check_support_answers():
     while True:
