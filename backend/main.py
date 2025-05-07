@@ -139,7 +139,26 @@ def get_new_support():
     c.execute('SELECT * FROM support WHERE status="new" ORDER BY id ASC')
     rows = c.fetchall()
     conn.close()
-    return [SupportOut(id=row[0], user_id=row[1], username=row[2], usertag=row[3], message=row[4], status=row[5], answer=row[6], savedUsername=row[7] if len(row) > 7 else '') for row in rows]
+    supports = []
+    for row in rows:
+        try:
+            # Проверяем, что user_id — число, username — строка, status — строка
+            user_id = int(row[1])
+            username = str(row[2])
+            usertag = str(row[3])
+            message = str(row[4])
+            status = str(row[5]) if row[5] is not None else ''
+            answer = str(row[6])
+            savedUsername = row[7] if len(row) > 7 else ''
+            if not status:
+                continue
+            supports.append(SupportOut(
+                id=row[0], user_id=user_id, username=username, usertag=usertag, message=message, status=status, answer=answer, savedUsername=savedUsername
+            ))
+        except Exception as e:
+            print('Пропущена битая запись в support:', row, e)
+            continue
+    return supports
 
 @app.post('/support/answer')
 def answer_support(id: int, answer: str):
