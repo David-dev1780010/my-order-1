@@ -107,6 +107,7 @@ conn.close()
 
 @app.post('/support')
 def create_support(support: SupportIn):
+    print("ПРИШЁЛ ЗАПРОС В /support:", support)
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
     c.execute('''INSERT INTO support (user_id, username, usertag, message, status, savedUsername) VALUES (?, ?, ?, ?, 'new', ?)''',
