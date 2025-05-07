@@ -11,6 +11,7 @@ import asyncio
 load_dotenv()
 ADMIN_BOT_TOKEN = os.getenv('ADMIN_BOT_TOKEN')
 ADMIN_IDS = os.getenv('ADMIN_ID', '').split(',')
+print("ADMIN_IDS:", ADMIN_IDS)
 
 bot = Bot(token=ADMIN_BOT_TOKEN)
 dp = Dispatcher(bot)
