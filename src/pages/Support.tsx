@@ -17,6 +17,7 @@ const Support: React.FC = () => {
     const parsed = p ? JSON.parse(p) : {};
     const user_id = parsed.savedUserId;
     const usertag = parsed.savedUserTag;
+    const username = parsed.savedUsername || '';
     if (message.trim().length < 1) {
       setError('Пожалуйста, опишите ваш запрос.');
       setLoading(false);
@@ -38,7 +39,7 @@ const Support: React.FC = () => {
       const res = await fetch(`${API_URL}/support`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ user_id, usertag, message })
+        body: JSON.stringify({ user_id, usertag, username, message })
       });
       if (res.ok) {
         setSuccess('Ваш запрос успешно отправлен в поддержку!');
