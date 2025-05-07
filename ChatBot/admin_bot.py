@@ -118,6 +118,7 @@ async def check_support():
             resp = requests.get(SUPPORT_API)
             if resp.ok:
                 supports = resp.json()
+                print('Получены обращения в поддержку:', supports)  # print для отладки
                 for s in supports:
                     username_display = s['username'] if s['username'] else 'нет username'
                     usertag_display = s['usertag'] if s['usertag'] else 'нет usertag'

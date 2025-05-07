@@ -4,6 +4,7 @@ import sqlite3
 from typing import List, Optional
 import os
 from fastapi.middleware.cors import CORSMiddleware
+import requests
 
 DB_PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), '../ChatBot/orders.db'))
 
@@ -112,6 +113,16 @@ def create_support(support: SupportIn):
               (support.user_id, support.username, support.usertag, support.message, support.savedUsername))
     conn.commit()
     conn.close()
+    # Отправляем уведомление пользователю в Telegram
+    TELEGRAM_BOT_TOKEN = os.getenv('BOT_TOKEN')
+    if TELEGRAM_BOT_TOKEN and support.user_id:
+        try:
+            requests.post(f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage', json={
+                'chat_id': support.user_id,
+                'text': 'Ваш запрос успешно отправлен в поддержку! Ожидайте ответа.'
+            })
+        except Exception as e:
+            print('Ошибка отправки уведомления пользователю:', e)
     return {"ok": True}
 
 @app.get('/support/new', response_model=List[SupportOut])
