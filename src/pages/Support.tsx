@@ -1,13 +1,5 @@
 import React, { useState } from 'react';
 
-// Для поддержки import.meta.env в TypeScript
-interface ImportMeta {
-  env: {
-    VITE_API_URL?: string;
-    [key: string]: any;
-  };
-}
-
 const MAX_LENGTH = 560;
 
 const Support: React.FC = () => {
