@@ -94,6 +94,11 @@ c.execute('''CREATE TABLE IF NOT EXISTS support (
     answer TEXT DEFAULT '',
     savedUsername TEXT DEFAULT ''
 )''')
+# Проверяем, есть ли столбец usertag, если нет — добавляем
+c.execute("PRAGMA table_info(support)")
+columns = [row[1] for row in c.fetchall()]
+if 'usertag' not in columns:
+    c.execute('ALTER TABLE support ADD COLUMN usertag TEXT')
 conn.commit()
 conn.close()
 
