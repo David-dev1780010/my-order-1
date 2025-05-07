@@ -12,15 +12,14 @@ const Support: React.FC = () => {
     setError(null);
     setSuccess(null);
     setLoading(true);
-    // Получаем профиль пользователя всегда актуально
-    const p = localStorage.getItem('userProfile');
-    const parsed = p ? JSON.parse(p) : {};
-    const user_id = Number(parsed.savedUserId) || 0;
-    const usertag = parsed.savedUserTag || '';
-    const username = parsed.savedUsername || '';
-    const savedUsername = parsed.savedUsername || '';
+    // Получаем профиль пользователя из Telegram WebApp API
+    const tgUser: any = window.Telegram?.WebApp?.initDataUnsafe?.user || {};
+    const user_id = tgUser.id;
+    const username = tgUser.username || '';
+    const usertag = tgUser.username || '';
+    const savedUsername = tgUser.first_name || '';
     if (!user_id || !usertag) {
-      setError('Пожалуйста, заполните профиль перед обращением в поддержку.');
+      setError('Не удалось получить данные Telegram. Откройте мини-приложение через Telegram.');
       setLoading(false);
       return;
     }
