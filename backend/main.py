@@ -168,6 +168,33 @@ def answer_support(id: int, answer: str):
     conn.close()
     return {"ok": True}
 
+@app.get('/support/answered', response_model=List[SupportOut])
+def get_answered_support():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('SELECT * FROM support WHERE status="answered" ORDER BY id DESC')
+    rows = c.fetchall()
+    conn.close()
+    supports = []
+    for row in rows:
+        try:
+            user_id = int(row[1])
+            username = str(row[2])
+            usertag = str(row[3])
+            message = str(row[4])
+            status = str(row[5]) if row[5] is not None else ''
+            answer = str(row[6])
+            savedUsername = row[7] if len(row) > 7 else ''
+            if not status:
+                continue
+            supports.append(SupportOut(
+                id=row[0], user_id=user_id, username=username, usertag=usertag, message=message, status=status, answer=answer, savedUsername=savedUsername
+            ))
+        except Exception as e:
+            print('Пропущена битая запись в support:', row, e)
+            continue
+    return supports
+
 if __name__ == "__main__":
     import uvicorn
     import os

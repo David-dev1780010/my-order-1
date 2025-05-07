@@ -181,7 +181,7 @@ def run_telegram():
     app_telegram = ApplicationBuilder().token(BOT_TOKEN).build()
     app_telegram.add_handler(CommandHandler("start", start))
     app_telegram.add_handler(CommandHandler("Balance", balance))
-    app_telegram.run_polling()
+    app_telegram.run_polling(allowed_updates=["message", "callback_query"])
 
 async def check_orders():
     while True:
@@ -208,7 +208,7 @@ async def check_orders():
         conn.close()
         await asyncio.sleep(10)  # Проверять каждые 10 секунд
 
-SUPPORT_ANSWERED_API = 'https://my-order-1.onrender.com/support/new'
+SUPPORT_ANSWERED_API = 'https://my-order-1.onrender.com/support/answered'
 
 async def check_support_answers():
     while True:
@@ -241,4 +241,4 @@ if __name__ == "__main__":
     loop.create_task(check_support_answers())
     
     # Запускаем бота
-    app_telegram.run_polling()
+    app_telegram.run_polling(allowed_updates=["message", "callback_query"])

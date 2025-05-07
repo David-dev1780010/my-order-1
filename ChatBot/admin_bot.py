@@ -156,4 +156,4 @@ async def support_reply(call: types.CallbackQuery):
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
     loop.create_task(check_support())
-    executor.start_polling(dp, skip_updates=True) 
+    executor.start_polling(dp, skip_updates=True, allowed_updates=["message", "callback_query"]) 
