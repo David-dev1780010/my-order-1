@@ -28,7 +28,13 @@ const Support: React.FC = () => {
       return;
     }
     try {
-      const API_URL = import.meta.env.VITE_API_URL || 'https://your-backend-domain';
+      const API_URL = import.meta.env.VITE_API_URL;
+      if (!API_URL) {
+        setError('Ошибка конфигурации: адрес сервера не задан.');
+        setLoading(false);
+        return;
+      }
+      console.log('Support API_URL:', API_URL);
       const res = await fetch(`${API_URL}/support`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
