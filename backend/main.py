@@ -99,6 +99,8 @@ c.execute("PRAGMA table_info(support)")
 columns = [row[1] for row in c.fetchall()]
 if 'usertag' not in columns:
     c.execute('ALTER TABLE support ADD COLUMN usertag TEXT')
+if 'savedUsername' not in columns:
+    c.execute('ALTER TABLE support ADD COLUMN savedUsername TEXT DEFAULT ""')
 conn.commit()
 conn.close()
 
