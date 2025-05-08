@@ -54,8 +54,32 @@ const Support: React.FC = () => {
   };
 
   return (
-    <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center', background: 'none' }}>
-      <div style={{ background: '#2D1E5A', borderRadius: 40, padding: '36px 18px', maxWidth: 400, width: '100%', boxShadow: '0 4px 32px 0 rgba(0,0,0,0.12)' }}>
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'flex-start',
+      minHeight: '100vh',
+      padding: '20px',
+      paddingTop: '100px',
+      position: 'fixed',
+      top: 0,
+      left: 0,
+      right: 0,
+      bottom: 0,
+      overflow: 'hidden',
+      fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif'
+    }}>
+      <div style={{
+        background: '#2D1E5A',
+        borderRadius: 25,
+        padding: '30px 20px',
+        width: '100%',
+        maxWidth: 340,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+      }}>
         <h2 style={{ color: 'white', fontSize: 32, fontWeight: 500, textAlign: 'center', marginBottom: 28, fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif' }}>Поддержка</h2>
         <textarea
           style={{
@@ -105,7 +129,20 @@ const Support: React.FC = () => {
           <span role="img" aria-label="mail">📩</span> Отправить в поддержку
         </button>
         <div style={{ color: 'white', textAlign: 'center', fontSize: 18, marginTop: 8 }}>
-          @neo_mailers2
+          <a
+            href="#"
+            style={{ color: '#09FBD3', textDecoration: 'none', fontWeight: 600 }}
+            onClick={e => {
+              e.preventDefault();
+              if (window.Telegram && window.Telegram.WebApp && window.Telegram.WebApp.openTelegramLink) {
+                window.Telegram.WebApp.openTelegramLink('https://t.me/modeern_gfx2004');
+              } else {
+                window.open('https://t.me/modeern_gfx2004', '_blank');
+              }
+            }}
+          >
+            @modeern_gfx2004
+          </a>
         </div>
       </div>
     </div>

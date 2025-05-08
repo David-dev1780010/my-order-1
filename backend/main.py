@@ -225,15 +225,6 @@ def support_structure():
     conn.close()
     return {"structure": structure}
 
-@app.post('/support/mark_notified')
-def mark_notified(id: int):
-    conn = sqlite3.connect(DB_PATH)
-    c = conn.cursor()
-    c.execute('UPDATE support SET status="notified" WHERE id=?', (id,))
-    conn.commit()
-    conn.close()
-    return {"ok": True}
-
 if __name__ == "__main__":
     import uvicorn
     import os
