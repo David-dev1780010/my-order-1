@@ -79,12 +79,13 @@ const Support: React.FC = () => {
       <div style={{
         background: '#2D1E5A',
         borderRadius: 25,
-        padding: '30px 20px',
+        padding: '38px 26px',
         width: '100%',
-        maxWidth: 340,
+        maxWidth: 370,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
+        marginTop: 32,
       }}>
         <h2 style={{ color: 'white', fontSize: 32, fontWeight: 500, textAlign: 'center', marginBottom: 28, fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif' }}>Поддержка</h2>
         <textarea
