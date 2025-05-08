@@ -176,7 +176,7 @@ async def support_reply(call: types.CallbackQuery):
     except Exception as e:
         print('Ошибка отправки ответа пользователю:', e)
 
-# --- Ещё один фиктивный комментарий для тестового пуша ---
+# --- Фиктивный комментарий для Render, чтобы точно обновился код ---
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
