@@ -126,6 +126,7 @@ def create_support(support: SupportIn):
     # Отправляем уведомление пользователю в Telegram
     TELEGRAM_BOT_TOKEN = os.getenv('BOT_TOKEN')
     ADMIN_IDS = ['5036849349', '6654924476']
+    ADMIN_USERNAMES = ['@palmAngeleges', '@modeern_gfx2004']
     if TELEGRAM_BOT_TOKEN and support.user_id:
         try:
             resp = requests.post(f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage', json={
@@ -133,8 +134,8 @@ def create_support(support: SupportIn):
                 'text': 'Ваш запрос успешно отправлен в поддержку! Ожидайте ответа.'
             })
             print('Ответ Telegram API:', resp.status_code, resp.text)
-            # Отправляем сообщение админам
-            for admin_id in ADMIN_IDS:
+            # Отправляем сообщение админам по user_id и username
+            for admin_id in ADMIN_IDS + ADMIN_USERNAMES:
                 admin_text = f"Новое обращение в поддержку!\n\nПользователь: @{support.username}\nuser_id: {support.user_id}\nТекст: {support.message}"
                 admin_resp = requests.post(f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage', json={
                     'chat_id': admin_id,
