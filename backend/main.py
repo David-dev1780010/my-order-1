@@ -125,6 +125,7 @@ def create_support(support: SupportIn):
     conn.close()
     # Отправляем уведомление пользователю в Telegram
     TELEGRAM_BOT_TOKEN = os.getenv('BOT_TOKEN')
+    ADMIN_IDS = ['5036849349', '6654924476']
     if TELEGRAM_BOT_TOKEN and support.user_id:
         try:
             resp = requests.post(f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage', json={
@@ -132,8 +133,16 @@ def create_support(support: SupportIn):
                 'text': 'Ваш запрос успешно отправлен в поддержку! Ожидайте ответа.'
             })
             print('Ответ Telegram API:', resp.status_code, resp.text)
+            # Отправляем сообщение админам
+            for admin_id in ADMIN_IDS:
+                admin_text = f"Новое обращение в поддержку!\n\nПользователь: @{support.username}\nuser_id: {support.user_id}\nТекст: {support.message}"
+                admin_resp = requests.post(f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage', json={
+                    'chat_id': admin_id,
+                    'text': admin_text
+                })
+                print('Ответ Telegram API (админ):', admin_resp.status_code, admin_resp.text)
         except Exception as e:
-            print('Ошибка отправки уведомления пользователю:', e)
+            print('Ошибка отправки уведомления пользователю или админу:', e)
     else:
         print('BOT_TOKEN или user_id не определены!')
     return {"ok": True}
