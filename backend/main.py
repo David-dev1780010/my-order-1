@@ -216,6 +216,15 @@ def reset_support_table():
     conn.close()
     return {"ok": True, "msg": "support table recreated"}
 
+@app.get('/support/structure')
+def support_structure():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute("PRAGMA table_info(support)")
+    structure = c.fetchall()
+    conn.close()
+    return {"structure": structure}
+
 if __name__ == "__main__":
     import uvicorn
     import os
