@@ -107,26 +107,18 @@ conn.close()
 
 @app.post('/support')
 def create_support(support: SupportIn):
-    print("ПРИШЁЛ ЗАПРОС В /support:", support)
-    import sys
-    sys.stdout.flush()
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    try:
-        c.execute('''INSERT INTO support (user_id, username, usertag, message, status, savedUsername) VALUES (?, ?, ?, ?, 'new', ?)''',
-                  (support.user_id, support.username, support.usertag, support.message, support.savedUsername))
-        conn.commit()
-        print("УСПЕШНО СОХРАНЕНО В БАЗУ!")
-    except Exception as e:
-        print("ОШИБКА ПРИ СОХРАНЕНИИ В БАЗУ:", e)
+    c.execute('''INSERT INTO support (user_id, username, usertag, message, status, savedUsername) VALUES (?, ?, ?, ?, 'new', ?)''',
+              (support.user_id, support.username, support.usertag, support.message, support.savedUsername))
+    conn.commit()
+    # Выводим все обращения из базы для отладки
     c.execute('SELECT * FROM support ORDER BY id DESC')
     all_supports = c.fetchall()
     print('Все обращения в поддержку:', all_supports)
     conn.close()
     # Отправляем уведомление пользователю в Telegram
     TELEGRAM_BOT_TOKEN = os.getenv('BOT_TOKEN')
-    ADMIN_IDS = ['5036849349', '6654924476']
-    ADMIN_USERNAMES = ['@palmAngeleges', '@modeern_gfx2004']
     if TELEGRAM_BOT_TOKEN and support.user_id:
         try:
             resp = requests.post(f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage', json={
@@ -134,16 +126,8 @@ def create_support(support: SupportIn):
                 'text': 'Ваш запрос успешно отправлен в поддержку! Ожидайте ответа.'
             })
             print('Ответ Telegram API:', resp.status_code, resp.text)
-            # Отправляем сообщение админам по user_id и username
-            for admin_id in ADMIN_IDS + ADMIN_USERNAMES:
-                admin_text = f"Новое обращение в поддержку!\n\nПользователь: @{support.username}\nuser_id: {support.user_id}\nТекст: {support.message}"
-                admin_resp = requests.post(f'https://api.telegram.org/bot{TELEGRAM_BOT_TOKEN}/sendMessage', json={
-                    'chat_id': admin_id,
-                    'text': admin_text
-                })
-                print('Ответ Telegram API (админ):', admin_resp.status_code, admin_resp.text)
         except Exception as e:
-            print('Ошибка отправки уведомления пользователю или админу:', e)
+            print('Ошибка отправки уведомления пользователю:', e)
     else:
         print('BOT_TOKEN или user_id не определены!')
     return {"ok": True}
