@@ -108,12 +108,17 @@ conn.close()
 @app.post('/support')
 def create_support(support: SupportIn):
     print("ПРИШЁЛ ЗАПРОС В /support:", support)
+    import sys
+    sys.stdout.flush()
     conn = sqlite3.connect(DB_PATH)
     c = conn.cursor()
-    c.execute('''INSERT INTO support (user_id, username, usertag, message, status, savedUsername) VALUES (?, ?, ?, ?, 'new', ?)''',
-              (support.user_id, support.username, support.usertag, support.message, support.savedUsername))
-    conn.commit()
-    # Выводим все обращения из базы для отладки
+    try:
+        c.execute('''INSERT INTO support (user_id, username, usertag, message, status, savedUsername) VALUES (?, ?, ?, ?, 'new', ?)''',
+                  (support.user_id, support.username, support.usertag, support.message, support.savedUsername))
+        conn.commit()
+        print("УСПЕШНО СОХРАНЕНО В БАЗУ!")
+    except Exception as e:
+        print("ОШИБКА ПРИ СОХРАНЕНИИ В БАЗУ:", e)
     c.execute('SELECT * FROM support ORDER BY id DESC')
     all_supports = c.fetchall()
     print('Все обращения в поддержку:', all_supports)
