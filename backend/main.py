@@ -195,6 +195,27 @@ def get_answered_support():
             continue
     return supports
 
+@app.get('/support/reset')
+def reset_support_table():
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute('DROP TABLE IF EXISTS support')
+    c.execute('''
+    CREATE TABLE support (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        user_id INTEGER,
+        username TEXT,
+        usertag TEXT,
+        message TEXT,
+        status TEXT DEFAULT 'new',
+        answer TEXT DEFAULT '',
+        savedUsername TEXT DEFAULT ''
+    )
+    ''')
+    conn.commit()
+    conn.close()
+    return {"ok": True, "msg": "support table recreated"}
+
 if __name__ == "__main__":
     import uvicorn
     import os
