@@ -138,6 +138,8 @@ async def check_support():
                     for admin_id in ADMIN_IDS:
                         if admin_id:
                             await bot.send_message(int(admin_id), text, reply_markup=ikb)
+                    # После отправки сообщения админам:
+                    requests.post(SUPPORT_ANSWER_API, params={'id': s['id'], 'answer': ''})
             await asyncio.sleep(10)
         except Exception as e:
             print('Ошибка поддержки:', e)
@@ -149,7 +151,7 @@ async def support_reply(call: types.CallbackQuery):
     support_id = int(parts[2])
     user_id = int(parts[3])
     await call.message.answer('Введите ваш ответ пользователю:')
-    @dp.message_handler(lambda m: m.from_user.id == call.from_user.id, content_types=types.ContentType.TEXT, state=None, once=True)
+    @dp.message_handler(lambda m: m.from_user.id == call.from_user.id, content_types=types.ContentType.TEXT, state=None)
     async def handle_support_answer(message: types.Message):
         answer = message.text
         # Отправляем ответ в backend
