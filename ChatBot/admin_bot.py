@@ -14,6 +14,7 @@ from aiogram.contrib.fsm_storage.memory import MemoryStorage
 load_dotenv()
 ADMIN_BOT_TOKEN = os.getenv('ADMIN_BOT_TOKEN')
 ADMIN_IDS = os.getenv('ADMIN_ID', '').split(',')
+BOT_TOKEN = os.getenv('BOT_TOKEN')
 print("ADMIN_IDS:", ADMIN_IDS)
 
 bot = Bot(token=ADMIN_BOT_TOKEN)
@@ -183,10 +184,10 @@ async def process_support_answer(message: types.Message, state: FSMContext):
     requests.post(SUPPORT_ANSWER_API, params={'id': support_id, 'answer': answer})
     await message.answer('Ответ отправлен!')
 
-    # Отправляем ответ пользователю через обычного бота
+    # Отправляем ответ пользователю через пользовательского бота
     try:
         resp = requests.post(
-            f'https://api.telegram.org/bot{ADMIN_BOT_TOKEN}/sendMessage',
+            f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage',
             json={'chat_id': user_id, 'text': f'Тех.поддержка ответила вам:\n\n{answer}'}
         )
         print('Ответ Telegram API (пользователь):', resp.status_code, resp.text)
