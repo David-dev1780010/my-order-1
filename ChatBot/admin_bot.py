@@ -12,7 +12,6 @@ load_dotenv()
 ADMIN_BOT_TOKEN = os.getenv('ADMIN_BOT_TOKEN')
 ADMIN_IDS = os.getenv('ADMIN_ID', '').split(',')
 print("ADMIN_IDS:", ADMIN_IDS)
-BOT_TOKEN = os.getenv('BOT_TOKEN')
 
 bot = Bot(token=ADMIN_BOT_TOKEN)
 dp = Dispatcher(bot)
@@ -118,29 +117,33 @@ async def check_support():
     while True:
         try:
             resp = requests.get(SUPPORT_API)
-            print('Ответ от SUPPORT_API:', resp.status_code, resp.text)
-            if resp.ok:
-                supports = resp.json()
+            supports = resp.json() if resp.ok else []
+            if supports:
                 print('Получены обращения в поддержку:', supports)
-                for s in supports:
-                    username_display = s['username'] if s['username'] else 'нет username'
-                    usertag_display = s['usertag'] if s['usertag'] else 'нет usertag'
-                    nickname_display = s['savedUsername'] if 'savedUsername' in s and s['savedUsername'] else 'нет никнейма'
-                    text = (
-                        f"Пользователь:\n"
-                        f"- user_id: {s['user_id']}\n"
-                        f"- username (Telegram): @{username_display}\n"
-                        f"- usertag (из профиля): @{usertag_display}\n"
-                        f"- Никнейм: {nickname_display}\n\n"
-                        f"Написал в поддержку:\n\n"
-                        f"{s['message']}"
+            for s in supports:
+                username_display = s['username'] if s['username'] else 'нет username'
+                usertag_display = s['usertag'] if s['usertag'] else 'нет usertag'
+                nickname_display = s['savedUsername'] if 'savedUsername' in s and s['savedUsername'] else 'нет никнейма'
+                text = (
+                    f"Пользователь:\n"
+                    f"- user_id: {s['user_id']}\n"
+                    f"- username (Telegram): @{username_display}\n"
+                    f"- usertag (из профиля): @{usertag_display}\n"
+                    f"- Никнейм: {nickname_display}\n\n"
+                    f"Написал в поддержку:\n\n"
+                    f"{s['message']}"
+                )
+                ikb = InlineKeyboardMarkup().add(
+                    InlineKeyboardButton(
+                        'Ответить пользователю',
+                        callback_data=f'support_reply_{s["id"]}_{s["user_id"]}'
                     )
-                    ikb = InlineKeyboardMarkup().add(InlineKeyboardButton('Ответить пользователю', callback_data=f'support_reply_{s["id"]}_{s["user_id"]}'))
-                    for admin_id in ADMIN_IDS:
-                        if admin_id:
-                            await bot.send_message(int(admin_id), text, reply_markup=ikb)
-                    # После отправки помечаем как notified
-                    requests.post('https://my-order-1.onrender.com/support/mark_notified', params={'id': s['id']})
+                )
+                for admin_id in ADMIN_IDS:
+                    if admin_id:
+                        await bot.send_message(int(admin_id), text, reply_markup=ikb)
+                # Помечаем как отправленное (например, статус "sent")
+                requests.post(SUPPORT_ANSWER_API, params={'id': s["id"], 'answer': "__sent__"})
             await asyncio.sleep(10)
         except Exception as e:
             print('Ошибка поддержки:', e)
@@ -152,19 +155,23 @@ async def support_reply(call: types.CallbackQuery):
     support_id = int(parts[2])
     user_id = int(parts[3])
     await call.message.answer('Введите ваш ответ пользователю:')
+
     def check(m):
-        return m.from_user.id == call.from_user.id and m.chat.id == call.message.chat.id
+        return m.from_user.id == call.from_user.id
+
     msg = await bot.wait_for('message', check=check)
     answer = msg.text
-    # Отправляем ответ в backend
+
+    # Сохраняем ответ в backend
     requests.post(SUPPORT_ANSWER_API, params={'id': support_id, 'answer': answer})
     await msg.answer('Ответ отправлен!')
+
     # Отправляем ответ пользователю через обычного бота
     try:
-        resp = requests.post(f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage', json={
-            'chat_id': user_id,
-            'text': f'Тех.поддержка ответила вам:\n\n{answer}'
-        })
+        resp = requests.post(
+            f'https://api.telegram.org/bot{ADMIN_BOT_TOKEN}/sendMessage',
+            json={'chat_id': user_id, 'text': f'Тех.поддержка ответила вам:\n\n{answer}'}
+        )
         print('Ответ Telegram API (пользователь):', resp.status_code, resp.text)
     except Exception as e:
         print('Ошибка отправки ответа пользователю:', e)
