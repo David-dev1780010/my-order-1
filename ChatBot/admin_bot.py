@@ -6,6 +6,9 @@ from dotenv import load_dotenv
 from aiogram.utils import executor
 import requests
 import asyncio
+from aiogram.dispatcher import FSMContext
+from aiogram.dispatcher.filters.state import State, StatesGroup
+from aiogram.contrib.fsm_storage.memory import MemoryStorage
 
 # Загрузка переменных окружения
 load_dotenv()
@@ -14,7 +17,10 @@ ADMIN_IDS = os.getenv('ADMIN_ID', '').split(',')
 print("ADMIN_IDS:", ADMIN_IDS)
 
 bot = Bot(token=ADMIN_BOT_TOKEN)
-dp = Dispatcher(bot)
+
+# --- FSM Storage ---
+storage = MemoryStorage()
+dp = Dispatcher(bot, storage=storage)
 
 DB_PATH = 'orders.db'
 
@@ -46,6 +52,10 @@ init_db()
 
 # --- Клавиатуры ---
 get_admin_kb = ReplyKeyboardMarkup(resize_keyboard=True).add(KeyboardButton('Получить права администратора'))
+
+# --- Состояния для поддержки ---
+class SupportAnswer(StatesGroup):
+    waiting_for_answer = State()
 
 # --- /start ---
 @dp.message_handler(commands=['start'])
@@ -151,22 +161,27 @@ async def check_support():
             print('Ошибка поддержки:', e)
             await asyncio.sleep(10)
 
+# --- Обработка нажатия на кнопку "Ответить пользователю" ---
 @dp.callback_query_handler(lambda c: c.data.startswith('support_reply_'))
-async def support_reply(call: types.CallbackQuery):
+async def support_reply(call: types.CallbackQuery, state: FSMContext):
     parts = call.data.split('_')
     support_id = int(parts[2])
     user_id = int(parts[3])
     await call.message.answer('Введите ваш ответ пользователю:')
+    await state.update_data(support_id=support_id, user_id=user_id)
+    await SupportAnswer.waiting_for_answer.set()
 
-    def check(m):
-        return m.from_user.id == call.from_user.id
-
-    msg = await bot.wait_for('message', check=check)
-    answer = msg.text
+# --- Обработка текстового ответа админа ---
+@dp.message_handler(state=SupportAnswer.waiting_for_answer, content_types=types.ContentTypes.TEXT)
+async def process_support_answer(message: types.Message, state: FSMContext):
+    data = await state.get_data()
+    support_id = data['support_id']
+    user_id = data['user_id']
+    answer = message.text
 
     # Сохраняем ответ в backend
     requests.post(SUPPORT_ANSWER_API, params={'id': support_id, 'answer': answer})
-    await msg.answer('Ответ отправлен!')
+    await message.answer('Ответ отправлен!')
 
     # Отправляем ответ пользователю через обычного бота
     try:
@@ -177,6 +192,8 @@ async def support_reply(call: types.CallbackQuery):
         print('Ответ Telegram API (пользователь):', resp.status_code, resp.text)
     except Exception as e:
         print('Ошибка отправки ответа пользователю:', e)
+
+    await state.finish()
 
 # --- Фиктивный комментарий для Render, чтобы точно обновился код ---
 
