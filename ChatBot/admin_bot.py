@@ -117,9 +117,10 @@ async def check_support():
     while True:
         try:
             resp = requests.get(SUPPORT_API)
+            print('Ответ от SUPPORT_API:', resp.status_code, resp.text)
             if resp.ok:
                 supports = resp.json()
-                print('Получены обращения в поддержку:', supports)  # print для отладки
+                print('Получены обращения в поддержку:', supports)
                 for s in supports:
                     username_display = s['username'] if s['username'] else 'нет username'
                     usertag_display = s['usertag'] if s['usertag'] else 'нет usertag'
@@ -133,7 +134,7 @@ async def check_support():
                         f"Написал в поддержку:\n\n"
                         f"{s['message']}"
                     )
-                    ikb = InlineKeyboardMarkup().add(InlineKeyboardButton('Ответить пользователю', callback_data=f'support_reply_{s["id"]}'))
+                    ikb = InlineKeyboardMarkup().add(InlineKeyboardButton('Ответить пользователю', callback_data=f'support_reply_{s["id"]}_{s["user_id"]}'))
                     for admin_id in ADMIN_IDS:
                         if admin_id:
                             await bot.send_message(int(admin_id), text, reply_markup=ikb)
@@ -144,7 +145,9 @@ async def check_support():
 
 @dp.callback_query_handler(lambda c: c.data.startswith('support_reply_'))
 async def support_reply(call: types.CallbackQuery):
-    support_id = int(call.data.split('_')[-1])
+    parts = call.data.split('_')
+    support_id = int(parts[2])
+    user_id = int(parts[3])
     await call.message.answer('Введите ваш ответ пользователю:')
     @dp.message_handler(lambda m: m.from_user.id == call.from_user.id, content_types=types.ContentType.TEXT, state=None, once=True)
     async def handle_support_answer(message: types.Message):
@@ -152,7 +155,15 @@ async def support_reply(call: types.CallbackQuery):
         # Отправляем ответ в backend
         requests.post(SUPPORT_ANSWER_API, params={'id': support_id, 'answer': answer})
         await message.answer('Ответ отправлен!')
-        # Здесь можно реализовать отправку ответа пользователю через balance_bot.py
+        # Отправляем ответ пользователю через Telegram API
+        try:
+            resp = requests.post(f'https://api.telegram.org/bot{ADMIN_BOT_TOKEN}/sendMessage', json={
+                'chat_id': user_id,
+                'text': f'Тех.поддержка ответила вам:\n\n{answer}'
+            })
+            print('Ответ Telegram API (пользователь):', resp.status_code, resp.text)
+        except Exception as e:
+            print('Ошибка отправки ответа пользователю:', e)
 
 if __name__ == '__main__':
     loop = asyncio.get_event_loop()
