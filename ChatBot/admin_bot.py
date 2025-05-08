@@ -116,7 +116,9 @@ async def handle_png(message: types.Message, order_id, call):
 async def check_support():
     while True:
         try:
+            print('Проверка обращений в поддержку...')
             resp = requests.get(SUPPORT_API)
+            print('Ответ от SUPPORT_API:', resp.status_code, resp.text)
             supports = resp.json() if resp.ok else []
             if supports:
                 print('Получены обращения в поддержку:', supports)
