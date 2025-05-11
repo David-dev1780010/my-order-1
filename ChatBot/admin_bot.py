@@ -6,6 +6,8 @@
 #
 import os
 import sqlite3
+import logging
+from datetime import datetime
 from aiogram import Bot, Dispatcher, types
 from aiogram.types import ReplyKeyboardMarkup, KeyboardButton, InlineKeyboardMarkup, InlineKeyboardButton, InputFile
 from dotenv import load_dotenv
@@ -15,6 +17,17 @@ import asyncio
 from aiogram.dispatcher import FSMContext
 from aiogram.dispatcher.filters.state import State, StatesGroup
 from aiogram.contrib.fsm_storage.memory import MemoryStorage
+
+# Настройка логирования
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('admin_bot.log'),
+        logging.StreamHandler()
+    ]
+)
+logger = logging.getLogger(__name__)
 
 # Загрузка переменных окружения
 load_dotenv()
@@ -47,13 +60,33 @@ def init_db():
         price INTEGER,
         details TEXT,
         status TEXT,
-        result_file TEXT
+        result_file TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )''')
     c.execute('''CREATE TABLE IF NOT EXISTS not_admins (
         user_id INTEGER PRIMARY KEY
     )''')
+    c.execute('''CREATE TABLE IF NOT EXISTS admin_logs (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        admin_id INTEGER,
+        action TEXT,
+        details TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )''')
     conn.commit()
     conn.close()
+
+# Функция для логирования действий администратора
+async def log_admin_action(admin_id: int, action: str, details: str = ""):
+    conn = sqlite3.connect(DB_PATH)
+    c = conn.cursor()
+    c.execute(
+        "INSERT INTO admin_logs (admin_id, action, details) VALUES (?, ?, ?)",
+        (admin_id, action, details)
+    )
+    conn.commit()
+    conn.close()
+    logger.info(f"Admin {admin_id} performed action: {action} - {details}")
 
 init_db()
 
@@ -69,6 +102,7 @@ class SupportAnswer(StatesGroup):
 async def start_cmd(message: types.Message):
     user_id = str(message.from_user.id)
     if user_id in ADMIN_IDS:
+        await log_admin_action(int(user_id), "login", "Admin logged in")
         await message.answer('Добро пожаловать, администратор! Ожидайте новые заказы.', reply_markup=types.ReplyKeyboardRemove())
         await send_new_orders(message.from_user.id)
     else:
@@ -107,6 +141,7 @@ async def send_new_orders(admin_id):
 @dp.callback_query_handler(lambda c: c.data.startswith('deliver_'))
 async def deliver_order(call: types.CallbackQuery):
     order_id = int(call.data.split('_')[1])
+    await log_admin_action(call.from_user.id, "start_delivery", f"Started delivery for order {order_id}")
     await call.message.answer('Отправьте мне .png файл заказа (только PNG).')
     dp.register_message_handler(lambda m: True, lambda m: m.from_user.id == call.from_user.id, content_types=types.ContentType.DOCUMENT, state=None, once=True)(lambda m: handle_png(m, order_id, call))
 
@@ -126,6 +161,7 @@ async def handle_png(message: types.Message, order_id, call):
     user_id = c.fetchone()[0]
     conn.commit()
     conn.close()
+    await log_admin_action(message.from_user.id, "complete_delivery", f"Completed delivery for order {order_id}")
     await message.answer('PNG принят! Заказ отмечен как выполненный.')
     # Здесь можно реализовать отправку результата в balance_bot.py (например, через базу или отдельный канал)
     # Например, balance_bot.py может периодически проверять базу на новые выполненные заказы
@@ -188,6 +224,7 @@ async def process_support_answer(message: types.Message, state: FSMContext):
 
     # Сохраняем ответ в backend
     requests.post(SUPPORT_ANSWER_API, params={'id': support_id, 'answer': answer})
+    await log_admin_action(message.from_user.id, "support_reply", f"Replied to support ticket {support_id}")
     await message.answer('Ответ отправлен!')
 
     # Отправляем ответ пользователю через пользовательского бота
@@ -196,15 +233,19 @@ async def process_support_answer(message: types.Message, state: FSMContext):
             f'https://api.telegram.org/bot{BOT_TOKEN}/sendMessage',
             json={'chat_id': user_id, 'text': f'Тех.поддержка ответила вам:\n\n{answer}'}
         )
-        print('Ответ Telegram API (пользователь):', resp.status_code, resp.text)
+        logger.info(f'Ответ Telegram API (пользователь): {resp.status_code} {resp.text}')
     except Exception as e:
-        print('Ошибка отправки ответа пользователю:', e)
+        logger.error(f'Ошибка отправки ответа пользователю: {e}')
 
     await state.finish()
 
 # --- Фиктивный комментарий для Render, чтобы точно обновился код ---
+# Добавлена система логирования действий администратора
+# Добавлена таблица admin_logs для отслеживания действий
+# Улучшена обработка ошибок и логирование
 
 if __name__ == '__main__':
+    logger.info("Starting admin bot...")
     loop = asyncio.get_event_loop()
     loop.create_task(check_support())
     executor.start_polling(dp, skip_updates=True, allowed_updates=["message", "callback_query"]) 
