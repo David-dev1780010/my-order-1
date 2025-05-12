@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 const MAX_LENGTH = 560;
 
@@ -7,12 +7,6 @@ const Support: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
-
-  useEffect(() => {
-    const originalStyle = window.getComputedStyle(document.body).overflow;
-    document.body.style.overflow = 'hidden';
-    return () => { document.body.style.overflow = originalStyle; };
-  }, []);
 
   const handleSend = async () => {
     setError(null);
@@ -79,13 +73,12 @@ const Support: React.FC = () => {
       <div style={{
         background: '#2D1E5A',
         borderRadius: 25,
-        padding: '38px 26px',
+        padding: '30px 20px',
         width: '100%',
-        maxWidth: 370,
+        maxWidth: 340,
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        marginTop: 32,
       }}>
         <h2 style={{ color: 'white', fontSize: 32, fontWeight: 500, textAlign: 'center', marginBottom: 28, fontFamily: 'Montserrat Alternates, -apple-system, BlinkMacSystemFont, sans-serif' }}>Поддержка</h2>
         <textarea
